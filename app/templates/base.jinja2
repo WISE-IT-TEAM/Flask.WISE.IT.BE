@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+    <title>{{ title }} - WISE IT Admin</title>
+    {% else %}
+    <title>WISE IT Admin</title>
+    {% endif %}
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}">
+    <link href="{{ url_for('static', filename='Bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Bootstrap/icon/bootstrap-icons.min.css') }}">
+    <link href="{{ url_for('static', filename='CSS/init.css') }}" rel="stylesheet">
+    {% block style %}{% endblock style %}
+</head>
+
+<body>
+    {% include 'navbar.jinja2' %}
+
+    <div class="py-5">
+        <div class="container py-5">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='Bootstrap/bootstrap.bundle.min.js') }}"></script>
+    {% block script %}{% endblock script %}
+</body>
+
+</html>

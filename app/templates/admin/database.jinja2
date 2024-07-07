@@ -1,0 +1,23 @@
+{% extends 'base.jinja2' %}
+{% block content %}
+<h1>Database Schema</h1>
+{% for table, columns in schema.items() %}
+<h2>Table Name: {{ table }}</h2>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Column Name</th>
+            <th scope="col">Column Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for column in columns %}
+        <tr>
+            <td>{{ column.name }}</td>
+            <td>{{ column.type }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+{% endblock %}

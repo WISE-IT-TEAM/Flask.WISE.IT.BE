@@ -1,0 +1,48 @@
+{% extends 'base.jinja2' %}
+
+{% block style %}
+{% endblock style %}
+
+
+
+{% block content %}
+<h1>QABoard Create</h1>
+<form method="POST">
+    <div class="mb-3">
+        <label for="nickname" class="form-label">Nickname</label>
+        <input type="text" class="form-control is-invalid" id="nickname" name="nickname" required>
+        <div class="invalid-feedback">닉네임을 입력해주세요.</div>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control is-invalid" id="password" name="password" required>
+        <div class="invalid-feedback">비밀번호를 입력해주세요.</div>
+    </div>
+    <div class="mb-3">
+        <label for="thumbnail" class="form-label">Thumbnail</label>
+        <input type="file" class="form-control" id="thumbnail" name="thumbnail">
+    </div>
+    <div class="mb-3">
+        <label for="file_path" class="form-label">File_path</label>
+        <input type="file" class="form-control" id="file_path" name="file_path">
+    </div>
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">Content</label>
+        <textarea class="form-control" id="content" name="content" rows="8" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="tags" class="form-label">Tags</label>
+        <input type="text" class="form-control" id="tags" name="tags" required>
+    </div>
+    <button type="submit" class="btn btn-primary">질문 등록</button>
+</form>
+{% endblock content %}
+
+
+
+{% block script %}
+{% endblock script %}

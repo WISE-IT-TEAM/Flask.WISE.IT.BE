@@ -1,0 +1,62 @@
+{% extends 'base_auth.jinja2' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill-add"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-shield-lock-fill"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password_confirm" class="form-label">Password Confirm</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-shield-lock-fill"></i></span>
+                            <input type="password" class="form-control" id="password_confirm" name="password_confirm"
+                                required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="register_key" class="form-label">Register Key</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                            <input type="password" class="form-control" id="register_key" name="register_key" required>
+                        </div>
+                    </div>
+                    <hr class="mb-3">
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-primary">관리자 등록</button>
+                        <a href="{{url_for('admin.admin_login')}}" class="btn btn-light">관리자 로그인으로 이동</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    document.querySelector('form').onsubmit = function () {
+        const password = document.querySelector('#password').value;
+        const password_confirm = document.querySelector('#password_confirm').value;
+
+        if (password !== password_confirm) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return false;
+        }
+    }
+</script>
+{% endblock script %}

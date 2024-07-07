@@ -1,0 +1,57 @@
+<nav class="navbar fixed-top navbar-expand-lg bg-light" data-bs-theme="light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('admin.admin_dashboard') }}">
+            <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" height="24" width="24"
+                class="d-inline-block align-text-top" />
+            WISE IT: Dashboard
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/admin/dashboard' %}active{% endif %}"
+                        href="{{ url_for('admin.admin_dashboard') }}">HOME
+                        <span class="visually-hidden">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path.startswith('/admin/database') %}active{% endif %}"
+                        href="{{ url_for('admin.admin_database') }}">Database</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path.startswith('/admin/board') %}active{% endif %}"
+                        href="{{ url_for('admin.admin_board_list') }}">QABoard</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        API Docs
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">QABoard</a></li>
+                    </ul>
+                </li>
+                {#
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path.startswith('/item/') %}active{% endif %}"
+                        href="/item">Item</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path.startswith('/order/') %}active{% endif %}"
+                        href="/order">Order</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path.startswith('/orderitem/') %}active{% endif %}"
+                        href="/orderitem">Order Item</a>
+                </li>
+                #}
+            </ul>
+            <div class="d-flex me-sm-2">
+                <a class="btn btn-danger btn-sm" href="{{ url_for('admin.admin_logout') }}">로그아웃</a>
+            </div>
+        </div>
+    </div>
+</nav>
