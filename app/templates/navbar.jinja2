@@ -21,9 +21,23 @@
                     <a class="nav-link {% if request.path.startswith('/admin/database') %}active{% endif %}"
                         href="{{ url_for('admin.admin_database') }}">Database</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path.startswith('/admin/board') %}active{% endif %}"
-                        href="{{ url_for('admin.admin_board_list') }}">QABoard</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link {% if request.path.startswith('/admin/qaboard') %}active{% endif %} dropdown-toggle"
+                        href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Board
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('qaboard.admin_qaboard_list') }}">QABoard</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        SQooL
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Artist Database</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -34,20 +48,6 @@
                         <li><a class="dropdown-item" href="#">QABoard</a></li>
                     </ul>
                 </li>
-                {#
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path.startswith('/item/') %}active{% endif %}"
-                        href="/item">Item</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path.startswith('/order/') %}active{% endif %}"
-                        href="/order">Order</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path.startswith('/orderitem/') %}active{% endif %}"
-                        href="/orderitem">Order Item</a>
-                </li>
-                #}
             </ul>
             <div class="d-flex me-sm-2">
                 <a class="btn btn-danger btn-sm" href="{{ url_for('admin.admin_logout') }}">로그아웃</a>

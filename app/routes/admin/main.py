@@ -1,4 +1,5 @@
 from flask import (
+    Blueprint,
     render_template,
     request,
     redirect,
@@ -8,10 +9,11 @@ from flask import (
     current_app,
 )
 from sqlalchemy import inspect
-from . import admin
-from ..models import db, AdminUser, Question, Answer
-from .. import bcrypt
+from app.models import db, AdminUser, Question, Answer
+from app import bcrypt
 import os
+
+admin_bp = Blueprint("admin", __name__)
 
 
 def login_required(f):
@@ -23,7 +25,7 @@ def login_required(f):
     return wrap
 
 
-@admin.route("/", methods=["GET", "POST"])
+@admin_bp.route("/", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
         username = request.form.get("username")
@@ -41,7 +43,7 @@ def admin_login():
     return render_template("admin/login.jinja2", title="Login")
 
 
-@admin.route("/register", methods=["GET", "POST"])
+@admin_bp.route("/register", methods=["GET", "POST"])
 def admin_register():
     if request.method == "POST":
         username = request.form.get("username")
@@ -67,7 +69,7 @@ def admin_register():
     return render_template("admin/register.jinja2", title="Register")
 
 
-@admin.route("/logout")
+@admin_bp.route("/logout")
 def admin_logout():
     session.pop("admin_user", None)
     flash("로그아웃 되었습니다.", "success")
@@ -75,14 +77,14 @@ def admin_logout():
 
 
 @login_required
-@admin.route("/dashboard", methods=["GET"])
+@admin_bp.route("/dashboard", methods=["GET"])
 def admin_dashboard():
 
     return render_template("admin/dashboard.jinja2", title="Dashboard")
 
 
 @login_required
-@admin.route("/database", methods=["GET"])
+@admin_bp.route("/database", methods=["GET"])
 def admin_database():
     inspector = inspect(db.engine)
     schema = {}
@@ -92,39 +94,3 @@ def admin_database():
             {"name": column["name"], "type": column["type"]} for column in columns
         ]
     return render_template("admin/database.jinja2", title="Database", schema=schema)
-
-
-@login_required
-@admin.route("/board_list", methods=["GET"])
-def admin_board_list():
-    board_list = Question.query.all()
-    return render_template(
-        "admin/qaboard/board_list.jinja2", title="QABoard List", board_list=board_list
-    )
-
-
-@login_required
-@admin.route("/board_create", methods=["GET", "POST"])
-def admin_board_create():
-    if request.method == "POST":
-        nickname = request.form.get("nickname")
-        password = request.form.get("password")
-        thumbnail = request.form.get("thumbnail")
-        title = request.form.get("title")
-        content = request.form.get("content")
-        tags = request.form.get("tags")
-
-        question = Question(password)
-        question.nickname = nickname
-        question.thumbnail = thumbnail
-        question.title = title
-        question.content = content
-        question.tags = tags
-
-        db.session.add(question)
-        db.session.commit()
-
-        flash("게시글이 등록되었습니다.", "success")
-        return redirect(url_for("admin.admin_board_list"))
-
-    return render_template("admin/qaboard/board_create.jinja2", title="QABoard Create")

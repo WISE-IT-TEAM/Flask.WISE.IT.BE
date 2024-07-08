@@ -18,11 +18,13 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
 
-    from .routes import admin as admin_blueprint
+    from .routes.admin.main import admin_bp
+    from .routes.admin.qaboard import qaboard_bp
 
     # from .routes import api as api_blueprint
 
-    app.register_blueprint(admin_blueprint, url_prefix="/admin")
+    app.register_blueprint(admin_bp, url_prefix="/admin")
+    app.register_blueprint(qaboard_bp, url_prefix="/admin/qaboard")
     # app.register_blueprint(api_blueprint, url_prefix="/api")
 
     @app.before_request

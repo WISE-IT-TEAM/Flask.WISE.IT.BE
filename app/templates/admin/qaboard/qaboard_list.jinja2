@@ -4,7 +4,6 @@
 {% endblock style %}
 
 
-
 {% block content %}
 <h1>QABoard</h1>
 
@@ -22,10 +21,9 @@
 </ul>
 
 <div class="d-grid gap-3">
-    <a href="{{ url_for('admin.admin_board_create') }}" class="btn btn-primary">질문 등록</a>
+    <a href="{{ url_for('qaboard.admin_qaboard_create') }}" class="btn btn-primary">질문 등록</a>
 </div>
 {% endblock %}
-
 
 
 {% block script %}
