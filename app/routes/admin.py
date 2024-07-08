@@ -48,6 +48,11 @@ def admin_register():
         password = request.form.get("password_confirm")
         register_key = request.form.get("register_key")
 
+        username_check = AdminUser.query.filter_by(username=username).first()
+
+        if username_check:
+            flash("이미 존재하는 아이디 입니다.", "danger")
+
         if register_key != current_app.config["REGISTER_KEY"]:
             flash("관리자 패스워드 키가 올바르지 않습니다.", "danger")
             return redirect(url_for("admin.admin_register"))
