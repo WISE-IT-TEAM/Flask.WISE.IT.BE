@@ -8,6 +8,7 @@ CREATE TABLE `Artist` (
 CREATE TABLE `Member` (
   `id` integer PRIMARY KEY,
   `member_name` text,
+  `position` text,
   `gender` text,
   `birthday` date,
   `country` text,
@@ -23,12 +24,4 @@ CREATE TABLE `Album` (
   `sales_volume` float,
   `artist_id` integer,
   FOREIGN KEY (artist_id) REFERENCES Artist(id)
-);
-
-CREATE TABLE `Track` (
-  `id` integer PRIMARY KEY,
-  `title` text,
-  `streaming_count` integer,
-  `album_id` integer,
-  FOREIGN KEY (album_id) REFERENCES Album(id)
 );

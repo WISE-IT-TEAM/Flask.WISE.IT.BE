@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/baris/Desktop/Artists.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1243"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,5:mainAlbum"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE `Artist` (
+  `id` integer PRIMARY KEY,
+  `group_name` text,
+  `agency` text,
+  `debut_date` date
+);
+
+CREATE TABLE `Member` (
+  `id` integer PRIMARY KEY,
+  `member_name` text,
+  `position` text,
+  `gender` text,
+  `birthday` date,
+  `country` text,
+  `artist_id` integer,
+  FOREIGN KEY (artist_id) REFERENCES Artist(id)
+);
+
+CREATE TABLE `Album` (
+  `id` integer PRIMARY KEY,
+  `album_name` text,
+  `release_date` date,
+  `album_type` text,
+  `sales_volume` float,
+  `artist_id` integer,
+  FOREIGN KEY (artist_id) REFERENCES Artist(id)
+);</sql><sql name="SQL 2">INSERT INTO Artist (id, group_name, agency, debut_date) VALUES
+(1, &quot;뉴진스&quot;, &quot;어도어&quot;, &quot;2022-07-22&quot;),
+(2, &quot;비투비&quot;, &quot;비투비 컴퍼니&quot;, &quot;2012-03-21&quot;),
+(3, &quot;르세라핌&quot;, &quot;쏘스 뮤직&quot;, &quot;2022-05-02&quot;),
+(4, &quot;세븐틴&quot;, &quot;플레디스 엔터테인먼트&quot;, &quot;2015-05-26&quot;),
+(5, &quot;BTS&quot;, &quot;빅히트 엔터테인먼트&quot;, &quot;2013-06-13&quot;),
+(6, &quot;블랙핑크&quot;, &quot;YG 엔터테인먼트&quot;, &quot;2016-08-08&quot;),
+(7, &quot;에스파&quot;, &quot;SM 엔터테인먼트&quot;, &quot;2020-11-17&quot;),
+(8, &quot;아이브&quot;, &quot;스타쉽 엔터테인먼트&quot;, &quot;2021-12-01&quot;),
+(9, &quot;엔믹스&quot;, &quot;JYP 엔터테인먼트&quot;, &quot;2022-02-22&quot;),
+(10, &quot;투모로우바이투게더&quot;, &quot;빅히트 엔터테인먼트&quot;, &quot;2019-03-04&quot;);</sql><sql name="SQL 3">INSERT INTO Member (id, member_name, position, gender, birthday, country, artist_id) VALUES
+-- 뉴진스(1)
+(1, &quot;민지&quot;, &quot;리더, 메인 보컬, 메인 댄서&quot;, &quot;여&quot;, &quot;2004-05-07&quot;, &quot;한국&quot;, 1),
+(2, &quot;하니&quot;, &quot;서브 보컬, 메인 래퍼, 리드 댄서&quot;, &quot;여&quot;, &quot;2004-10-06&quot;, &quot;호주, 베트남&quot;, 1),
+(3, &quot;다니엘&quot;, &quot;서브 보컬, 서브 래퍼, 메인 댄서&quot;, &quot;여&quot;, &quot;2005-04-11&quot;, &quot;한국, 호주&quot;, 1),
+(4, &quot;해린&quot;, &quot;서브 보컬, 리드 댄서, 비주얼&quot;, &quot;여&quot;, &quot;2006-05-15&quot;, &quot;한국&quot;, 1),
+(5, &quot;혜인&quot;, &quot;메인 보컬, 서브 댄서&quot;, &quot;여&quot;, &quot;2008-04-21&quot;, &quot;한국&quot;, 1),
+
+-- 비투비(2)
+(6, &quot;서은광&quot;, &quot;리더, 메인보컬&quot;, &quot;남&quot;, &quot;1990-11-22&quot;, &quot;한국&quot;, 2),
+(7, &quot;이민혁&quot;, &quot;메인레퍼&quot;, &quot;남&quot;, &quot;1990-11-29&quot;, &quot;한국&quot;, 2),
+(8, &quot;이창섭&quot;, &quot;리드보컬&quot;, &quot;남&quot;, &quot;1991-02-26&quot;, &quot;한국&quot;, 2),
+(9, &quot;임현식&quot;, &quot;리드보컬&quot;, &quot;남&quot;, &quot;1992-03-07&quot;, &quot;한국&quot;, 2),
+(10, &quot;프니엘&quot;, &quot;메인댄서, 리드래퍼&quot;, &quot;남&quot;, &quot;1993-03-10&quot;, &quot;미국&quot;, 2),
+(11, &quot;육성재&quot;, &quot;서브보컬&quot;, &quot;남&quot;, &quot;1995-05-02&quot;, &quot;한국&quot;, 2),
+
+-- 르세라핌(3)
+(12, &quot;사쿠라&quot;, &quot;리드보컬, 서브래퍼&quot;, &quot;여&quot;, &quot;1998-03-19&quot;, &quot;일본&quot;, 3),
+(13, &quot;김채원&quot;, &quot;리더, 메인보컬&quot;, &quot;여&quot;, &quot;2000-08-01&quot;, &quot;한국&quot;, 3),
+(14, &quot;허윤진&quot;, &quot;메인보컬&quot;, &quot;여&quot;, &quot;2001-10-08&quot;, &quot;미국&quot;, 3),
+(15, &quot;카즈하&quot;, &quot;메인댄서, 리드래퍼, 서브보컬&quot;, &quot;여&quot;, &quot;2003-08-09&quot;, &quot;일본&quot;, 3),
+(16, &quot;홍은채&quot;, &quot;서브보컬, 서브래퍼&quot;, &quot;여&quot;, &quot;2006-11-10&quot;, &quot;한국&quot;, 3),
+
+-- 세븐틴(4)
+(17, &quot;에스쿱스&quot;, &quot;힙합 유닛 리더, 리더, 메인래퍼&quot;, &quot;남&quot;, &quot;1995-08-08&quot;, &quot;한국&quot;, 4),
+(18, &quot;정한&quot;, &quot;서브보컬&quot;, &quot;남&quot;, &quot;1995-10-04&quot;, &quot;한국&quot;, 4),
+(19, &quot;조슈아&quot;, &quot;서브보컬&quot;, &quot;남&quot;, &quot;1995-12-30&quot;, &quot;미국&quot;, 4),
+(20, &quot;준&quot;, &quot;리드댄서, 서브보컬&quot;, &quot;남&quot;, &quot;1996-06-10&quot;, &quot;중국&quot;, 4),
+(21, &quot;호시&quot;, &quot;퍼포먼스 유닛 리더, 메인댄서, 리드보컬&quot;, &quot;남&quot;, &quot;1996-06-15&quot;, &quot;한국&quot;, 4),
+(22, &quot;원우&quot;, &quot;리드래퍼&quot;, &quot;남&quot;, &quot;1996-07-17&quot;, &quot;한국&quot;, 4),
+(23, &quot;우지&quot;, &quot;보컬 유닛 리더, 메인보컬&quot;, &quot;남&quot;, &quot;1996-11-22&quot;, &quot;한국&quot;, 4),
+(24, &quot;디에잇&quot;, &quot;리드댄서, 서브보컬&quot;, &quot;남&quot;, &quot;1997-11-07&quot;, &quot;중국&quot;, 4),
+(25, &quot;민규&quot;, &quot;리드래퍼&quot;, &quot;남&quot;, &quot;1997-04-06&quot;, &quot;한국&quot;, 4),
+(26, &quot;도겸&quot;, &quot;메인보컬&quot;, &quot;남&quot;, &quot;1997-02-18&quot;, &quot;한국&quot;, 4),
+(27, &quot;승관&quot;, &quot;메인보컬&quot;, &quot;남&quot;, &quot;1998-01-16&quot;, &quot;한국&quot;, 4),
+(28, &quot;버논&quot;, &quot;메인래퍼&quot;, &quot;남&quot;, &quot;1998-02-18&quot;, &quot;한국, 미국&quot;, 4),
+(29, &quot;디노&quot;, &quot;메인댄서, 리드래퍼, 서브보컬&quot;, &quot;남&quot;, &quot;1999-02-11&quot;, &quot;한국&quot;, 4),
+
+-- BTS(5)
+(30, &quot;진&quot;, &quot;서브보컬, 비주얼&quot;, &quot;남&quot;, &quot;1992-12-04&quot;, &quot;한국&quot;, 5),
+(31, &quot;슈가&quot;, &quot;리드래퍼&quot;, &quot;남&quot;, &quot;1993-03-09&quot;, &quot;한국&quot;, 5),
+(32, &quot;제이홉&quot;, &quot;메인댄서, 서브래퍼, 서브보컬&quot;, &quot;남&quot;, &quot;1994-02-18&quot;, &quot;한국&quot;, 5),
+(33, &quot;RM&quot;, &quot;리더, 메인래퍼&quot;, &quot;남&quot;, &quot;1994-09-12&quot;, &quot;한국&quot;, 5),
+(34, &quot;지민&quot;, &quot;메인댄서, 리드보컬&quot;, &quot;남&quot;, &quot;1995-10-13&quot;, &quot;한국&quot;, 5),
+(35, &quot;뷔&quot;, &quot;리드댄서, 서브보컬, 비주얼&quot;, &quot;남&quot;, &quot;1995-12-30&quot;, &quot;한국&quot;, 5),
+(36, &quot;정국&quot;, &quot;메인보컬, 리드댄서, 서브래퍼, 센터&quot;, &quot;남&quot;, &quot;1997-09-01&quot;, &quot;한국&quot;, 5),
+
+-- 블랙핑크(6)
+(37, &quot;지수&quot;, &quot;리드보컬, 비주얼&quot;, &quot;여&quot;, &quot;1995-01-03&quot;, &quot;한국&quot;, 6),
+(38, &quot;제니&quot;, &quot;메인래퍼, 리드보컬&quot;, &quot;여&quot;, &quot;1996-01-16&quot;, &quot;한국&quot;, 6),
+(39, &quot;로제&quot;, &quot;메인보컬, 리드댄서&quot;, &quot;여&quot;, &quot;1997-02-11&quot;, &quot;뉴질랜드&quot;, 6),
+(40, &quot;리사&quot;, &quot;메인댄서, 리드래퍼, 서브보컬&quot;, &quot;여&quot;, &quot;1997-03-27&quot;, &quot;태국&quot;, 6),
+
+-- 에스파(7)
+(41, &quot;카리나&quot;, &quot;리더, 메인댄서, 리드래퍼, 서브보컬&quot;, &quot;여&quot;, &quot;2000-04-11&quot;, &quot;한국&quot;, 7),
+(42, &quot;지젤&quot;, &quot;메인래퍼, 서브보컬&quot;, &quot;여&quot;, &quot;2000-10-30&quot;, &quot;일본&quot;, 7),
+(43, &quot;윈터&quot;, &quot;리드보컬, 리드댄서&quot;, &quot;여&quot;, &quot;2001-01-01&quot;, &quot;한국&quot;, 7),
+(44, &quot;닝닝&quot;, &quot;메인보컬&quot;, &quot;여&quot;, &quot;2002-10-23&quot;, &quot;중국&quot;, 7),
+
+-- 아이브(8)
+(45, &quot;안유진&quot;, &quot;리더, 서브보컬&quot;, &quot;여&quot;, &quot;2003-09-01&quot;, &quot;한국&quot;, 8),
+(46, &quot;가을&quot;, &quot;메인래퍼, 메인댄서&quot;, &quot;여&quot;, &quot;2002-05-02&quot;, &quot;한국&quot;, 8),
+(47, &quot;레이&quot;, &quot;리드래퍼, 서브보컬&quot;, &quot;여&quot;, &quot;2004-02-03&quot;, &quot;일본&quot;, 8),
+(48, &quot;장원영&quot;, &quot;리드보컬, 센터&quot;, &quot;여&quot;, &quot;2004-08-31&quot;, &quot;한국&quot;, 8),
+(49, &quot;리즈&quot;, &quot;메인보컬&quot;, &quot;여&quot;, &quot;2004-11-21&quot;, &quot;한국&quot;, 8),
+(50, &quot;이서&quot;, &quot;서브보컬&quot;, &quot;여&quot;, &quot;2007-02-21&quot;, &quot;한국&quot;, 8),
+
+-- 엔믹스(9)
+(51, &quot;릴리&quot;, &quot;메인보컬&quot;, &quot;여&quot;, &quot;2002-10-17&quot;, &quot;호주&quot;, 9),
+(52, &quot;해원&quot;, &quot;리더, 메인보컬&quot;, &quot;여&quot;, &quot;2003-02-25&quot;, &quot;한국&quot;, 9),
+(53, &quot;설윤&quot;, &quot;리드보컬, 리드댄서&quot;, &quot;여&quot;, &quot;2004-01-26&quot;, &quot;한국&quot;, 9),
+(54, &quot;배이&quot;, &quot;서브보컬&quot;, &quot;여&quot;, &quot;2004-12-28&quot;, &quot;한국&quot;, 9),
+(55, &quot;지우&quot;, &quot;메인댄서, 리드래퍼, 서브보컬&quot;, &quot;여&quot;, &quot;2005-04-13&quot;, &quot;한국&quot;, 9),
+(56, &quot;규진&quot;, &quot;메인댄서, 리드래퍼, 서브보컬&quot;, &quot;여&quot;, &quot;2006-05-26&quot;, &quot;한국&quot;, 9),
+
+-- 투모로우바이투게더(10)
+(57, &quot;수빈&quot;, &quot;리더, 서브보컬, 서브래퍼&quot;, &quot;남&quot;, &quot;2000-12-05&quot;, &quot;한국&quot;, 10),
+(58, &quot;연준&quot;, &quot;메인래퍼, 메인댄서, 서브보컬&quot;, &quot;남&quot;, &quot;1999-09-13&quot;, &quot;한국&quot;, 10),
+(59, &quot;범규&quot;, &quot;서브보컬, 서브래퍼, 비주얼&quot;, &quot;남&quot;, &quot;2001-03-13&quot;, &quot;한국&quot;, 10),
+(60, &quot;태현&quot;, &quot;메인보컬&quot;, &quot;남&quot;, &quot;2002-02-05&quot;, &quot;한국&quot;, 10),
+(61, &quot;휴닝카이&quot;, &quot;리드보컬, 서브래퍼&quot;, &quot;M&quot;, &quot;2002-08-14&quot;, &quot;미국&quot;, 10);</sql><sql name="SQL 4">INSERT INTO Album (id, album_name, release_date, album_type, sales_volume, artist_id) VALUES
+-- 뉴진스(1)
+(1, &quot;New Jeans&quot;, &quot;2022-08-01&quot;, &quot;정규 앨범&quot;, 1000000, 1),
+(2, &quot;OMG&quot;, &quot;2023-01-02&quot;, &quot;싱글 앨범&quot;, 950000, 1),
+(3, &quot;Zero&quot;, &quot;2023-04-03&quot;, &quot;싱글 앨범&quot;, 500000, 1),
+(4, &quot;Get Up&quot;, &quot;2023-07-21&quot;, &quot;정규 앨범&quot;, 700000, 1),
+(5, &quot;How Sweet&quot;, &quot;2024-05-24&quot;, &quot;싱글 앨범&quot;, 450000, 1),
+(6, &quot;Supernatural&quot;, &quot;2024-06-21&quot;, &quot;싱글 앨범&quot;, 700000, 1),
+
+-- 비투비(2)
+(7, &quot;Wind and Wish&quot;, &quot;2023-05-02&quot;, &quot;미니 앨범&quot;, 200000, 2),
+(8, &quot;Be Together&quot;, &quot;2022-02-21&quot;, &quot;정규 앨범&quot;, 180000, 2),
+(9, &quot;4U: Outside&quot;, &quot;2021-08-30&quot;, &quot;미니 앨범&quot;, 150000, 2),
+(10, &quot;Hour Moment&quot;, &quot;2018-11-12&quot;, &quot;미니 앨범&quot;, 170000, 2),
+(11, &quot;This Is Us&quot;, &quot;2018-06-18&quot;, &quot;미니 앨범&quot;, 130000, 2),
+(12, &quot;Brother Act.&quot;, &quot;2017-10-16&quot;, &quot;정규 앨범&quot;, 140000, 2),
+(13, &quot;Feel'eM&quot;, &quot;2017-03-06&quot;, &quot;미니 앨범&quot;, 120000, 2),
+(14, &quot;New Men&quot;, &quot;2016-11-07&quot;, &quot;미니 앨범&quot;, 110000, 2),
+(15, &quot;Remember That&quot;, &quot;2016-03-28&quot;, &quot;미니 앨범&quot;, 100000, 2),
+(16, &quot;I Mean&quot;, &quot;2015-10-12&quot;, &quot;미니 앨범&quot;, 90000, 2),
+(17, &quot;Complete&quot;, &quot;2015-06-29&quot;, &quot;정규 앨범&quot;, 85000, 2),
+(18, &quot;The Winter's Tale&quot;, &quot;2014-12-22&quot;, &quot;미니 앨범&quot;, 80000, 2),
+(19, &quot;Move&quot;, &quot;2014-09-29&quot;, &quot;미니 앨범&quot;, 75000, 2),
+(20, &quot;뛰뛰빵빵&quot;, &quot;2014-02-17&quot;, &quot;미니 앨범&quot;, 70000, 2),
+(21, &quot;스릴러&quot;, &quot;2013-09-09&quot;, &quot;미니 앨범&quot;, 65000, 2),
+(22, &quot;Press Play&quot;, &quot;2012-09-12&quot;, &quot;미니 앨범&quot;, 60000, 2),
+(23, &quot;Born to Beat&quot;, &quot;2012-03-21&quot;, &quot;미니 앨범&quot;, 55000, 2),
+
+-- 르세라핌(3)
+(24, &quot;FEARLESS&quot;, &quot;2022-05-02&quot;, &quot;미니 앨범&quot;, 500000, 3),
+(25, &quot;ANTIFRAGILE&quot;, &quot;2022-10-17&quot;, &quot;미니 앨범&quot;, 1000000, 3),
+(26, &quot;UNFORGIVEN&quot;, &quot;2023-05-01&quot;, &quot;정규 앨범&quot;, 1000000, 3),
+(27, &quot;EASY&quot;, &quot;2024-02-19&quot;, &quot;미니 앨범&quot;, 132289, 3),
+
+-- 세븐틴(4)
+(28, &quot;17 CARAT&quot;, &quot;2015-05-29&quot;, &quot;미니 앨범&quot;, 205389, 4),
+(29, &quot;BOYS BE&quot;, &quot;2015-09-10&quot;, &quot;미니 앨범&quot;, 339152, 4),
+(30, &quot;LOVE&amp;LETTER&quot;, &quot;2016-04-25&quot;, &quot;정규 앨범&quot;, 550000, 4),
+(31, &quot;Going Seventeen&quot;, &quot;2016-12-05&quot;, &quot;미니 앨범&quot;, 459734, 4),
+(32, &quot;Al1&quot;, &quot;2017-05-22&quot;, &quot;미니 앨범&quot;, 584462, 4),
+(33, &quot;TEEN, AGE&quot;, &quot;2017-11-06&quot;, &quot;정규 앨범&quot;, 620000, 4),
+(34, &quot;DIRECTOR'S CUT&quot;, &quot;2018-02-05&quot;, &quot;스페셜 앨범&quot;, 200000, 4),
+(35, &quot;YOU MAKE MY DAY&quot;, &quot;2018-07-16&quot;, &quot;미니 앨범&quot;, 578452, 4),
+(36, &quot;YOU MADE MY DAWN&quot;, &quot;2019-01-21&quot;, &quot;미니 앨범&quot;, 656580, 4),
+(37, &quot;An Ode&quot;, &quot;2019-09-16&quot;, &quot;정규 앨범&quot;, 1000000, 4),
+(38, &quot;헹가래&quot;, &quot;2020-06-22&quot;, &quot;미니 앨범&quot;, 1759303, 4),
+(39, &quot;; [Semicolon]&quot;, &quot;2020-10-19&quot;, &quot;스페셜 앨범&quot;, 1239435, 4),
+(40, &quot;Your Choice&quot;, &quot;2021-06-18&quot;, &quot;미니 앨범&quot;, 1665820, 4),
+(41, &quot;Attacca&quot;, &quot;2021-10-22&quot;, &quot;미니 앨범&quot;, 2878078, 4),
+(42, &quot;Face the Sun&quot;, &quot;2022-05-27&quot;, &quot;정규 앨범&quot;, 3000000, 4),
+(43, &quot;17 IS RIGHT HERE&quot;, &quot;2023-04-29&quot;, &quot;정규 앨범&quot;, 6346704, 4),
+
+-- BTS(5)
+(44, &quot;2 COOL 4 SKOOL&quot;, &quot;2013-06-12&quot;, &quot;싱글 앨범&quot;, 150000, 5),
+(45, &quot;O!RUL8,2?&quot;, &quot;2013-09-11&quot;, &quot;미니 앨범&quot;, 200000, 5),
+(46, &quot;Skool Luv Affair&quot;, &quot;2014-02-12&quot;, &quot;미니 앨범&quot;, 300000, 5),
+(47, &quot;Skool Luv Affair Special Addition&quot;, &quot;2014-05-14&quot;, &quot;스페셜 앨범&quot;, 250000, 5),
+(48, &quot;DARK&amp;WILD&quot;, &quot;2014-08-20&quot;, &quot;정규 앨범&quot;, 300000, 5),
+(49, &quot;화양연화 pt.1&quot;, &quot;2015-04-29&quot;, &quot;미니 앨범&quot;, 350000, 5),
+(50, &quot;화양연화 pt.2&quot;, &quot;2015-11-30&quot;, &quot;미니 앨범&quot;, 450000, 5),
+(51, &quot;화양연화 Young Forever&quot;, &quot;2016-05-02&quot;, &quot;스페셜 앨범&quot;, 500000, 5),
+(52, &quot;WINGS&quot;, &quot;2016-10-10&quot;, &quot;정규 앨범&quot;, 700000, 5),
+(53, &quot;YOU NEVER WALK ALONE&quot;, &quot;2017-02-13&quot;, &quot;리패키지 앨범&quot;, 600000, 5),
+(54, &quot;LOVE YOURSELF 承 'Her'&quot;, &quot;2017-09-18&quot;, &quot;미니 앨범&quot;, 1500000, 5),
+(55, &quot;LOVE YOURSELF 轉 'Tear'&quot;, &quot;2018-05-18&quot;, &quot;정규 앨범&quot;, 2000000, 5),
+(56, &quot;LOVE YOURSELF 結 'Answer'&quot;, &quot;2018-08-24&quot;, &quot;리패키지 앨범&quot;, 2200000, 5),
+(57, &quot;MAP OF THE SOUL : PERSONA&quot;, &quot;2019-04-12&quot;, &quot;미니 앨범&quot;, 3000000, 5),
+(58, &quot;MAP OF THE SOUL : 7&quot;, &quot;2020-02-21&quot;, &quot;정규 앨범&quot;, 4500000, 5),
+(59, &quot;BE&quot;, &quot;2020-11-20&quot;, &quot;정규 앨범&quot;, 3000000, 5),
+(60, &quot;Proof&quot;, &quot;2022-06-10&quot;, &quot;컴필레이션 앨범&quot;, 2500000, 5),
+
+-- 블랙핑크(6)
+(61, &quot;Born Pink&quot;, &quot;2022-09-16&quot;, &quot;정규 앨범&quot;, 2000000, 6),
+(62, &quot;The Album&quot;, &quot;2020-10-02&quot;, &quot;정규 앨범&quot;, 1500000, 6),
+(63, &quot;How You Like That&quot;, &quot;2020-06-26&quot;, &quot;싱글 앨범&quot;, 1300000, 6),
+(64, &quot;Kill This Love&quot;, &quot;2019-04-05&quot;, &quot;미니 앨범&quot;, 1200000, 6),
+(65, &quot;Square Up&quot;, &quot;2018-06-15&quot;, &quot;미니 앨범&quot;, 1100000, 6),
+(66, &quot;Square Two&quot;, &quot;2016-11-01&quot;, &quot;싱글 앨범&quot;, 900000, 6),
+(67, &quot;Square One&quot;, &quot;2016-08-08&quot;, &quot;싱글 앨범&quot;, 750000, 6),
+
+-- 에스파(7)
+(68, &quot;Black Mamba&quot;, &quot;2020-11-17&quot;, &quot;미니 앨범&quot;, 900000, 7),
+(69, &quot;Forever (약속)&quot;, &quot;2021-02-05&quot;, &quot;싱글 앨범&quot;, 800000, 7),
+(70, &quot;Next Level&quot;, &quot;2021-05-17&quot;, &quot;싱글 앨범&quot;, 950000, 7),
+(71, &quot;Savage - The 1st Mini Album &quot;, &quot;2021-10-05&quot;, &quot;미니 앨범&quot;, 1000000, 7),
+(72, &quot;Dreams Come True - SM STATION&quot;, &quot;2021-12-20&quot;, &quot;싱글 앨범&quot;, 1100000, 7),
+(73, &quot;Life’s Too Short&quot;, &quot;2022-06-24&quot;, &quot;싱글 앨범&quot;, 700000, 7),
+(74, &quot;Girls - The 2nd Mini Album&quot;, &quot;2022-07-08&quot;, &quot;미니 앨범&quot;, 1130000, 7),
+(75, &quot;MY WORLD - The 3rd Mini Album&quot;, &quot;2023-05-08&quot;, &quot;미니 앨범&quot;, 1200000, 7),
+(76, &quot;Better Things&quot;, &quot;2023-09-08&quot;, &quot;싱글 앨범&quot;, 980000, 7),
+(77, &quot;Drama - The 4th Mini Album&quot;, &quot;2023-11-10&quot;, &quot;미니 앨범&quot;, 1050000, 7),
+(78, &quot;Jingle Bell Rock&quot;, &quot;2023-11-24&quot;, &quot;싱글 앨범&quot;, 1090000, 7),
+(79, &quot;Armageddon - The 1st Album&quot;, &quot;2024-05-27&quot;, &quot;정규 앨범&quot;, 870000, 7),
+
+-- 아이브(8)
+(80, &quot;IVE SWITCH&quot;, &quot;2024-04-29&quot;, &quot;미니 앨범&quot;, 1300000, 8),
+(81, &quot;I'VE MINE&quot;, &quot;2023-10-13&quot;, &quot;미니 앨범&quot;, 1100000, 8),
+(82, &quot;I've IVE&quot;, &quot;2023-04-10&quot;, &quot;정규 앨범&quot;, 1300000, 8),
+(83, &quot;After Like&quot;, &quot;2022-08-22&quot;, &quot;싱글 앨범&quot;, 1200000, 8),
+(84, &quot;LOVE DIVE&quot;, &quot;2022-04-05&quot;, &quot;싱글 앨범&quot;, 1100000, 8),
+(85, &quot;ELEVEN&quot;, &quot;2021-12-01&quot;, &quot;싱글 앨범&quot;, 1000000, 8),
+
+-- 엔믹스(9)
+(86, &quot;Ad Mare&quot;, &quot;2022-02-22&quot;, &quot;싱글 앨범&quot;, 300000, 9),
+(87, &quot;Kiss&quot;, &quot;2022-07-31&quot;, &quot;싱글 앨범&quot;, 400000, 9),
+(88, &quot;ENTWURF&quot;, &quot;2022-09-19&quot;, &quot;미니 앨범&quot;, 450000, 9),
+(89, &quot;Expérgo&quot;, &quot;2023-03-20&quot;, &quot;미니 앨범&quot;, 500000, 9),
+(90, &quot;A Midsummer NMIXX's Dream&quot;, &quot;2023-07-11&quot;, &quot;싱글 앨범&quot;, 520000, 9),
+(91, &quot;Fe3O4: BREAK&quot;, &quot;2024-01-15&quot;, &quot;싱글 앨범&quot;, 340000, 9),
+
+-- 투모로우바이투게더(10)
+(92, &quot;minisode 3: TOMORROW&quot;, &quot;2024-04-01&quot;, &quot;미니 앨범&quot;, 1500000, 10),
+(93, &quot;이름의 장: FREEFALL&quot;, &quot;2023-10-13&quot;, &quot;정규 앨범&quot;, 1600000, 10),
+(94, &quot;이름의 장: TEMPTATION&quot;, &quot;2023-01-27&quot;, &quot;미니 앨범&quot;, 1350000, 10),
+(95, &quot;minisode 2: Thursday's Child&quot;, &quot;2022-05-09&quot;, &quot;미니 앨범&quot;, 1450000, 10),
+(96, &quot;혼돈의 장: FIGHT OR ESCAPE&quot;, &quot;2021-08-17&quot;, &quot;정규 앨범&quot;, 1300000, 10),
+(97, &quot;혼돈의 장: FREEZE&quot;, &quot;2021-05-31&quot;, &quot;정규 앨범&quot;, 1400000, 10),
+(98, &quot;minisode1: Blue Hour&quot;, &quot;2020-10-26&quot;, &quot;미니 앨범&quot;, 1200000, 10),
+(99, &quot;꿈의 장: ETERNITY&quot;, &quot;2020-05-18&quot;, &quot;미니 앨범&quot;, 1150000, 10),
+(100, &quot;꿈의 장: MAGIC&quot;, &quot;2019-10-21&quot;, &quot;정규 앨범&quot;, 1100000, 10),
+(101, &quot;꿈의 장: STAR&quot;, &quot;2019-03-04&quot;, &quot;미니 앨범&quot;, 1000000, 10);</sql><current_tab id="3"/></tab_sql></sqlb_project>

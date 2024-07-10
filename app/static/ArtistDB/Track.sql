@@ -1,6 +1,6 @@
 INSERT INTO Track (id, title, streaming_count, album_id) VALUES
 -- 뉴진스(1)
--- TWS(2)
+-- 비투비(2)
 -- 르세라핌(3)
 -- 세븐틴(4)
 -- BTS(5)
