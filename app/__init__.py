@@ -20,12 +20,11 @@ def create_app():
 
     from .routes.admin.main import admin_bp
     from .routes.admin.qaboard import qaboard_bp
-
-    # from .routes import api as api_blueprint
+    from .routes.api.sqool_artist import sqool_artist_bp
 
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(qaboard_bp, url_prefix="/admin/qaboard")
-    # app.register_blueprint(api_blueprint, url_prefix="/api")
+    app.register_blueprint(sqool_artist_bp, url_prefix="/api/sqool/artist")
 
     @app.before_request
     def require_login():
@@ -34,6 +33,8 @@ def create_app():
             "admin.admin_register",
             "admin.admin_logout",
             "static",
+            "sqool_artist.execute_query",
+            "sqool_artist.reset_database",
         ]
         if "admin_user" not in session and request.endpoint not in allowed_routes:
             return redirect(url_for("admin.admin_login"))
