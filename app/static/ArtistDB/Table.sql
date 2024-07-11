@@ -21,7 +21,7 @@ CREATE TABLE `Album` (
   `album_name` text,
   `release_date` date,
   `album_type` text,
-  `sales_volume` float,
+  `sales_volume` integer,
   `artist_id` integer,
   FOREIGN KEY (artist_id) REFERENCES Artist(id)
 );
