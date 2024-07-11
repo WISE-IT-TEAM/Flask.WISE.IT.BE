@@ -155,42 +155,42 @@ SELECT Member.member_name, Artist.group_name
 FROM Member 
 INNER JOIN Artist ON Member.artist_id = Artist.id;
 
--- Multiple joins
--- 각 아티스트의 멤버와 앨범 정보를 함께 조회합니다.
-SELECT Artist.group_name, Member.member_name, Album.album_name
-FROM Artist 
-INNER JOIN Member ON Artist.id = Member.artist_id
-INNER JOIN Album ON Artist.id = Album.artist_id;
+-- -- Multiple joins
+-- -- 각 아티스트의 멤버와 앨범 정보를 함께 조회합니다.
+-- SELECT Artist.group_name, Member.member_name, Album.album_name
+-- FROM Artist 
+-- INNER JOIN Member ON Artist.id = Member.artist_id
+-- INNER JOIN Album ON Artist.id = Album.artist_id;
 
--- 각 앨범의 아티스트와 멤버 정보를 함께 조회합니다.
-SELECT Album.album_name, Artist.group_name, Member.member_name
-FROM Album
-INNER JOIN Artist ON Album.artist_id = Artist.id
-INNER JOIN Member ON Artist.id = Member.artist_id;
+-- -- 각 앨범의 아티스트와 멤버 정보를 함께 조회합니다.
+-- SELECT Album.album_name, Artist.group_name, Member.member_name
+-- FROM Album
+-- INNER JOIN Artist ON Album.artist_id = Artist.id
+-- INNER JOIN Member ON Artist.id = Member.artist_id;
 
 -- Joins with WHERE
--- 50만장 이상 판매된 앨범과 해당 아티스트 정보를 조회합니다.
+-- 200만장 이상 판매된 앨범과 해당 아티스트 정보를 조회합니다.
 SELECT Artist.group_name, Album.album_name, Album.sales_volume
 FROM Artist
 INNER JOIN Album ON Artist.id = Album.artist_id
-WHERE Album.sales_volume > 500000;
+WHERE Album.sales_volume > 2000000;
 
--- 한국 출신 멤버가 있는 그룹의 정보를 조회합니다.
+-- 중국 출신 멤버가 있는 그룹의 정보를 조회합니다. *이중국적의 경우 나오지 않음. LIKE 페이지를 참조하기
 SELECT DISTINCT Artist.group_name, Artist.agency
 FROM Artist
 INNER JOIN Member ON Artist.id = Member.artist_id
-WHERE Member.country = '한국';
+WHERE Member.country = '중국';
 
--- Left joins
--- 모든 아티스트와 그들의 앨범 정보를 조회합니다. 앨범이 없는 아티스트도 포함됩니다.
-SELECT Artist.group_name, Album.album_name
-FROM Artist
-LEFT JOIN Album ON Artist.id = Album.artist_id;
+-- -- Left joins
+-- -- 모든 아티스트와 그들의 앨범 정보를 조회합니다. 앨범이 없는 아티스트도 포함됩니다.
+-- SELECT Artist.group_name, Album.album_name
+-- FROM Artist
+-- LEFT JOIN Album ON Artist.id = Album.artist_id;
 
--- 모든 멤버와 그들의 소속 그룹 정보를 조회합니다. 그룹에 속하지 않은 멤버도 포함됩니다.
-SELECT Member.member_name, Artist.group_name
-FROM Member
-LEFT JOIN Artist ON Member.artist_id = Artist.id;
+-- -- 모든 멤버와 그들의 소속 그룹 정보를 조회합니다. 그룹에 속하지 않은 멤버도 포함됩니다.
+-- SELECT Member.member_name, Artist.group_name
+-- FROM Member
+-- LEFT JOIN Artist ON Member.artist_id = Artist.id;
 
 -- Table alias
 -- 테이블 별칭을 사용하여 각 아티스트의 앨범 정보를 조회합니다.
@@ -215,16 +215,16 @@ SELECT
     MIN(sales_volume) AS least_selling
 FROM Album;
 
--- Self joins
--- 같은 소속사의 다른 그룹 쌍을 조회합니다.
-SELECT a1.group_name AS group1, a2.group_name AS group2, a1.agency
-FROM Artist a1
-JOIN Artist a2 ON a1.agency = a2.agency AND a1.id < a2.id;
+-- -- Self joins
+-- -- 같은 소속사의 다른 그룹 쌍을 조회합니다.
+-- SELECT a1.group_name AS group1, a2.group_name AS group2, a1.agency
+-- FROM Artist a1
+-- JOIN Artist a2 ON a1.agency = a2.agency AND a1.id < a2.id;
 
--- 같은 국가 출신의 다른 멤버 쌍을 조회합니다.
-SELECT m1.member_name AS member1, m2.member_name AS member2, m1.country
-FROM Member m1
-JOIN Member m2 ON m1.country = m2.country AND m1.id < m2.id;
+-- -- 같은 국가 출신의 다른 멤버 쌍을 조회합니다.
+-- SELECT m1.member_name AS member1, m2.member_name AS member2, m1.country
+-- FROM Member m1
+-- JOIN Member m2 ON m1.country = m2.country AND m1.id < m2.id;
 
 -- LIKE
 -- 포지션에 '보컬'이 있는 멤버를 조회합니다.
@@ -239,27 +239,28 @@ SELECT
     album_name,
     sales_volume,
     CASE 
-        WHEN sales_volume > 1000000 THEN 'Platinum'
-        WHEN sales_volume > 500000 THEN 'Gold'
-        ELSE 'Silver'
+        WHEN sales_volume > 1000000 THEN '플래티넘'
+        WHEN sales_volume > 500000 THEN '골드'
+        ELSE '실버'
     END AS sales_grade
 FROM Album;
 
--- 멤버의 출생 연도에 따라 세대를 구분합니다.
+-- 멤버의 출생 연도에 따라 세대를 구분합니다. (mz,alpah세대 기준 적어주기)
 SELECT 
     member_name,
     birthday,
     CASE 
-        WHEN YEAR(birthday) < 1990 THEN '1st Gen'
-        WHEN YEAR(birthday) < 2000 THEN '2nd Gen'
-        ELSE '3rd Gen'
+        WHEN strftime('%Y', birthday) >= '2013' THEN 'Alpha세대'
+        WHEN strftime('%Y', birthday) >= '1997' AND strftime('%Y', birthday) <= '2012' THEN 'Z세대'
+        WHEN strftime('%Y', birthday) >= '1965' AND strftime('%Y', birthday) <= '1996' THEN 'M세대'
+        ELSE '기타'
     END AS generation
 FROM Member;
 
 -- SUBSTR 
 -- 아티스트 그룹 이름의 첫 3글자를 추출합니다.
-SELECT group_name, SUBSTR(group_name, 1, 3) AS group_initial
-FROM Artist;
+SELECT member_name, SUBSTR(position, 1, 2) AS position_short
+FROM Member;
 
 -- 앨범 발매 연도만 추출합니다.
 SELECT album_name, SUBSTR(release_date, 1, 4) AS release_year
