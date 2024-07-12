@@ -16,7 +16,7 @@ def get_db():
         for sql_file in SQL_FILES:
             sql_path = os.path.join(SQL_FOLDER, sql_file)
             if os.path.exists(sql_path):
-                with open(sql_path, "r") as file:
+                with open(sql_path, "r", encoding="UTF-8") as file:
                     db.executescript(file.read())
             else:
                 print(f"오류: {sql_file} 파일이 존재하지 않습니다.")
