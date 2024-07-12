@@ -81,8 +81,9 @@ def reset_database():
     return jsonify({"status": "데이터베이스가 초기화 되었습니다."}), 200
 
 
-# @sqool_artist_bp.teardown_app_request
-# def teardown_db(exception):
-#     db = g.pop("db", None)
-#     if db is not None:
-#         db.close()
+@sqool_artist_bp.teardown_app_request
+def teardown_db(exception):
+    client_id = session.get('client_id')
+
+    if client_id in db_connections:
+        del db_connections[client_id]
