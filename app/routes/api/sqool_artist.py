@@ -55,6 +55,32 @@ def execute_query_with_rollback(query):
         cursor.close()
 
 
+@sqool_artist_bp.route("/schema", methods=["GET"])
+def get_schema():
+    db = get_db()
+    cursor = db.cursor()
+
+    # 모든 테이블 가져오기
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = [table[0] for table in cursor.fetchall()]
+
+    schema = {}
+    for table in tables:
+        # 각 테이블의 컬럼 정보 가져오기
+        cursor.execute(f"PRAGMA table_info({table});")
+        columns = cursor.fetchall()
+        schema[table] = [
+            {
+                "Columns": column[1],
+                "Type": column[2],
+            }
+            for column in columns
+        ]
+
+    cursor.close()
+    return jsonify(schema)
+
+
 @sqool_artist_bp.route("/query", methods=["POST"])
 def execute_query():
     data = request.json

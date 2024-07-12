@@ -48,6 +48,7 @@ def create_app():
             "common_api.ping",
             "qaboard_api.ping",
             "user_api.ping",
+            "sqool_artist.get_schema",
             "sqool_artist.start_query",
             "sqool_artist.execute_query",
             "sqool_artist.reset_database",
