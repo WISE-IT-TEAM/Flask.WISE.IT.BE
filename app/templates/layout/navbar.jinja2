@@ -49,12 +49,27 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <a class="nav-link {% if request.path.startswith('/admin/api_docs') %}active{% endif %} dropdown-toggle"
+                        href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         API Docs
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">QABoard</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/user' %}active{% endif %}"
+                                href="{{ url_for('api_docs.api_docs_user') }}">User</a></li>
+                        <div class="dropdown-divider"></div>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/qaboard' %}active{% endif %}"
+                                href="{{ url_for('api_docs.api_docs_qaboard') }}">QABoard</a></li>
+                        <div class="dropdown-divider"></div>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/sqool/artist' %}active{% endif %}"
+                                href="{{ url_for('api_docs.api_docs_sqool_artist') }}">SQooL:
+                                Artist</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/sqool/movie' %}active{% endif %}"
+                                href="{{ url_for('api_docs.api_docs_sqool_movie') }}">SQooL:
+                                Movie</a>
+                        </li>
+                        <div class="dropdown-divider"></div>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/common' %}active{% endif %}"
+                                href="{{ url_for('api_docs.api_docs_common') }}">Common</a></li>
                     </ul>
                 </li>
             </ul>
