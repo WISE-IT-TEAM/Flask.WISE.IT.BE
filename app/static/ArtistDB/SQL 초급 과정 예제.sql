@@ -1,123 +1,140 @@
--- SELECT *
+-- ? SELECT *
 -- 모든 아티스트의 정보를 조회합니다.
 SELECT * FROM Artist;
 
 -- 모든 앨범의 정보를 조회합니다.
 SELECT * FROM Album;
 
--- SELECT specific columns
+
+-- ? SELECT specific columns
 -- 아티스트의 그룹 이름과 소속사만 조회합니다.
 SELECT group_name, agency FROM Artist;
 
 -- 멤버의 이름과 포지션만 조회합니다.
 SELECT member_name, position FROM Member;
 
--- WHERE ... Equals
+
+-- ? WHERE ... Equals
 -- 'SM' 소속 아티스트를 조회합니다.
 SELECT * FROM Artist WHERE agency = 'SM';
 
 -- '메인보컬' 포지션의 멤버를 조회합니다.
 SELECT * FROM Member WHERE position = '메인보컬';
 
--- WHERE ... Greater than
+
+-- ? WHERE ... Greater than
 -- 판매량이 100만장을 넘는 앨범을 조회합니다.
 SELECT * FROM Album WHERE sales_volume > 1000000;
 
 -- 2000년 이후 출생한 멤버를 조회합니다.
 SELECT * FROM Member WHERE birthday > '2000-01-01';
 
--- WHERE ... Greater than or equal
+
+-- ? WHERE ... Greater than or equal
 -- 2020년 1월 1일 이후 데뷔한 아티스트를 조회합니다.
 SELECT * FROM Artist WHERE debut_date >= '2020-01-01';
 
 -- 판매량이 50만장 이상인 앨범을 조회합니다.
 SELECT * FROM Album WHERE sales_volume >= 500000;
 
--- AND
+
+-- ? AND
 -- 한국 출신의 남성 멤버를 조회합니다.
 SELECT * FROM Member WHERE gender = '남' AND country = '한국';
 
 -- 2022년에 발매된 정규앨범을 조회합니다.
 SELECT * FROM Album WHERE album_type = '정규 앨범' AND YEAR(release_date) = 2022;
 
--- OR
+
+-- ? OR
 -- SM 엔터테인먼트나 JYP 엔터테인먼트 소속 아티스트를 조회합니다.
 SELECT * FROM Artist WHERE agency = 'SM 엔터테인먼트' OR agency = 'JYP 엔터테인먼트';
 
 -- 보컬리스트나 래퍼 포지션의 멤버를 조회합니다.
 SELECT * FROM Member WHERE position = '메인보컬' OR position = '메인래퍼';
 
--- IN
+
+-- ? IN
 -- 정규, 미니, 싱글 중 하나인 앨범 타입을 조회합니다.
 SELECT * FROM Album WHERE album_type IN ('정규', '미니', '싱글');
 
 -- 한국, 일본, 중국 출신 멤버를 조회합니다.
 SELECT * FROM Member WHERE country IN ('한국', '미국', '중국');
 
--- DISTINCT
+
+-- ? DISTINCT
 -- 중복을 제거한 소속사 목록을 조회합니다.
 SELECT DISTINCT agency FROM Artist;
 
 -- 중복을 제거한 앨범 타입 목록을 조회합니다.
 SELECT DISTINCT album_type FROM Album;
 
--- ORDER BY
+
+-- ? ORDER BY
 -- 앨범을 발매일 기준 내림차순으로 정렬하여 조회합니다.
 SELECT * FROM Album ORDER BY release_date DESC;
 
 -- 멤버를 생일 기준 오름차순으로 정렬하여 조회합니다.
 SELECT * FROM Member ORDER BY birthday ASC;
 
--- LIMIT # of returned rows
+
+-- ? LIMIT # of returned rows
 -- 가장 최근에 데뷔한 5개 아티스트를 조회합니다.
 SELECT * FROM Artist ORDER BY debut_date DESC LIMIT 5;
 
 -- 판매량 기준 상위 10개 앨범을 조회합니다.
 SELECT * FROM Album ORDER BY sales_volume DESC LIMIT 10;
 
--- COUNT(*)
+
+-- ? COUNT(*)
 -- 전체 멤버 수를 조회합니다.
 SELECT COUNT(*) FROM Member;
 
 -- 전체 앨범 수를 조회합니다.
 SELECT COUNT(*) FROM Album;
 
--- COUNT(*) ... WHERE
+
+-- ? COUNT(*) ... WHERE
 -- 정규앨범의 개수를 조회합니다.
 SELECT COUNT(*) FROM Album WHERE album_type = 'Full';
 
 -- 여성 멤버의 수를 조회합니다.
 SELECT COUNT(*) FROM Member WHERE gender = 'Female';
 
--- SUM
+
+-- ? SUM
 -- 모든 앨범의 총 판매량을 조회합니다.
 SELECT SUM(sales_volume) FROM Album;
 
 -- 특정 아티스트(ID:1)의 총 앨범 판매량을 조회합니다.
 SELECT SUM(sales_volume) FROM Album WHERE artist_id = 1;
 
--- AVG
+
+-- ? AVG
 -- 전체 앨범의 평균 판매량을 조회합니다.
 SELECT AVG(sales_volume) FROM Album;
 
 -- 정규앨범의 평균 판매량을 조회합니다.
 SELECT AVG(sales_volume) FROM Album WHERE album_type = 'Full';
 
--- MAX and MIN
+
+-- ? MAX and MIN
 -- 가장 많이 팔린 앨범과 가장 적게 팔린 앨범의 판매량을 조회합니다.
 SELECT MAX(sales_volume), MIN(sales_volume) FROM Album;
 
 -- 가장 나이가 많은 멤버와 가장 어린 멤버의 생일을 조회합니다.
 SELECT MAX(birthday), MIN(birthday) FROM Member;
 
--- GROUP BY
+
+-- ? GROUP BY
 -- 아티스트별 앨범 수를 조회합니다.
 SELECT artist_id, COUNT(*) FROM Album GROUP BY artist_id;
 
 -- 국가별 멤버 수를 조회합니다.
 SELECT country, COUNT(*) FROM Member GROUP BY country;
 
--- Nested queries
+
+-- ? Nested queries
 -- 100만장 이상 판매된 앨범이 있는 아티스트를 조회합니다.
 SELECT * FROM Artist WHERE id IN (SELECT artist_id FROM Album WHERE sales_volume > 1000000);
 
@@ -130,21 +147,24 @@ SELECT * FROM Artist WHERE id = (
     LIMIT 1
 );
 
--- NULL
+
+-- ? NULL
 -- 포지션이 지정되지 않은 멤버를 조회합니다.
 SELECT * FROM Member WHERE position IS NULL;
 
 -- 판매량 데이터가 없는 앨범을 조회합니다.
 SELECT * FROM Album WHERE sales_volume IS NULL;
 
--- Date
+
+-- ? Date
 -- 2022년에 데뷔한 아티스트를 조회합니다.
 SELECT * FROM Artist WHERE strftime('%Y', debut_date) = '2022';
 
 -- 2023년 상반기(1월~6월)에 발매된 앨범을 조회합니다.
 SELECT * FROM Album WHERE release_date BETWEEN '2023-01-01' AND '2023-06-30';
 
--- Inner joins
+
+-- ? Inner joins
 -- 각 아티스트의 앨범 목록을 조회합니다.
 SELECT Artist.group_name, Album.album_name 
 FROM Artist 
@@ -155,7 +175,8 @@ SELECT Member.member_name, Artist.group_name
 FROM Member 
 INNER JOIN Artist ON Member.artist_id = Artist.id;
 
--- -- Multiple joins
+
+-- -- ? Multiple joins
 -- -- 각 아티스트의 멤버와 앨범 정보를 함께 조회합니다.
 -- SELECT Artist.group_name, Member.member_name, Album.album_name
 -- FROM Artist 
@@ -168,7 +189,8 @@ INNER JOIN Artist ON Member.artist_id = Artist.id;
 -- INNER JOIN Artist ON Album.artist_id = Artist.id
 -- INNER JOIN Member ON Artist.id = Member.artist_id;
 
--- Joins with WHERE
+
+-- ? Joins with WHERE
 -- 200만장 이상 판매된 앨범과 해당 아티스트 정보를 조회합니다.
 SELECT Artist.group_name, Album.album_name, Album.sales_volume
 FROM Artist
@@ -181,7 +203,8 @@ FROM Artist
 INNER JOIN Member ON Artist.id = Member.artist_id
 WHERE Member.country = '중국';
 
--- -- Left joins
+
+-- -- ? Left joins
 -- -- 모든 아티스트와 그들의 앨범 정보를 조회합니다. 앨범이 없는 아티스트도 포함됩니다.
 -- SELECT Artist.group_name, Album.album_name
 -- FROM Artist
@@ -192,7 +215,8 @@ WHERE Member.country = '중국';
 -- FROM Member
 -- LEFT JOIN Artist ON Member.artist_id = Artist.id;
 
--- Table alias
+
+-- ? Table alias
 -- 테이블 별칭을 사용하여 각 아티스트의 앨범 정보를 조회합니다.
 SELECT a.group_name, al.album_name
 FROM Artist a
@@ -203,7 +227,8 @@ SELECT m.member_name, a.group_name, a.debut_date
 FROM Member m
 INNER JOIN Artist a ON m.artist_id = a.id;
 
--- Column alias
+
+-- ? Column alias
 -- 컬럼 별칭을 사용하여 아티스트 정보를 조회합니다.
 SELECT group_name AS "그룹명", agency AS "소속사", debut_date AS "데뷔일"
 FROM Artist;
@@ -215,7 +240,8 @@ SELECT
     MIN(sales_volume) AS least_selling
 FROM Album;
 
--- -- Self joins
+
+-- -- ? Self joins
 -- -- 같은 소속사의 다른 그룹 쌍을 조회합니다.
 -- SELECT a1.group_name AS group1, a2.group_name AS group2, a1.agency
 -- FROM Artist a1
@@ -226,14 +252,16 @@ FROM Album;
 -- FROM Member m1
 -- JOIN Member m2 ON m1.country = m2.country AND m1.id < m2.id;
 
--- LIKE
+
+-- ? LIKE
 -- 포지션에 '보컬'이 있는 멤버를 조회합니다.
 SELECT * FROM Member WHERE position LIKE '%보컬%';
 
 -- 앨범 이름에 'Love'가 포함된 앨범을 조회합니다.
 SELECT * FROM Album WHERE album_name LIKE '%Love%';
 
--- CASE
+
+-- ? CASE
 -- 앨범 판매량에 따라 등급을 매깁니다.
 SELECT 
     album_name,
@@ -257,7 +285,8 @@ SELECT
     END AS generation
 FROM Member;
 
--- SUBSTR 
+
+-- ? SUBSTR 
 -- 아티스트 그룹 이름의 첫 3글자를 추출합니다.
 SELECT member_name, SUBSTR(position, 1, 2) AS position_short
 FROM Member;
@@ -266,7 +295,8 @@ FROM Member;
 SELECT album_name, SUBSTR(release_date, 1, 4) AS release_year
 FROM Album;
 
--- -- COALESCE
+
+-- -- ? COALESCE
 -- -- 판매량이 NULL인 경우 0으로 대체하여 조회합니다.
 -- SELECT album_name, COALESCE(sales_volume, 0) AS "Confirmed Sales"
 -- FROM Album;

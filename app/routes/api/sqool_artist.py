@@ -1,13 +1,12 @@
 from flask import Blueprint, request, jsonify, g, session
 import sqlite3
 import os
-import re
 from nanoid import generate
 
 sqool_artist_bp = Blueprint("sqool_artist", __name__)
 
+# * ArtistDB 폴더 경로 및 SQL 파일 리스트
 SQL_FOLDER = os.path.join(os.path.dirname(__file__), "../../static/ArtistDB")
-
 SQL_FILES = ["Table.sql", "Artist.sql", "Member.sql", "Album.sql"]
 
 
@@ -20,7 +19,7 @@ def get_db():
                 with open(sql_path, "r") as file:
                     db.executescript(file.read())
             else:
-                print(f"경고: {sql_file} 파일이 존재하지 않습니다.")
+                print(f"오류: {sql_file} 파일이 존재하지 않습니다.")
         g.db = db
     return g.db
 
@@ -35,48 +34,7 @@ def reset_db():
             with open(sql_path, "r") as file:
                 g.db.executescript(file.read())
         else:
-            print(f"경고: {sql_file} 파일이 존재하지 않습니다.")
-
-
-def is_safe_query(query):
-    allowed_keywords = [
-        "SELECT",
-        "FROM",
-        "WHERE",
-        "AND",
-        "OR",
-        "IN",
-        "LIKE",
-        "BETWEEN",
-        "ORDER BY",
-        "GROUP BY",
-        "HAVING",
-        "LIMIT",
-        "JOIN",
-        "LEFT JOIN",
-        "RIGHT JOIN",
-        "INNER JOIN",
-        "OUTER JOIN",
-        "ON",
-        "AS",
-        "DISTINCT",
-        "INSERT",
-        "INTO",
-        "VALUES",
-        "UPDATE",
-        "SET",
-        "DELETE",
-    ]
-
-    query_upper = query.upper()
-    for keyword in allowed_keywords:
-        query_upper = query_upper.replace(keyword, "")
-
-    query_upper = re.sub(r"[A-Z_][A-Z0-9_]*", "", query_upper)
-    query_upper = re.sub(r"'[^']*'", "", query_upper)
-    query_upper = re.sub(r"\d+", "", query_upper)
-
-    return len(query_upper.strip()) == 0
+            print(f"오류: {sql_file} 파일이 존재하지 않습니다.")
 
 
 def execute_query_with_rollback(db, query, params=None):
@@ -110,7 +68,7 @@ def execute_query_with_rollback(db, query, params=None):
 @sqool_artist_bp.before_request
 def before_request():
     if "client_id" not in session:
-        session["client_id"] = str(generate())
+        session["client_id"] = str(generate())  # * nanoid로 client_id 생성
     g.client_id = session["client_id"]
     g.db = get_db()
 
@@ -123,33 +81,23 @@ def teardown_request(exception):
         db.close()
 
 
-@sqool_artist_bp.route("/execute", methods=["POST"])
+@sqool_artist_bp.route("/query", methods=["POST"])
 def execute_query():
     data = request.json
     query = data.get("query")
     params = data.get("params", [])
 
     if not query:
-        return jsonify({"error": "No query provided."}), 400
-
-    if not is_safe_query(query):
-        return (
-            jsonify(
-                {
-                    "error": "Unsafe query detected. Only allowed SQL operations are permitted."
-                }
-            ),
-            400,
-        )
+        return jsonify({"status": "쿼리값이 없습니다."}), 400
 
     try:
         result = execute_query_with_rollback(g.db, query, params)
         return jsonify(result)
     except sqlite3.Error as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"status": f"잘못된 요청입니다: {str(e)}"}), 400
 
 
 @sqool_artist_bp.route("/reset", methods=["POST"])
 def reset_database():
     reset_db()
-    return jsonify({"status": "Database reset to initial state."})
+    return jsonify({"status": "데이터베이스가 초기화 되었습니다."}), 200

@@ -25,7 +25,12 @@ def login_required(f):
     return wrap
 
 
-@admin_bp.route("/", methods=["GET", "POST"])
+@admin_bp.route("/")
+def admin_index():
+    return redirect(url_for("admin.admin_login"))
+
+
+@admin_bp.route("/login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
         username = request.form.get("username")
