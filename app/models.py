@@ -11,14 +11,13 @@ class AdminUser(db.Model):
     def __init__(self, username, password):
         self.id = generate()
         self.username = username
-        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
+        self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
 
 
 class Question(db.Model):
     id = db.Column(db.String(40), primary_key=True)
     nickname = db.Column(db.String(30), nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    thumbnail = db.Column(db.String(300), nullable=True)
     title = db.Column(db.String(200), nullable=False)
     file_path = db.Column(db.String(300), nullable=True)
     content = db.Column(db.Text, nullable=False)
@@ -32,7 +31,7 @@ class Question(db.Model):
 
     def __init__(self, password):
         self.id = generate()
-        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
+        self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
 
 
 class Answer(db.Model):
@@ -51,4 +50,4 @@ class Answer(db.Model):
 
     def __init__(self, password):
         self.id = generate()
-        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
+        self.password = bcrypt.generate_password_hash(password).decode("UTF-8")

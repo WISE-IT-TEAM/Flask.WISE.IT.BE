@@ -29,14 +29,12 @@ def admin_qaboard_create():
     if request.method == "POST":
         nickname = request.form.get("nickname")
         password = request.form.get("password")
-        thumbnail = request.form.get("thumbnail")
         title = request.form.get("title")
         content = request.form.get("content")
         tags = request.form.get("tags")
 
         question = Question(password)
         question.nickname = nickname
-        question.thumbnail = thumbnail
         question.title = title
         question.content = content
         question.tags = tags

@@ -9,15 +9,16 @@ sqool_artist_bp = Blueprint("sqool_artist", __name__)
 SQL_FOLDER = os.path.join(os.path.dirname(__file__), "../../static/ArtistDB")
 SQL_FILES = ["Table.sql", "Artist.sql", "Member.sql", "Album.sql"]
 
-# 세션별 데이터베이스 연결을 저장할 딕셔너리
+# * 세션별 데이터베이스 연결을 저장할 딕셔너리
 db_connections = {}
 
+
 def get_db():
-    client_id = session.get('client_id')
+    client_id = session.get("client_id")
     if not client_id:
         client_id = str(generate())
         session["client_id"] = client_id
-    
+
     if client_id not in db_connections:
         db = sqlite3.connect(":memory:", check_same_thread=False)
         for sql_file in SQL_FILES:
@@ -30,7 +31,7 @@ def get_db():
         db_connections[client_id] = db
 
     return db_connections[client_id]
-    
+
 
 def execute_query_with_rollback(query):
     db = get_db()
@@ -45,7 +46,7 @@ def execute_query_with_rollback(query):
             else []
         )
         db.commit()
-        
+
         return {"result": result, "columns": columns}
     except sqlite3.Error as e:
         db.rollback()
@@ -71,11 +72,11 @@ def execute_query():
 
 @sqool_artist_bp.route("/reset", methods=["POST"])
 def reset_database():
-    client_id = session.get('client_id')
+    client_id = session.get("client_id")
 
     if client_id in db_connections:
         del db_connections[client_id]
-    
+
     get_db()
 
     return jsonify({"status": "데이터베이스가 초기화 되었습니다."}), 200
@@ -83,7 +84,7 @@ def reset_database():
 
 @sqool_artist_bp.teardown_app_request
 def teardown_db(exception):
-    client_id = session.get('client_id')
+    client_id = session.get("client_id")
 
     if client_id in db_connections:
         del db_connections[client_id]
