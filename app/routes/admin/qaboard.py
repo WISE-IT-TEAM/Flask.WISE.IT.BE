@@ -15,11 +15,41 @@ qaboard_bp = Blueprint("qaboard", __name__)
 
 
 @login_required
-@qaboard_bp.route("/list", methods=["GET"])
+@qaboard_bp.route("/", methods=["GET"])
 def admin_qaboard_list():
-    board_list = Question.query.all()
+    board_list = Question.query.order_by(Question.created_at.desc()).all()
     return render_template(
         "admin/qaboard/qaboard_list.jinja2", title="QABoard List", board_list=board_list
+    )
+
+
+@login_required
+@qaboard_bp.route("/<question_id>", methods=["GET", "POST"])
+def admin_qaboard_detail(question_id):
+    question = Question.query.get(question_id)
+    answers = Answer.query.filter_by(question_id=question_id).all()
+
+    if request.method == "POST":
+        password = request.form.get("password")
+        content = request.form.get("content")
+
+        answer = Answer(password)
+        answer.content = content
+        answer.question_id = question_id
+
+        db.session.add(answer)
+        db.session.commit()
+
+        flash("답변이 등록되었습니다.", "success")
+        return redirect(
+            url_for("qaboard.admin_qaboard_detail", question_id=question_id)
+        )
+
+    return render_template(
+        "admin/qaboard/qaboard_detail.jinja2",
+        title="QABoard Detail",
+        question=question,
+        answers=answers,
     )
 
 
@@ -43,7 +73,7 @@ def admin_qaboard_create():
         db.session.commit()
 
         flash("게시글이 등록되었습니다.", "success")
-        return redirect(url_for("admin.admin_board_list"))
+        return redirect(url_for("qaboard.admin_qaboard_list"))
 
     return render_template(
         "admin/qaboard/qaboard_create.jinja2", title="QABoard Create"

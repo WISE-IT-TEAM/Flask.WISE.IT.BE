@@ -1,44 +1,93 @@
 {% extends 'layout/base.jinja2' %}
 
 {% block style %}
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<style>
+    .toastui-editor-contents {
+        font-size: 1rem;
+    }
+
+    .toastui-editor-contents h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-top: 10px;
+    }
+</style>
 {% endblock style %}
 
 
 
 {% block content %}
 <h1>QABoard Create</h1>
+<hr>
 <form method="POST">
-    <div class="mb-3">
-        <label for="nickname" class="form-label">Nickname</label>
-        <input type="text" class="form-control is-invalid" id="nickname" name="nickname" required>
-        <div class="invalid-feedback">닉네임을 입력해주세요.</div>
+    <div class="row mb-3">
+        <div class="col">
+            <label for="nickname" class="form-label">닉네임</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" autocomplete="nickname" required>
+        </div>
+        <div class="col">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" class="form-control" id="password" name="password" autocomplete="off" required>
+        </div>
     </div>
     <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control is-invalid" id="password" name="password" required>
-        <div class="invalid-feedback">비밀번호를 입력해주세요.</div>
-    </div>
-    <div class="mb-3">
-        <label for="file_path" class="form-label">File_path</label>
+        <label for="file_path" class="form-label">첨부파일</label>
         <input type="file" class="form-control" id="file_path" name="file_path">
     </div>
     <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
+        <label for="title" class="form-label">제목</label>
         <input type="text" class="form-control" id="title" name="title" required>
     </div>
     <div class="mb-3">
-        <label for="content" class="form-label">Content</label>
-        <textarea class="form-control" id="content" name="content" rows="8" required></textarea>
+        <label for="content" class="form-label">내용</label>
+        <div id="content" name="content"></div>
     </div>
     <div class="mb-3">
-        <label for="tags" class="form-label">Tags</label>
+        <label for="tags" class="form-label">태그(쉼표(,)로 구분)</label>
         <input type="text" class="form-control" id="tags" name="tags" required>
     </div>
-    <button type="submit" class="btn btn-primary">질문 등록</button>
+    <hr>
+    <div class="d-grid gap-3">
+        <button type="submit" class="btn btn-primary">질문 등록</button>
+    </div>
 </form>
 {% endblock content %}
 
 
 
 {% block script %}
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.js"></script>
+<script>
+    const editor = new toastui.Editor({
+        el: document.querySelector('#content'),
+        language: 'ko-KR',
+        height: '500px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        usageStatistics: false,
+        hideModeSwitch: false,
+    });
+
+    document.querySelector('form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // 에디터 내용 가져오기
+        const editorContent = editor.getHTML();
+
+        // hidden input 생성 및 폼에 추가
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'content';
+        hiddenInput.value = editorContent;
+        this.appendChild(hiddenInput);
+
+        // 폼 제출
+        this.submit();
+    });
+</script>
 {% endblock script %}

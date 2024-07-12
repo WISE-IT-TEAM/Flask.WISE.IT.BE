@@ -1,0 +1,59 @@
+{% extends 'layout/base.jinja2' %}
+
+{% block style %}
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<style>
+    .toastui-editor-contents {
+        font-size: 1rem;
+    }
+
+    .toastui-editor-contents h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-top: 10px;
+    }
+</style>
+{% endblock style %}
+
+
+{% block content %}
+
+<h1>{{ question.title }}</h1>
+<h5 class="text-muted">(ID: {{ question.id }})</h5>
+
+<hr>
+
+<div class="card">
+    <div class="card-body">
+        <div id="content"></div>
+    </div>
+</div>
+
+
+{{ question.created_at }}
+{{ question.updated_at }}
+{{ question.deleted_at }}
+{{ question.status }}
+{{ question.nickname }}
+{{ question.tags }}
+{{ question.like }}
+{{ question.file_path }}
+
+<hr>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script>
+    const viewer = new toastui.Editor.factory({
+        el: document.querySelector('#content'),
+        viewer: true,
+        initialValue: `{{ question.content }}`,
+    });
+</script>
+{% endblock script %}

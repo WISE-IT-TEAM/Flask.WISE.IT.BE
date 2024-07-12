@@ -71,8 +71,8 @@ def get_schema():
         columns = cursor.fetchall()
         schema[table] = [
             {
-                "Columns": column[1],
-                "Type": column[2],
+                "Columns": column[1].upper(),
+                "Type": column[2].upper(),
             }
             for column in columns
         ]
