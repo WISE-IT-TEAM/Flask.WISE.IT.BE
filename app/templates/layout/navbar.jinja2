@@ -36,7 +36,8 @@
                         Board
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('qaboard.admin_qaboard_list') }}">QABoard</a></li>
+                        <li><a class="dropdown-item {% if request.path.startswith('/admin/qaboard') %}active{% endif %}"
+                                href="{{ url_for('qaboard.admin_qaboard_list') }}">QABoard</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
