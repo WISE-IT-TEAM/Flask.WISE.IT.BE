@@ -10,6 +10,7 @@ from flask import (
 )
 from app.models import db, Question, Answer
 from .main import login_required
+from ..api.common import allowed_file, upload_file, upload_image, delete_file
 
 qaboard_bp = Blueprint("qaboard", __name__)
 
