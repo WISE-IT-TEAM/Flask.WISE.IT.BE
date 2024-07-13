@@ -71,6 +71,25 @@
         previewStyle: 'vertical',
         usageStatistics: false,
         hideModeSwitch: false,
+        hooks: {
+            addImageBlobHook: function (blob, callback) {
+                const formData = new FormData();
+                formData.append('image', blob);
+
+                fetch('/api/common/upload_image', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                    .then(data => {
+                        callback(data.url, 'alt text');
+                    })
+                    .catch(error => {
+                        console.error("오류: ", error);
+                    });
+
+                return false;
+            }
+        }
     });
 
     document.querySelector('form').addEventListener('submit', function (e) {
