@@ -1,4 +1,5 @@
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
@@ -8,10 +9,14 @@ from .config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
+cors_origins = ["*"]
 
 
 def create_app():
     app = Flask(__name__)
+
+    CORS(app, resources={r"/api/*": {"origins": cors_origins}})
+
     app.config.from_object(Config)
 
     db.init_app(app)
@@ -20,7 +25,7 @@ def create_app():
 
     @app.route("/")
     def index():
-        return render_template("admin/index.jinja2", title="WISE IT API Server")
+        return jsonify({"error": "접근 권한이 없습니다."}), 403
 
     from .routes.admin.main import admin_bp
     from .routes.admin.qaboard import qaboard_bp
