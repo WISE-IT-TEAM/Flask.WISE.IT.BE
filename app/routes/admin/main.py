@@ -44,8 +44,11 @@ def admin_login():
 
         flash("아이디 또는 비밀번호가 올바르지 않습니다.", "danger")
         return redirect(url_for("admin.admin_login"))
-
-    return render_template("admin/login.jinja2", title="Login")
+    elif request.method == "GET":
+        if session.get('admin_user'):
+            return redirect(url_for("admin.admin_dashboard"))
+        else:
+            return render_template("admin/login.jinja2", title="Login")
 
 
 @admin_bp.route("/register", methods=["GET", "POST"])
