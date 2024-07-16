@@ -82,6 +82,45 @@ def upload_image():
     return jsonify({"message": "허용되지 않는 파일 형식입니다."}), 400
 
 
+@common_api_bp.route("/upload_thumbnail", methods=["POST"])
+def upload_thumbnail():
+    UPLOAD_FOLDER = current_app.config["UPLOAD_FOLDER"]
+
+    # 업로드 폴더가 없으면 생성
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
+    # FormData에서 형식이 맞지 않을 경우
+    if "thumbnail" not in request.files:
+        return jsonify({"message": "FormData Key값을 확인해 주세요."}), 400
+
+    # 파일 가져오기
+    file = request.files["thumbnail"]
+
+    # 파일 사이즈 체크
+    if len(file.read()) > MAX_UPLOAD_FILE_SIZE:
+        return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 400
+
+    # 파일이 없을 경우
+    if file.filename == "":
+        return jsonify({"message": "선택된 파일이 없습니다."}), 400
+
+    if not allowed_image(file.filename):
+        return jsonify({"message": "이미지 파일만 업로드 가능합니다."}), 400
+
+    if file and allowed_image(file.filename):
+        filename = secure_filename(file.filename)
+        add_time = datetime.now().strftime("%Y%m%d%H%M%S")
+        new_filename = "thumbnail_" + add_time + "_" + filename
+        file_path = os.path.join(UPLOAD_FOLDER, new_filename)
+        file.save(file_path)
+        return jsonify(
+            {"url": f"{url_for('static', filename='Uploads/' + new_filename )}"}
+        )
+
+    return jsonify({"message": "허용되지 않는 파일 형식입니다."}), 400
+
+
 @common_api_bp.route("/upload_file", methods=["POST"])
 def upload_file():
     UPLOAD_FOLDER = current_app.config["UPLOAD_FOLDER"]

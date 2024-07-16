@@ -56,6 +56,7 @@ def create_app():
             "qaboard_api.ping",
             "common_api.ping",
             "common_api.upload_image",
+            "common_api.upload_thumbnail",
             "common_api.upload_file",
             "common_api.delete_file",
             "sqool_db.create_db",
