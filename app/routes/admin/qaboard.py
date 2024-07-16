@@ -62,13 +62,11 @@ def admin_qaboard_create():
         password = request.form.get("password")
         title = request.form.get("title")
         content = request.form.get("content")
-        tags = request.form.get("tags")
 
         question = Question(password)
         question.nickname = nickname
         question.title = title
         question.content = content
-        question.tags = tags
 
         db.session.add(question)
         db.session.commit()
