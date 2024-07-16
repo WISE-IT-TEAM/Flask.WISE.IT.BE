@@ -21,7 +21,7 @@ class Question(db.Model):
     title = db.Column(db.String(200), nullable=False)
     file_path = db.Column(db.String(300), nullable=True)
     content = db.Column(db.Text, nullable=False)
-    tags = db.Column(db.String(300), nullable=False)
+    category = db.Column(db.String(80), nullable=True)
     like = db.Column(db.Integer, nullable=False, default=0)
     status = db.Column(db.String(10), nullable=False, default="public")
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
