@@ -1,0 +1,111 @@
+{% extends 'layout/base.jinja2' %}
+
+{% block content %}
+<h1>SQL Query API test</h1>
+<hr>
+<div class="row mb-3">
+    <div class="col d-grid">
+        <button type="button" onclick="createArtistDB()" class="btn btn-primary">ArtistDB 생성</button>
+    </div>
+    <div class="col d-grid">
+        <button type="button" onclick="resetArtistDB()" class="btn btn-danger">ArtistDB 초기화</button>
+    </div>
+</div>
+<input class="form-control" id="artistdb_result" type="text" value="Result: " aria-label="Create and Reset Result"
+    disabled readonly>
+<hr>
+<div class="card">
+    <div class="card-header">
+        SQL Query
+    </div>
+    <div class="card-body">
+        <textarea class="form-control" id="sql_query" rows="3">SELECT * FROM Artist;</textarea>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col d-grid">
+                <button type="button" onclick="getArtistDBSchema()" class="btn btn-info">ArtistDB Schema</button>
+            </div>
+            <div class="col d-grid">
+                <button type="button" onclick="executeQuery()" class="btn btn-primary">쿼리 실행</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card mt-3">
+    <div class="card-header">
+        SQL Query Result
+    </div>
+    <div class="card-body">
+        <textarea class="form-control" id="sql_result" rows="15" disabled readonly></textarea>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    async function createArtistDB() {
+        const response = await fetch('/api/sqool', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "dbname": "Artist"
+            })
+        });
+        const result = await response.json();
+        document.getElementById('artistdb_result').value = `Result: ${result.status}`;
+    }
+
+    async function resetArtistDB() {
+        const response = await fetch('/api/sqool', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "dbname": "Artist"
+            })
+        });
+        const result = await response.json();
+        document.getElementById('artistdb_result').value = `Result: ${result.status}`;
+    }
+
+    async function getArtistDBSchema() {
+        const response = await fetch('/api/sqool/schema', {
+            method: 'GET',
+            redirect: 'follow',
+        });
+        const result = await response.json();
+        const resultMember = result.Member.map(row => Object.values(row).join(', ')).join('\n');
+        const resultArtist = result.Artist.map(row => Object.values(row).join(', ')).join('\n');
+        const resultAlbum = result.Album.map(row => Object.values(row).join(', ')).join('\n');
+        const resultArray = `Artist\n${resultArtist}\n\nMember\n${resultMember}\n\nAlbum\n${resultAlbum}`;
+        document.getElementById('sql_result').value = resultArray;
+    }
+
+    async function executeQuery() {
+        const query = document.getElementById('sql_query').value;
+        const response = await fetch('/api/sqool/query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "query": query
+            })
+        });
+        if (!response.ok) {
+            const result = await response.json();
+            document.getElementById('sql_result').value = result.status;
+            return;
+        }
+        const result = await response.json();
+        const resultRow = result.result.map(row => Object.values(row).join(', ')).join('\n');
+        const dash = '-'.repeat(result.columns.length * 10);
+        document.getElementById('sql_result').value = result.columns + '\n' + dash + '\n' + resultRow;
+        // document.getElementById('sql_result').value = JSON.stringify(result.result);
+    }
+</script>
+{% endblock script %}

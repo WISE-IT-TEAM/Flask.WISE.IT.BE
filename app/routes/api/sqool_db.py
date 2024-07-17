@@ -38,7 +38,7 @@ def execute_query_with_rollback(query):
             else []
         )
         db.commit()
-        
+
         return jsonify({"result": result, "columns": columns}), 200
     except sqlite3.Error as e:
         db.rollback()
@@ -47,7 +47,7 @@ def execute_query_with_rollback(query):
         cursor.close()
 
 
-@sqool_db_bp.route('/', methods=["POST"])
+@sqool_db_bp.route("/", methods=["POST"])
 def create_db():
     data = request.json
     dbname = data.get("dbname")
@@ -56,8 +56,7 @@ def create_db():
         return jsonify({"status": "DB 정보가 없습니다."}), 400
     elif dbname not in DB_CONFIGS.keys():
         return jsonify({"status": "DB 이름이 올바르지 않습니다."}), 400
-        
-    
+
     # 이미 DB가 있을 경우 해당 connection을 삭제 후 DB 생성 (RESET)
     sqldb_id = session.get("sqldb_id")
     if sqldb_id:
@@ -68,7 +67,7 @@ def create_db():
 
     sqldb_id = str(generate())
     session["sqldb_id"] = sqldb_id
-    
+
     db = sqlite3.connect(":memory:", check_same_thread=False)
     for sql_file in SQL_FILES:
         sql_path = os.path.join(SQL_FOLDER, sql_file)
@@ -80,7 +79,7 @@ def create_db():
 
     db_connections[sqldb_id] = db
 
-    return jsonify({"status": "사용자 데이터베이스가 정상적으로 생성되었습니다."}), 200    
+    return jsonify({"status": "사용자 데이터베이스가 정상적으로 생성되었습니다."}), 200
 
 
 @sqool_db_bp.route("/schema", methods=["GET"])
@@ -136,7 +135,7 @@ def execute_query():
 
 #     if sqldb_id in db_connections:
 #         del db_connections[sqldb_id]
-    
+
 #     # check = create_db()
 #     # print(check)
 

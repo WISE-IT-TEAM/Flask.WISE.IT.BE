@@ -1,7 +1,7 @@
 <nav class="navbar fixed-top navbar-expand-lg bg-light" data-bs-theme="light">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('admin.admin_dashboard') }}">
-            <img src="{{ url_for('static', filename='WISE_Color.png') }}" alt="Logo" height="24" width="24"
+            <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" height="24" width="24"
                 class="d-inline-block align-text-top" />
             WISE IT: Dashboard
         </a>
@@ -21,56 +21,71 @@
                     <a class="nav-link {% if request.path.startswith('/admin/database') %}active{% endif %}"
                         href="{{ url_for('admin.admin_database') }}">Database</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Testing
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Case: ..</a></li>
-                    </ul>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path.startswith('/admin/article') %}active{% endif %}"
+                        href="#">Article</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link {% if request.path.startswith('/admin/qaboard') %}active{% endif %} dropdown-toggle"
-                        href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Board
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item {% if request.path.startswith('/admin/qaboard') %}active{% endif %}"
-                                href="{{ url_for('qaboard.admin_qaboard_list') }}">QABoard</a></li>
-                    </ul>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path.startswith('/admin/qaboard') %}active{% endif %}"
+                        href="{{ url_for('qaboard.admin_qaboard_list') }}">QABoard</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        SQooL
+                        SQooL DB
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#">Artist Database</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link {% if request.path.startswith('/admin/api_docs') %}active{% endif %} dropdown-toggle"
+                    <a class="nav-link dropdown-toggle {% if request.path.startswith('/admin/api_test') %}active{% endif %}"
                         href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        API Docs
+                        API Testing
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/user' %}active{% endif %}"
-                                href="{{ url_for('api_docs.api_docs_user') }}">User</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_test/sql/query' %}active{% endif %}"
+                                href="{{ url_for('api_test.sql_query') }}">SQL Query</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_test/upload/image' %}active{% endif %}"
+                                href="{{ url_for('api_test.upload_image') }}">Image
+                                Upload</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_test/upload/thumbnail' %}active{% endif %}"
+                                href="{{ url_for('api_test.upload_thumbnail') }}">Thumbnail
+                                Upload</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_test/upload/file' %}active{% endif %}"
+                                href="{{ url_for('api_test.upload_file') }}">File
+                                Upload</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_test/delete/file' %}active{% endif %}"
+                                href="{{ url_for('api_test.delete_file') }}">Delete File</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link {% if request.path.startswith('/admin/api_endpoint') %}active{% endif %} dropdown-toggle"
+                        href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        API Endpoint
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_endpoint/user' %}active{% endif %}"
+                                href="{{ url_for('api_endpoint.api_endpoint_user') }}">User</a></li>
                         <div class="dropdown-divider"></div>
-                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/qaboard' %}active{% endif %}"
-                                href="{{ url_for('api_docs.api_docs_qaboard') }}">QABoard</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_endpoint/article' %}active{% endif %}"
+                                href="#">Article</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_endpoint/qaboard' %}active{% endif %}"
+                                href="{{ url_for('api_endpoint.api_endpoint_qaboard') }}">QABoard</a></li>
                         <div class="dropdown-divider"></div>
-                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/sqool/artist' %}active{% endif %}"
-                                href="{{ url_for('api_docs.api_docs_sqool_artist') }}">SQooL:
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_endpoint/sqool/artist' %}active{% endif %}"
+                                href="{{ url_for('api_endpoint.api_endpoint_sqool_artist') }}">SQooL:
                                 Artist</a></li>
-                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/sqool/movie' %}active{% endif %}"
-                                href="{{ url_for('api_docs.api_docs_sqool_movie') }}">SQooL:
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_endpoint/sqool/movie' %}active{% endif %}"
+                                href="{{ url_for('api_endpoint.api_endpoint_sqool_movie') }}">SQooL:
                                 Movie</a>
                         </li>
                         <div class="dropdown-divider"></div>
-                        <li><a class="dropdown-item {% if request.path == '/admin/api_docs/common' %}active{% endif %}"
-                                href="{{ url_for('api_docs.api_docs_common') }}">Common</a></li>
+                        <li><a class="dropdown-item {% if request.path == '/admin/api_endpoint/common' %}active{% endif %}"
+                                href="{{ url_for('api_endpoint.api_endpoint_common') }}">Common</a></li>
                     </ul>
                 </li>
             </ul>
