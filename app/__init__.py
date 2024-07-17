@@ -63,7 +63,6 @@ def create_app():
             "sqool_db.get_schema",
             "sqool_db.start_query",
             "sqool_db.execute_query",
-            "sqool_db.reset_database",
         ]
         if "admin_user" not in session and request.endpoint not in allowed_routes:
             return redirect(url_for("index"))

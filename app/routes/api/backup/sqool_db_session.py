@@ -15,18 +15,17 @@ DB_CONFIGS = {
 }
 
 
-# 세션별 데이터베이스 연결을 저장할 딕셔너리
-db_connections = {}
+def get_db():
+    db = session.get("db_connection")
+
+    if not db:
+        return jsonify({"status": "먼저 데이터베이스를 생성하세요"}), 400
+        
+    return db
 
 
 def execute_query_with_rollback(query):
-    sqldb_id = session.get("sqldb_id")
-
-    if sqldb_id not in db_connections.keys():
-        return jsonify({"status": "DB가 생성되지 않았습니다."}), 400
-
-    db = db_connections[sqldb_id]
-
+    db = get_db()
     cursor = db.cursor()
     try:
         cursor.execute("BEGIN")
@@ -38,8 +37,10 @@ def execute_query_with_rollback(query):
             else []
         )
         db.commit()
+
+        session["db_connection"] = db
         
-        return jsonify({"result": result, "columns": columns}), 200
+        return {"result": result, "columns": columns}
     except sqlite3.Error as e:
         db.rollback()
         raise e
@@ -52,45 +53,34 @@ def create_db():
     data = request.json
     dbname = data.get("dbname")
 
-    if not dbname:
-        return jsonify({"status": "DB 정보가 없습니다."}), 400
-    elif dbname not in DB_CONFIGS.keys():
-        return jsonify({"status": "DB 이름이 올바르지 않습니다."}), 400
-        
+    if dbname not in DB_CONFIGS:
+        return jsonify({"status": "잘못된 데이터베이스 이름입니다."}), 400
     
-    # 이미 DB가 있을 경우 해당 connection을 삭제 후 DB 생성 (RESET)
-    sqldb_id = session.get("sqldb_id")
-    if sqldb_id:
-        del db_connections[sqldb_id]
-
     SQL_FOLDER = DB_CONFIGS[dbname]["folder"]
     SQL_FILES = DB_CONFIGS[dbname]["files"]
 
-    sqldb_id = str(generate())
-    session["sqldb_id"] = sqldb_id
+    # client_id = session.get('client_id')
+    # if not client_id:
+    #     client_id = str(generate())
+    #     session["client_id"] = client_id
     
-    db = sqlite3.connect(":memory:", check_same_thread=False)
-    for sql_file in SQL_FILES:
-        sql_path = os.path.join(SQL_FOLDER, sql_file)
-        if os.path.exists(sql_path):
-            with open(sql_path, "r", encoding="UTF-8") as file:
-                db.executescript(file.read())
-        else:
-            print(f"오류: {sql_file} 파일이 존재하지 않습니다.")
+    # if client_id not in db_connections:
+    if not session.get("db_connection"):
+        db = sqlite3.connect(":memory:", check_same_thread=False)
+        for sql_file in SQL_FILES:
+            sql_path = os.path.join(SQL_FOLDER, sql_file)
+            if os.path.exists(sql_path):
+                with open(sql_path, "r", encoding="UTF-8") as file:
+                    db.executescript(file.read())
+            else:
+                print(f"오류: {sql_file} 파일이 존재하지 않습니다.")
+        session["db_connection"] = [db]
 
-    db_connections[sqldb_id] = db
-
-    return jsonify({"status": "사용자 데이터베이스가 정상적으로 생성되었습니다."}), 200    
-
+        return jsonify({"status": "사용자 데이터베이스가 정상적으로 생성되었습니다."}), 200
 
 @sqool_db_bp.route("/schema", methods=["GET"])
 def get_schema():
-    sqldb_id = session.get("sqldb_id")
-
-    if sqldb_id not in db_connections.keys():
-        return jsonify({"status": "DB가 생성되지 않았습니다."}), 400
-
-    db = db_connections[sqldb_id]
+    db = get_db()
     cursor = db.cursor()
 
     # 모든 테이블 가져오기
@@ -124,20 +114,20 @@ def execute_query():
 
     try:
         result = execute_query_with_rollback(query)
-        return result
+        return jsonify(result)
     except sqlite3.Error as e:
         return jsonify({"status": f"잘못된 요청입니다: {str(e)}"}), 400
 
 
-# '/reset' 대신 '/'를 통해 무조건 db를 재생성
-# @sqool_db_bp.route("/reset", methods=["POST"])
-# def reset_database():
-#     sqldb_id = session.get('sqldb_id')
-
-#     if sqldb_id in db_connections:
-#         del db_connections[sqldb_id]
+@sqool_db_bp.route("/reset", methods=["POST"])
+def reset_database():
+    session.pop("db_connection")
     
-#     # check = create_db()
-#     # print(check)
+    create_db()
 
-#     return jsonify({"status": "데이터베이스가 초기화 되었습니다."}), 200
+    return jsonify({"status": "데이터베이스가 초기화 되었습니다."}), 200
+
+
+# @sqool_db_bp.teardown_app_request
+# def teardown_db(exception):
+    
