@@ -59,7 +59,7 @@ def create_db():
 
     # 이미 DB가 있을 경우 해당 connection을 삭제 후 DB 생성 (RESET)
     sqldb_id = session.get("sqldb_id")
-    if sqldb_id:
+    if sqldb_id and sqldb_id in db_connections.keys():
         del db_connections[sqldb_id]
 
     SQL_FOLDER = DB_CONFIGS[dbname]["folder"]
