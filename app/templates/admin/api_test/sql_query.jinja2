@@ -55,6 +55,7 @@
             })
         });
         const result = await response.json();
+        console.log(result)
         document.getElementById('artistdb_result').value = `Result: ${result.status}`;
     }
 
@@ -69,6 +70,7 @@
             })
         });
         const result = await response.json();
+        console.log(result)
         document.getElementById('artistdb_result').value = `Result: ${result.status}`;
     }
 
@@ -78,6 +80,7 @@
             redirect: 'follow',
         });
         const result = await response.json();
+        console.log(result)
         const resultMember = result.Member.map(row => Object.values(row).join(', ')).join('\n');
         const resultArtist = result.Artist.map(row => Object.values(row).join(', ')).join('\n');
         const resultAlbum = result.Album.map(row => Object.values(row).join(', ')).join('\n');
@@ -102,6 +105,7 @@
             return;
         }
         const result = await response.json();
+        console.log(result)
         const resultRow = result.result.map(row => Object.values(row).join(', ')).join('\n');
         const dash = '-'.repeat(result.columns.length * 10);
         document.getElementById('sql_result').value = result.columns + '\n' + dash + '\n' + resultRow;
