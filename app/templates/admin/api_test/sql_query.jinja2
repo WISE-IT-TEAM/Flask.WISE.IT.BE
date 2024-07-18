@@ -99,11 +99,11 @@
                 "query": query
             })
         });
-        
+
         const result = await response.json();
         document.getElementById('artistdb_result').value = `Result: ${result.message}`;
         console.log(result)
-        
+
         if (response.ok) {
             // const result = await response.json();
             const resultRow = result.result.map(row => Object.values(row).join(', ')).join('\n');
@@ -112,5 +112,7 @@
             // document.getElementById('sql_result').value = JSON.stringify(result.result);
         }
     }
+
+    window.onload = createArtistDB();
 </script>
 {% endblock script %}
