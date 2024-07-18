@@ -99,17 +99,18 @@
                 "query": query
             })
         });
-        if (!response.ok) {
-            const result = await response.json();
-            document.getElementById('sql_result').value = result.status;
-            return;
-        }
+        
         const result = await response.json();
+        document.getElementById('artistdb_result').value = `Result: ${result.message}`;
         console.log(result)
-        const resultRow = result.result.map(row => Object.values(row).join(', ')).join('\n');
-        const dash = '-'.repeat(result.columns.length * 10);
-        document.getElementById('sql_result').value = result.columns + '\n' + dash + '\n' + resultRow;
-        // document.getElementById('sql_result').value = JSON.stringify(result.result);
+        
+        if (response.ok) {
+            // const result = await response.json();
+            const resultRow = result.result.map(row => Object.values(row).join(', ')).join('\n');
+            const dash = '-'.repeat(result.columns.length * 10);
+            document.getElementById('sql_result').value = result.columns + '\n' + dash + '\n' + resultRow;
+            // document.getElementById('sql_result').value = JSON.stringify(result.result);
+        }
     }
 </script>
 {% endblock script %}
