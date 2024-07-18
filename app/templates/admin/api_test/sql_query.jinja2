@@ -81,9 +81,9 @@
         });
         const result = await response.json();
         console.log(result)
-        const resultMember = result.Member.map(row => Object.values(row).join(', ')).join('\n');
-        const resultArtist = result.Artist.map(row => Object.values(row).join(', ')).join('\n');
-        const resultAlbum = result.Album.map(row => Object.values(row).join(', ')).join('\n');
+        const resultMember = result.schema.Member.map(row => Object.values(row).join(', ')).join('\n');
+        const resultArtist = result.schema.Artist.map(row => Object.values(row).join(', ')).join('\n');
+        const resultAlbum = result.schema.Album.map(row => Object.values(row).join(', ')).join('\n');
         const resultArray = `Artist\n${resultArtist}\n\nMember\n${resultMember}\n\nAlbum\n${resultAlbum}`;
         document.getElementById('sql_result').value = resultArray;
     }

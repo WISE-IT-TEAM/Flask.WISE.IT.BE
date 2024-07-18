@@ -96,7 +96,7 @@ def get_schema():
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     tables = [table[0] for table in cursor.fetchall()]
 
-    schema = {"stauts": "스키마 불러오기 성공"}
+    schema = {}
     for table in tables:
         # 각 테이블의 컬럼 정보 가져오기
         cursor.execute(f"PRAGMA table_info({table});")
@@ -110,7 +110,7 @@ def get_schema():
         ]
 
     cursor.close()
-    return jsonify(schema), 200
+    return jsonify({"status": "스키마 불러오기 성공", "schema": schema}), 200
 
 
 @sqool_db_bp.route("/query", methods=["POST"])
