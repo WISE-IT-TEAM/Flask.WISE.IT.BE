@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import db, ArticleCategory, Tag, Article, ArticleComment
+from app.models import db, ArticleCategory, Article, ArticleComment
 
 article_api_bp = Blueprint("article_api", __name__)
 

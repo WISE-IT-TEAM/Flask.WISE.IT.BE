@@ -15,12 +15,14 @@ cors_origins = ["*"]
 def create_app():
     app = Flask(__name__)
 
-    CORS(app, resources={r"/api/*": {"origins": cors_origins}}, supports_credentials=True)
+    CORS(
+        app, resources={r"/api/*": {"origins": cors_origins}}, supports_credentials=True
+    )
 
     app.config.from_object(Config)
-    app.config['SESSION_COOKIE_SECURE'] = True  # HTTPS를 사용하는 경우
-    app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+    app.config["SESSION_COOKIE_SECURE"] = True  # HTTPS를 사용하는 경우
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -34,6 +36,7 @@ def create_app():
     from .routes.admin.qaboard import qaboard_bp
     from .routes.admin.api_endpoint import api_endpoint_bp
     from .routes.admin.api_test import api_test_bp
+    from .routes.admin.sql_doc import sql_doc_bp
     from .routes.api.sqool_db import sqool_db_bp
     from .routes.api.article import article_api_bp
     from .routes.api.qaboard import qaboard_api_bp
@@ -44,6 +47,7 @@ def create_app():
     app.register_blueprint(qaboard_bp, url_prefix="/admin/qaboard")
     app.register_blueprint(api_endpoint_bp, url_prefix="/admin/api_endpoint")
     app.register_blueprint(api_test_bp, url_prefix="/admin/api_test")
+    app.register_blueprint(sql_doc_bp, url_prefix="/admin/sql_doc")
     app.register_blueprint(sqool_db_bp, url_prefix="/api/sqool")
     app.register_blueprint(article_api_bp, url_prefix="/api/article")
     app.register_blueprint(qaboard_api_bp, url_prefix="/api/qaboard")

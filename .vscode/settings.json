@@ -8,6 +8,7 @@
         "qaboard",
         "sqlalchemy",
         "sqldb",
-        "sqool"
+        "sqool",
+        "werkzeug"
     ]
 }
