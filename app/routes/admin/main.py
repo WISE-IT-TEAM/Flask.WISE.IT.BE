@@ -12,8 +12,8 @@ from flask import (
 from sqlalchemy import inspect
 from app.models import db, AdminUser, Question, Answer
 from app import bcrypt
-import os
 import psutil
+import os
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -88,10 +88,10 @@ def admin_logout():
 
 def get_system_usage():
     cpu_usage = psutil.cpu_percent(interval=1)
-    memory = psutil.virtual_memory()
-    memory_usage = memory.percent
-    disk = psutil.disk_usage("/")
-    disk_usage = disk.percent
+    memory_info = psutil.virtual_memory()
+    memory_usage = memory_info.percent
+    disk_info = psutil.disk_usage("/")
+    disk_usage = disk_info.percent
     return cpu_usage, memory_usage, disk_usage
 
 
