@@ -22,6 +22,9 @@ db_connections = {}
 def execute_query_with_rollback(query):
     sqldb_id = session.get("sqldb_id")
 
+    if not sqldb_id:
+        return jsonify({"status": "현재 session에 sqldb_id가 없음"}), 400
+
     if sqldb_id not in db_connections.keys():
         return jsonify({"status": "DB가 생성되지 않았음"}), 400
 
@@ -58,7 +61,7 @@ def create_db():
         return jsonify({"status": "DB 이름이 올바르지 않음"}), 400
 
     # 이미 DB가 있을 경우 해당 connection을 삭제 후 DB 생성 (RESET)
-    sqldb_id = session.get("sqldb_id")
+    sqldb_id = data.get("sqldb_id")
     if sqldb_id and sqldb_id in db_connections.keys():
         del db_connections[sqldb_id]
 
@@ -67,6 +70,8 @@ def create_db():
 
     sqldb_id = str(generate())
     session["sqldb_id"] = sqldb_id
+    session.modified = True
+    print("create_db에서 세션 값: ", session)
 
     db = sqlite3.connect(":memory:", check_same_thread=False)
     for sql_file in SQL_FILES:
@@ -119,6 +124,8 @@ def execute_query():
     query = data.get("query")
 
     SQL_KEYWORD = ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP']
+
+    print("excute_db에서 세션 값:", session)
 
     if not query or query.isspace():
         return jsonify({"message": "쿼리를 입력해주세요.", "status": "쿼리값이 없음"}), 400

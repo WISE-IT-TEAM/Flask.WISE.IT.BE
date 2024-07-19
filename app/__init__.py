@@ -15,9 +15,12 @@ cors_origins = ["*"]
 def create_app():
     app = Flask(__name__)
 
-    CORS(app, resources={r"/api/*": {"origins": cors_origins}})
+    CORS(app, resources={r"/api/*": {"origins": cors_origins}}, supports_credentials=True)
 
     app.config.from_object(Config)
+    app.config['SESSION_COOKIE_SECURE'] = True  # HTTPS를 사용하는 경우
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 
     db.init_app(app)
     migrate.init_app(app, db)
