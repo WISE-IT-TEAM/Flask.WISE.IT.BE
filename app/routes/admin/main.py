@@ -7,11 +7,13 @@ from flask import (
     flash,
     session,
     current_app,
+    jsonify,
 )
 from sqlalchemy import inspect
 from app.models import db, AdminUser, Question, Answer
 from app import bcrypt
 import os
+import psutil
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -45,7 +47,7 @@ def admin_login():
         flash("아이디 또는 비밀번호가 올바르지 않습니다.", "danger")
         return redirect(url_for("admin.admin_login"))
     elif request.method == "GET":
-        if session.get('admin_user'):
+        if session.get("admin_user"):
             return redirect(url_for("admin.admin_dashboard"))
         else:
             return render_template("admin/login.jinja2", title="Login")
@@ -84,11 +86,27 @@ def admin_logout():
     return redirect(url_for("admin.admin_login"))
 
 
+def get_system_usage():
+    cpu_usage = psutil.cpu_percent(interval=1)
+    memory = psutil.virtual_memory()
+    memory_usage = memory.percent
+    disk = psutil.disk_usage("/")
+    disk_usage = disk.percent
+    return cpu_usage, memory_usage, disk_usage
+
+
 @login_required
 @admin_bp.route("/dashboard", methods=["GET"])
 def admin_dashboard():
 
     return render_template("admin/dashboard.jinja2", title="Dashboard")
+
+
+@login_required
+@admin_bp.route("/usage", methods=["GET"])
+def usage():
+    cpu_usage, memory_usage, disk_usage = get_system_usage()
+    return jsonify(cpu=cpu_usage, memory=memory_usage, disk=disk_usage)
 
 
 @login_required

@@ -4,6 +4,7 @@
         "executescript",
         "jsonify",
         "onupdate",
+        "psutil",
         "qaboard",
         "sqlalchemy",
         "sqldb",
