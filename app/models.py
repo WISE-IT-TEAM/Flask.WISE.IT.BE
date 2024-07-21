@@ -142,6 +142,9 @@ class SqlDoc(db.Model):
     category_id = db.Column(
         db.String(40), db.ForeignKey("sql_doc_category.id"), nullable=False
     )
+    category = db.relationship(
+        "SqlDocCategory", backref=db.backref("sql_docs", lazy=True)
+    )
 
     def __init__(self, title, content, category_id):
         self.id = generate()

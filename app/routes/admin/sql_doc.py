@@ -81,9 +81,20 @@ def admin_category_delete(category_id):
 @sql_doc_bp.route("/document", methods=["GET"])
 def admin_document_list():
     if request.method == "GET":
-        doc = SqlDoc.query.all()
+        categories = SqlDocCategory.query.filter_by(parent_id=None).all()
+        documents = SqlDoc.query.all()
+
+        documents_by_category = {}
+        for doc in documents:
+            if doc.category_id not in documents_by_category:
+                documents_by_category[doc.category_id] = []
+            documents_by_category[doc.category_id].append(doc)
+
         return render_template(
-            "admin/sql_doc/document_list.jinja2", doc=doc, title="SQL Document"
+            "admin/sql_doc/document_list.jinja2",
+            categories=categories,
+            documents_by_category=documents_by_category,
+            title="SQL Document",
         )
 
 

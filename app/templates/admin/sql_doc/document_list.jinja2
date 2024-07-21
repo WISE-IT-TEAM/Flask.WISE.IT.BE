@@ -7,6 +7,47 @@
     <a class="btn btn-primary" href="{{ url_for('sql_doc.admin_document_create') }}">새 글 작성</a>
 </div>
 <hr>
+<div class="card">
+    <div class="card-header">
+        도큐먼트 목록
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for cat in categories %}
+        <li class="list-group-item">
+            <div>
+                {{ cat.category }}
+            </div>
+            {% if documents_by_category.get(cat.id) %}
+            <ul class="list-unstyled ms-3 mt-2">
+                {% for doc in documents_by_category[cat.id] %}
+                <li>
+                    <i class="bi bi-file-text"></i> {{ doc.title }}
+                    <small class="text-muted ms-2">{{ doc.created_at.strftime('%Y년 %m월 %d일') }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% if cat.children %}
+            {% for child in cat.children %}
+            <div class="ms-3 mt-2">
+                <i class="bi bi-arrow-return-right"></i> {{ child.category }}
+                {% if documents_by_category.get(child.id) %}
+                <ul class="list-unstyled ms-4 mt-1">
+                    {% for doc in documents_by_category[child.id] %}
+                    <li>
+                        <i class="bi bi-file-text"></i> {{ doc.title }}
+                        <small class="text-muted ms-2">{{ doc.created_at.strftime('%Y년 %m월 %d일') }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
 
 {% block script %}
