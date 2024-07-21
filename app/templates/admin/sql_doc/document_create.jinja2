@@ -1,0 +1,18 @@
+{% extends 'layout/base.jinja2' %}
+
+{% block content %}
+<h1>SQL Document Create</h1>
+<hr>
+{% for cat in category %}
+<p>{{ cat.category }}</p>
+{% if cat.children %}
+{% for child in cat.children %}
+<p>-- {{ child.category }}</p>
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block script %}
+
+{% endblock script %}

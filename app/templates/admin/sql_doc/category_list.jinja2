@@ -1,7 +1,65 @@
 {% extends 'layout/base.jinja2' %}
 
 {% block content %}
-<h1>SQL Doc Category</h1>
+<h1>SQL Doc Category List & Create</h1>
+<hr>
+<form class="row align-items-center" method="POST">
+    <div class="col">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <label for="parent_id" class="col-form-label">상위 카테고리 선택</label>
+            </div>
+            <div class="col">
+                <select class="form-select" id="parent_id" name="parent_id">
+                    <option value="">상위 카테고리 없음 (최상위 카테고리)</option>
+                    {% for cat in category %}
+                    <option value="{{ cat.id }}">{{ cat.category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <label for="category" class="col-form-label">카테고리 이름</label>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="category" name="category" placeholder="카테고리 이름 입력" required>
+            </div>
+        </div>
+    </div>
+    <div class="col-auto d-grid">
+        <button type="submit" class="btn btn-primary">추가</button>
+    </div>
+</form>
+<hr>
+<div class="card">
+    <div class="card-header">
+        카테고리 목록
+    </div>
+    <ul class="list-group list-group-flush">
+        {% if category|length == 0 %}
+        <li class="list-group-item">카테고리가 비어 있습니다.</li>
+        {% endif %}
+
+        {% for cat in category %}
+        <li class="list-group-item">
+            {{ cat.category }} <a href="{{ url_for('sql_doc.admin_category_detail', category_id = cat.id) }}"
+                class="text-decoration-none text-info"><i class="bi bi-wrench-adjustable-circle"></i></a>
+            {% if cat.children %}
+            {% for child in cat.children %}
+            <div class="ms-3">
+                <i class="bi bi-arrow-return-right"></i> {{ child.category }} <a
+                    href="{{ url_for('sql_doc.admin_category_detail', category_id = child.id) }}"
+                    class="text-decoration-none text-info"><i class="bi bi-wrench-adjustable-circle"></i></a>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
 
 {% block script %}

@@ -1,0 +1,80 @@
+{% extends 'layout/base.jinja2' %}
+
+{% block content %}
+<h1>SQL Doc Category Modify & Delete</h1>
+<hr>
+<form class="row align-items-center" method="POST"
+    action="{{ url_for('sql_doc.admin_category_detail', category_id=category.id) }}">
+    <div class="col">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <label for="parent_id" class="col-form-label">현재 상위 카테고리</label>
+            </div>
+            <div class="col">
+                <select class="form-select" id="parent_id" name="parent_id">
+                    {% if parent_category.parent_id != None %}
+                    <option value="{{ parent_category.id }}">최상위 카테고리는 수정 불가
+                    </option>
+                    {% else %}
+                    <option value="{{ parent_category.id }}" hidden>{{ parent_category.category }} (카테고리 변경 시 선택)
+                    </option>
+                    {% for cat in all_category %}
+                    <option value="{{ cat.id }}">{{ cat.category }}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <label for="category" class="col-form-label">카테고리 이름 변경</label>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="category" name="category" placeholder="카테고리 이름 입력"
+                    value="{{ category.category }}" required>
+            </div>
+        </div>
+    </div>
+    <div class="col-auto d-grid">
+        <button type="submit" class="btn btn-info">수정</button>
+    </div>
+</form>
+<hr>
+<div class="card">
+    <div class="card-header">
+        카테고리 목록
+    </div>
+    <ul class="list-group list-group-flush">
+        {% if all_category|length == 0 %}
+        <li class="list-group-item">카테고리가 비어 있습니다.</li>
+        {% endif %}
+
+        {% for cat in all_category %}
+        <li class="list-group-item">
+            <form method="POST" action="{{ url_for('sql_doc.admin_category_delete', category_id = cat.id) }}">
+                {{ cat.category }} {% if not cat.children %}<button type="submit"
+                    class="btn btn-link btn-sm text-danger" style="--bs-btn-padding-y: .0; --bs-btn-padding-x: 0;"><i
+                        class="bi bi-eraser"></i></button>{% endif %}
+            </form>
+            {% if cat.children %}
+            {% for child in cat.children %}
+            <div class="ms-3">
+                <form method="POST" action="{{ url_for('sql_doc.admin_category_delete', category_id = child.id) }}">
+                    <i class="bi bi-arrow-return-right"></i> {{ child.category }} <button type="submit"
+                        class="btn btn-link btn-sm text-danger"
+                        style="--bs-btn-padding-y: .0; --bs-btn-padding-x: 0;"><i class="bi bi-eraser"></i></button>
+                </form>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock script %}

@@ -1,0 +1,14 @@
+{% extends 'layout/base.jinja2' %}
+
+{% block content %}
+<h1>SQL Document List</h1>
+<hr>
+<div class="d-grid">
+    <a class="btn btn-primary" href="{{ url_for('sql_doc.admin_document_create') }}">새 글 작성</a>
+</div>
+<hr>
+{% endblock %}
+
+{% block script %}
+
+{% endblock script %}

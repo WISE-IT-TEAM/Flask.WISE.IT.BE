@@ -44,7 +44,7 @@ def create_app():
     from .routes.api.common import common_api_bp
 
     app.register_blueprint(admin_bp, url_prefix="/admin")
-    app.register_blueprint(qaboard_bp, url_prefix="/admin/qaboard")
+    app.register_blueprint(qaboard_bp, url_prefix="/admin/community/qaboard")
     app.register_blueprint(api_endpoint_bp, url_prefix="/admin/api_endpoint")
     app.register_blueprint(api_test_bp, url_prefix="/admin/api_test")
     app.register_blueprint(sql_doc_bp, url_prefix="/admin/sql_doc")
