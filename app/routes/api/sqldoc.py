@@ -55,7 +55,27 @@ def get_category():
                     category_list.append({"Title": doc.title, "Id": doc.id, "Tree": 'doc'})
 
     return jsonify({
+        "status": "카테고리 리스트 불러오기 성공(main - sub - doc)",
         "categories": category_list
     }), 200
 
         
+@sqldoc_api_bp.route("/document", methods=["POST"])
+def get_document():
+    data = request.json
+    doc_id = data.get("doc_id")
+
+    doc = SqlDoc.query\
+            .filter_by(id=doc_id)\
+            .with_entities(SqlDoc.title, SqlDoc.content)\
+            .all()
+    
+    if doc == []:
+        return jsonify({"status": "해당 id를 가진 게시글이 존재하지 않음: " + doc_id}), 400
+    
+    document = {"title": doc[0].title, "content": doc[0].content}
+
+    return jsonify({
+        "status": "게시글 상세 내용 불러오기 성공",
+        "document": document
+    }), 200

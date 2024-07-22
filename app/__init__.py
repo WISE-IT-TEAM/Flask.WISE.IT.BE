@@ -73,6 +73,7 @@ def create_app():
             "common_api.delete_file",
             "sqldoc_api.ping",
             "sqldoc_api.get_category",
+            "sqldoc_api.get_document",
             "article_api.ping",
             "qaboard_api.ping",
             "sqooldb_api.create_db",
