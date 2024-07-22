@@ -3,7 +3,7 @@ import sqlite3
 import os
 from nanoid import generate
 
-sqool_db_bp = Blueprint("sqool_db", __name__)
+sqooldb_api_bp = Blueprint("sqooldb_api", __name__)
 
 # * DB 폴더 경로 및 SQL 파일 리스트
 DB_CONFIGS = {
@@ -50,7 +50,7 @@ def execute_query_with_rollback(query):
         cursor.close()
 
 
-@sqool_db_bp.route("/", methods=["POST"])
+@sqooldb_api_bp.route("/", methods=["POST"])
 def create_db():
     data = request.json
     dbname = data.get("dbname")
@@ -87,7 +87,7 @@ def create_db():
     return jsonify({"status": "사용자 DB 정상적으로 생성"}), 200
 
 
-@sqool_db_bp.route("/schema", methods=["GET"])
+@sqooldb_api_bp.route("/schema", methods=["GET"])
 def get_schema():
     sqldb_id = session.get("sqldb_id")
 
@@ -118,7 +118,7 @@ def get_schema():
     return jsonify({"status": "스키마 불러오기 성공", "schema": schema}), 200
 
 
-@sqool_db_bp.route("/query", methods=["POST"])
+@sqooldb_api_bp.route("/query", methods=["POST"])
 def execute_query():
     data = request.json
     query = data.get("query")
@@ -141,7 +141,7 @@ def execute_query():
 
 
 # '/reset' 대신 '/'를 통해 무조건 db를 재생성
-# @sqool_db_bp.route("/reset", methods=["POST"])
+# @sqooldb_api_bp.route("/reset", methods=["POST"])
 # def reset_database():
 #     sqldb_id = session.get('sqldb_id')
 
