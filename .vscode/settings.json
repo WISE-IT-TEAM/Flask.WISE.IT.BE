@@ -11,6 +11,7 @@
         "sqldb",
         "sqldoc",
         "sqool",
+        "sqooldb",
         "werkzeug"
     ]
 }
