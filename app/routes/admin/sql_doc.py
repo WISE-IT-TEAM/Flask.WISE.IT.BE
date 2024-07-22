@@ -113,7 +113,10 @@ def admin_document_create():
         title = request.form.get("title")
         content = request.form.get("content")
         category_id = request.form.get("category_id")
-        new_doc = SqlDoc(title=title, content=content, category_id=category_id)
+        order_num = request.form.get("order_num")
+        new_doc = SqlDoc(
+            title=title, content=content, category_id=category_id, order_num=order_num
+        )
         db.session.add(new_doc)
         db.session.commit()
         flash("문서가 추가되었습니다.", "success")
@@ -125,4 +128,28 @@ def admin_document_create():
             "admin/sql_doc/document_create.jinja2",
             category=category,
             title="SQL Document Create",
+        )
+
+
+@login_required
+@sql_doc_bp.route("/document/<string:doc_id>", methods=["GET", "POST"])
+def admin_document_modify(doc_id):
+    doc = SqlDoc.query.get_or_404(doc_id)
+    category = get_category_tree()
+
+    if request.method == "POST":
+        doc.title = request.form.get("title")
+        doc.content = request.form.get("content")
+        doc.category_id = request.form.get("category_id")
+        doc.order_num = request.form.get("order_num")
+        db.session.commit()
+        flash("문서가 수정되었습니다.", "success")
+        return redirect(url_for("sql_doc.admin_document_list"))
+
+    if request.method == "GET":
+        return render_template(
+            "admin/sql_doc/document_modify.jinja2",
+            doc=doc,
+            category=category,
+            title="SQL Document Modify",
         )

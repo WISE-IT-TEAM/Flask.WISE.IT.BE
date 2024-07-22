@@ -26,7 +26,7 @@
         <div class="col">
             <label for="category_id" class="col-form-label">카테고리 선택</label>
             <select class="form-select" id="category_id" name="category_id" required>
-                <option value="" selected hidden>카테고리 선택</option>
+                <option value="{{ doc.category_id }}" selected hidden>{{ doc.category.category }}</option>
                 {% for cat in category %}
                 <option value="{{ cat.id }}">{{ cat.category }}</option>
                 {% if cat.children %}
@@ -38,13 +38,14 @@
             </select>
         </div>
         <div class="col">
-            <label for="order_num" class="col-form-label">글 순서 입력</label>
-            <input type="number" class="form-control" id="order_num" name="order_num" placeholder="카테고리 순서 입력" required>
+            <label for="order_num" class="col-form-label">글 순서 변경</label>
+            <input type="number" class="form-control" id="order_num" name="order_num" value="{{ doc.order_num }}"
+                placeholder="{{ doc.order_num }}" required>
         </div>
     </div>
     <div class="mb-3">
         <label for="title" class="form-label">제목</label>
-        <input type="text" class="form-control" id="title" name="title" required>
+        <input type="text" class="form-control" id="title" name="title" value="{{ doc.title }}" required>
     </div>
     <div class="mb-3">
         <label for="content" class="form-label">내용</label>
@@ -52,7 +53,7 @@
     </div>
     <hr>
     <div class="d-grid gap-3">
-        <button type="submit" class="btn btn-primary">도큐먼트 등록</button>
+        <button type="submit" class="btn btn-info">도큐먼트 수정</button>
     </div>
 </form>
 {% endblock %}
@@ -69,6 +70,7 @@
         previewStyle: 'vertical',
         usageStatistics: false,
         hideModeSwitch: false,
+        initialValue: `{{ doc.content }}`,
         hooks: {
             addImageBlobHook: function (blob, callback) {
                 const formData = new FormData();
