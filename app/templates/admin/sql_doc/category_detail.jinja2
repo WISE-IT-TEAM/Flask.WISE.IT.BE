@@ -37,6 +37,17 @@
             </div>
         </div>
     </div>
+    <div class="col">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <label for="category" class="col-form-label">카테고리 순서 변경</label>
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" id="category" name="category" placeholder="카테고리 순서 입력"
+                    value="{{ category.order_num }}" required>
+            </div>
+        </div>
+    </div>
     <div class="col-auto d-grid">
         <button type="submit" class="btn btn-info">수정</button>
     </div>
