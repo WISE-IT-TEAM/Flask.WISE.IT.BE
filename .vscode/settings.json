@@ -3,11 +3,13 @@
         "backref",
         "executescript",
         "jsonify",
+        "mcat",
         "onupdate",
         "psutil",
         "qaboard",
         "sqlalchemy",
         "sqldb",
+        "sqldoc",
         "sqool",
         "werkzeug"
     ]
