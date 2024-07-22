@@ -50,6 +50,15 @@
         <label for="content" class="form-label">내용</label>
         <div id="content" name="content"></div>
     </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">글 상태</label>
+        <select class="form-select" id="status" name="status" required>
+            <option value="" selected hidden>선택</option>
+            <option value="공개">공개</option>
+            <option value="작성중">작성중</option>
+            <option value="비공개">비공개</option>
+        </select>
+    </div>
     <hr>
     <div class="d-grid gap-3">
         <button type="submit" class="btn btn-primary">도큐먼트 등록</button>

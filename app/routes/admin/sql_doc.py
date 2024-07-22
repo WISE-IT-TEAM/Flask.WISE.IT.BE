@@ -90,7 +90,7 @@ def admin_category_delete(category_id):
 def admin_document_list():
     if request.method == "GET":
         categories = SqlDocCategory.query.filter_by(parent_id=None).all()
-        documents = SqlDoc.query.all()
+        documents = SqlDoc.query.order_by(SqlDoc.order_num).all()
 
         documents_by_category = {}
         for doc in documents:
@@ -113,9 +113,14 @@ def admin_document_create():
         title = request.form.get("title")
         content = request.form.get("content")
         category_id = request.form.get("category_id")
+        status = request.form.get("status")
         order_num = request.form.get("order_num")
         new_doc = SqlDoc(
-            title=title, content=content, category_id=category_id, order_num=order_num
+            title=title,
+            content=content,
+            category_id=category_id,
+            status=status,
+            order_num=order_num,
         )
         db.session.add(new_doc)
         db.session.commit()
@@ -141,6 +146,7 @@ def admin_document_modify(doc_id):
         doc.title = request.form.get("title")
         doc.content = request.form.get("content")
         doc.category_id = request.form.get("category_id")
+        doc.status = request.form.get("status")
         doc.order_num = request.form.get("order_num")
         db.session.commit()
         flash("문서가 수정되었습니다.", "success")

@@ -19,9 +19,9 @@
 {% endblock style %}
 
 {% block content %}
-<h1>SQL Document Create</h1>
+<h1>SQL Document Modify</h1>
 <hr>
-<form method="POST" action="{{ url_for('sql_doc.admin_document_create') }}">
+<form method="POST" action="{{ url_for('sql_doc.admin_document_modify', doc_id = doc.id) }}">
     <div class="row align-items-center mb-3">
         <div class="col">
             <label for="category_id" class="col-form-label">카테고리 선택</label>
@@ -50,6 +50,15 @@
     <div class="mb-3">
         <label for="content" class="form-label">내용</label>
         <div id="content" name="content"></div>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">글 상태</label>
+        <select class="form-select" id="status" name="status" required>
+            <option value="{{ doc.status }}" selected hidden>{{ doc.status }}</option>
+            <option value="공개">공개</option>
+            <option value="작성중">작성중</option>
+            <option value="비공개">비공개</option>
+        </select>
     </div>
     <hr>
     <div class="d-grid gap-3">
