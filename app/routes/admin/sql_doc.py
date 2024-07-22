@@ -89,7 +89,11 @@ def admin_category_delete(category_id):
 @sql_doc_bp.route("/document", methods=["GET"])
 def admin_document_list():
     if request.method == "GET":
-        categories = SqlDocCategory.query.filter_by(parent_id=None).all()
+        categories = (
+            SqlDocCategory.query.filter_by(parent_id=None)
+            .order_by(SqlDocCategory.order_num)
+            .all()
+        )
         documents = SqlDoc.query.order_by(SqlDoc.order_num).all()
 
         documents_by_category = {}
