@@ -6,9 +6,14 @@ sql_doc_bp = Blueprint("sql_doc", __name__)
 
 
 def get_category_tree():
-    categories = SqlDocCategory.query.all()
+    categories = SqlDocCategory.query.order_by(SqlDocCategory.order_num).all()
     category_dict = {
-        cat.id: {"id": cat.id, "category": cat.category, "children": []}
+        cat.id: {
+            "id": cat.id,
+            "category": cat.category,
+            "order_num": cat.order_num,
+            "children": [],
+        }
         for cat in categories
     }
     root_categories = []
@@ -26,8 +31,11 @@ def admin_category_list():
     if request.method == "POST":
         category = request.form["category"]
         parent_id = request.form.get("parent_id")
+        order_num = request.form.get("order_num")
         parent_id = parent_id if parent_id else None
-        new_category = SqlDocCategory(category=category, parent_id=parent_id)
+        new_category = SqlDocCategory(
+            category=category, order_num=order_num, parent_id=parent_id
+        )
         db.session.add(new_category)
         db.session.commit()
         flash("카테고리가 추가되었습니다.", "success")

@@ -122,14 +122,16 @@ class SqlDocCategory(db.Model):
     parent_id = db.Column(
         db.String(40), db.ForeignKey("sql_doc_category.id"), nullable=True
     )
+    order_num = db.Column(db.Integer, nullable=False, default=0)
     children = db.relationship(
         "SqlDocCategory", backref=db.backref("parent", remote_side=[id])
     )
 
-    def __init__(self, category, parent_id=None):
+    def __init__(self, category, parent_id=None, order_num=0):
         self.id = generate()
         self.category = category
         self.parent_id = parent_id
+        self.order_num = order_num
 
 
 class SqlDoc(db.Model):
@@ -139,6 +141,7 @@ class SqlDoc(db.Model):
     status = db.Column(db.String(10), nullable=False, default="public")
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     updated_at = db.Column(db.DateTime, nullable=True)
+    order_num = db.Column(db.Integer, nullable=False, default=0)
     category_id = db.Column(
         db.String(40), db.ForeignKey("sql_doc_category.id"), nullable=False
     )
@@ -146,8 +149,9 @@ class SqlDoc(db.Model):
         "SqlDocCategory", backref=db.backref("sql_docs", lazy=True)
     )
 
-    def __init__(self, title, content, category_id):
+    def __init__(self, title, content, order_num, category_id):
         self.id = generate()
         self.title = title
         self.content = content
         self.category_id = category_id
+        self.order_num = order_num
