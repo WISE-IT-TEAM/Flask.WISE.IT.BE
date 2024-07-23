@@ -51,25 +51,10 @@ class Answer(db.Model):
         self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
 
 
-class ArticleCategory(db.Model):
-    id = db.Column(db.String(40), primary_key=True)
-    category = db.Column(db.String(200), nullable=False)
-    parent_id = db.Column(
-        db.String(40), db.ForeignKey("article_category.id"), nullable=True
-    )
-    children = db.relationship(
-        "ArticleCategory", backref=db.backref("parent", remote_side=[id])
-    )
-
-    def __init__(self, name, parent_id=None):
-        self.id = generate()
-        self.name = name
-        self.parent_id = parent_id
-
-
 class Article(db.Model):
     id = db.Column(db.String(40), primary_key=True)
     title = db.Column(db.String(200), nullable=False)
+    category = db.Column(db.String(30), nullable=False)
     thumbnail = db.Column(db.String(300), nullable=True)
     content = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(10), nullable=False, default="draft")
@@ -78,16 +63,13 @@ class Article(db.Model):
     view_count = db.Column(db.Integer, nullable=False, default=0)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     updated_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.now())
-    category_id = db.Column(
-        db.String(40), db.ForeignKey("article_category.id"), nullable=False
-    )
     comments = db.relationship("ArticleComment", backref="article", lazy=True)
 
-    def __init__(self, title, content, category_id):
+    def __init__(self, title, category, content):
         self.id = generate()
         self.title = title
+        self.category = category
         self.content = content
-        self.category_id = category_id
 
 
 class ArticleComment(db.Model):
