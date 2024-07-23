@@ -77,6 +77,7 @@ def create_app():
             "sqldoc_api.get_category",
             "sqldoc_api.get_document",
             "article_api.ping",
+            "article_api.get_article_list",
             "qaboard_api.ping",
             "sqooldb_api.create_db",
             "sqooldb_api.get_schema",
