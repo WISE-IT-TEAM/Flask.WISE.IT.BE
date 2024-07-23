@@ -12,11 +12,11 @@ from app.models import db, Question, Answer
 from .main import login_required
 from ..api.common import upload_file, upload_image, delete_file
 
-qaboard_bp = Blueprint("qaboard", __name__)
+qa_board_bp = Blueprint("qa_board", __name__)
 
 
 @login_required
-@qaboard_bp.route("/", methods=["GET"])
+@qa_board_bp.route("/", methods=["GET"])
 def admin_qaboard_list():
     board_list = Question.query.order_by(Question.created_at.desc()).all()
     return render_template(
@@ -25,7 +25,7 @@ def admin_qaboard_list():
 
 
 @login_required
-@qaboard_bp.route("/<question_id>", methods=["GET", "POST"])
+@qa_board_bp.route("/<question_id>", methods=["GET", "POST"])
 def admin_qaboard_detail(question_id):
     question = Question.query.get(question_id)
     answers = Answer.query.filter_by(question_id=question_id).all()
@@ -43,7 +43,7 @@ def admin_qaboard_detail(question_id):
 
         flash("답변이 등록되었습니다.", "success")
         return redirect(
-            url_for("qaboard.admin_qaboard_detail", question_id=question_id)
+            url_for("qa_board.admin_qaboard_detail", question_id=question_id)
         )
 
     return render_template(
@@ -55,7 +55,7 @@ def admin_qaboard_detail(question_id):
 
 
 @login_required
-@qaboard_bp.route("/create", methods=["GET", "POST"])
+@qa_board_bp.route("/create", methods=["GET", "POST"])
 def admin_qaboard_create():
     if request.method == "POST":
         nickname = request.form.get("nickname")
@@ -72,7 +72,7 @@ def admin_qaboard_create():
         db.session.commit()
 
         flash("게시글이 등록되었습니다.", "success")
-        return redirect(url_for("qaboard.admin_qaboard_list"))
+        return redirect(url_for("qa_board.admin_qaboard_list"))
 
     return render_template(
         "admin/qaboard/qaboard_create.jinja2", title="QABoard Create"

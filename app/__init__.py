@@ -36,7 +36,7 @@ def create_app():
     from .routes.admin.api_endpoint import api_endpoint_bp
     from .routes.admin.api_test import api_test_bp
     from .routes.admin.sql_doc import sql_doc_bp
-    from .routes.admin.qaboard import qaboard_bp
+    from .routes.admin.qa_board import qa_board_bp
     from .routes.admin.article import article_bp
     from .routes.api.user import user_api_bp
     from .routes.api.common import common_api_bp
@@ -48,8 +48,8 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(api_endpoint_bp, url_prefix="/admin/api_endpoint")
     app.register_blueprint(api_test_bp, url_prefix="/admin/api_test")
-    app.register_blueprint(sql_doc_bp, url_prefix="/admin/sqldoc")
-    app.register_blueprint(qaboard_bp, url_prefix="/admin/community/qaboard")
+    app.register_blueprint(sql_doc_bp, url_prefix="/admin/sql_doc")
+    app.register_blueprint(qa_board_bp, url_prefix="/admin/community/qa_board")
     app.register_blueprint(article_bp, url_prefix="/admin/community/article")
     app.register_blueprint(user_api_bp, url_prefix="/api/user")
     app.register_blueprint(common_api_bp, url_prefix="/api/common")
