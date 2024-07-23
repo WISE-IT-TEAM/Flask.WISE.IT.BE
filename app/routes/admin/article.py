@@ -1,8 +1,25 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+import os
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    current_app,
+)
+from werkzeug.utils import secure_filename
+from datetime import datetime
 from app.models import db, Article, ArticleComment
 from .main import login_required
 
 article_bp = Blueprint("article", __name__)
+
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "svg", "webp", "bmp"}
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @login_required
@@ -19,6 +36,8 @@ def admin_article_list():
 @login_required
 @article_bp.route("/create", methods=["GET", "POST"])
 def admin_article_create():
+    UPLOAD_FOLDER = current_app.config["UPLOAD_FOLDER"]
+
     if request.method == "POST":
         title = request.form.get("title")
         category = request.form.get("category")
@@ -27,10 +46,19 @@ def admin_article_create():
         status = request.form.get("status")
         tags = request.form.get("tags")
 
+        thumbnail_path = None
+        if thumbnail and allowed_file(thumbnail.filename):
+            filename = secure_filename(thumbnail.filename)
+            add_time = datetime.now().strftime("%Y%m%d%H%M%S")
+            new_filename = "thumbnail_" + add_time + "_" + filename
+            thumbnail_path = os.path.join(UPLOAD_FOLDER, new_filename)
+            thumbnail.save(thumbnail_path)
+            thumbnail_path = os.path.join("Uploads", new_filename)
+
         new_article = Article(
             title=title,
             category=category,
-            thumbnail=thumbnail,
+            thumbnail=thumbnail_path,
             content=content,
             status=status,
             tags=tags,

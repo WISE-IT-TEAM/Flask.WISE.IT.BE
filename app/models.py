@@ -65,11 +65,16 @@ class Article(db.Model):
     updated_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.now())
     comments = db.relationship("ArticleComment", backref="article", lazy=True)
 
-    def __init__(self, title, category, content):
+    def __init__(
+        self, title, category, content, thumbnail=None, status="draft", tags=None
+    ):
         self.id = generate()
         self.title = title
         self.category = category
         self.content = content
+        self.thumbnail = thumbnail
+        self.tags = tags
+        self.status = status
 
 
 class ArticleComment(db.Model):
