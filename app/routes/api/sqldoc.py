@@ -73,10 +73,8 @@ def get_category():
     )
 
 
-@sqldoc_api_bp.route("/document", methods=["POST"])
-def get_document():
-    data = request.json
-    doc_id = data.get("doc_id")
+@sqldoc_api_bp.route("/document/<string:doc_id>", methods=["GET"])
+def get_document(doc_id):
 
     doc = (
         SqlDoc.query.filter_by(id=doc_id)
