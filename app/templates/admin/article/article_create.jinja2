@@ -1,0 +1,113 @@
+{% extends 'layout/base.jinja2' %}
+
+{% block style %}
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<style>
+    .toastui-editor-contents {
+        font-size: 1rem;
+    }
+
+    .toastui-editor-contents h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-top: 10px;
+    }
+</style>
+{% endblock style %}
+
+{% block content %}
+<h1>Article Create</h1>
+<hr>
+<form method="POST" action="{{ url_for('article.admin_article_create') }}" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="title" class="form-label">제목</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="category" class="form-label">카테고리</label>
+        <select class="form-select" id="category" name="category" required>
+            <option value="" selected hidden>선택</option>
+            <option>Category</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="thumbnail" class="form-label">썸네일</label>
+        <input class="form-control" type="file" id="thumbnail" name="thumbnail">
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">내용</label>
+        <div id="content" name="content"></div>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">태그</label>
+        <input type="text" class="form-control" id="tags" name="tags" placeholder="쉼표(,)로 구분">
+    </div>
+    <div class="mb-3">
+        <label for="status" class="form-label">공개 여부</label>
+        <select class="form-select" id="status" name="status" required>
+            <option>공개</option>
+            <option>작성중</option>
+            <option>비공개</option>
+        </select>
+    </div>
+    <hr>
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary">등록</button>
+    </div>
+</form>
+{% endblock content %}
+
+{% block script %}
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.js"></script>
+<script>
+    const editor = new toastui.Editor({
+        el: document.querySelector('#content'),
+        language: 'ko-KR',
+        height: '500px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        usageStatistics: false,
+        hideModeSwitch: false,
+        hooks: {
+            addImageBlobHook: function (blob, callback) {
+                const formData = new FormData();
+                formData.append('image', blob);
+
+                fetch('/api/common/upload_image', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                    .then(data => {
+                        callback(data.url, 'alt text');
+                    })
+                    .catch(error => {
+                        console.error("오류: ", error);
+                    });
+
+                return false;
+            }
+        }
+    });
+
+    document.querySelector('form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // 에디터 내용 가져오기
+        const editorContent = editor.getHTML();
+
+        // hidden input 생성 및 폼에 추가
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'content';
+        hiddenInput.value = editorContent;
+        this.appendChild(hiddenInput);
+
+        // 폼 제출
+        this.submit();
+    });
+</script>
+{% endblock script %}
