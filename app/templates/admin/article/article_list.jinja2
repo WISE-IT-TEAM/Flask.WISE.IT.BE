@@ -1,0 +1,33 @@
+{% extends 'layout/base.jinja2' %}
+
+{% block style %}
+{% endblock style %}
+
+{% block content %}
+<h1>Article List</h1>
+<hr>
+<div class="d-grid">
+    <a class="btn btn-primary" href="{{ url_for('article.admin_article_create') }}">새 글 작성</a>
+</div>
+<hr>
+<div class="card">
+    <div class="card-header">
+        아티클 목록
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for article in article_list %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col">{{ article.category }}: <a
+                        href="{{ url_for('article.admin_article_modify', article_id=article.id) }}">{{ article.title
+                        }}</a> [{{ article.comments|length }}]</div>
+                <div class="col-auto">{{ article.created_at }}</div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock script %}

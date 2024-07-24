@@ -26,12 +26,12 @@ class Question(db.Model):
     status = db.Column(db.String(10), nullable=False, default="public")
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     updated_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.now())
-    deleted_at = db.Column(db.DateTime, nullable=True)
     answers = db.relationship("Answer", backref="question", lazy=True)
 
     def __init__(self, password):
         self.id = generate()
         self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
+        self.created_at = datetime.now()
 
 
 class Answer(db.Model):
@@ -45,72 +45,39 @@ class Answer(db.Model):
     status = db.Column(db.String(10), nullable=False, default="public")
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     updated_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.now())
-    deleted_at = db.Column(db.DateTime, nullable=True)
     question_id = db.Column(db.String(40), db.ForeignKey("question.id"), nullable=False)
 
     def __init__(self, password):
         self.id = generate()
         self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
-
-
-class ArticleCategory(db.Model):
-    id = db.Column(db.String(40), primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    parent_id = db.Column(
-        db.String(40), db.ForeignKey("article_category.id"), nullable=True
-    )
-    children = db.relationship(
-        "ArticleCategory", backref=db.backref("parent", remote_side=[id])
-    )
-    articles = db.relationship("Article", backref="category", lazy=True)
-
-    def __init__(self, name, parent_id=None):
-        self.id = generate()
-        self.name = name
-        self.parent_id = parent_id
-
-
-class Tag(db.Model):
-    id = db.Column(db.String(40), primary_key=True)
-    name = db.Column(db.String(50), nullable=False, unique=True)
-
-    def __init__(self, name):
-        self.id = generate()
-        self.name = name
-
-
-article_tags = db.Table(
-    "article_tags",
-    db.Column(
-        "article_id", db.String(40), db.ForeignKey("article.id"), primary_key=True
-    ),
-    db.Column("tag_id", db.String(40), db.ForeignKey("tag.id"), primary_key=True),
-)
+        self.created_at = datetime.now()
 
 
 class Article(db.Model):
     id = db.Column(db.String(40), primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(30), nullable=False)
     thumbnail = db.Column(db.String(300), nullable=True)
+    content = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(10), nullable=False, default="draft")
+    tags = db.Column(db.String(300), nullable=True)
     like_count = db.Column(db.Integer, nullable=False, default=0)
     view_count = db.Column(db.Integer, nullable=False, default=0)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     updated_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.now())
-    category_id = db.Column(
-        db.String(40), db.ForeignKey("article_category.id"), nullable=False
-    )
-    tags = db.relationship(
-        "Tag", secondary=article_tags, backref=db.backref("articles", lazy="dynamic")
-    )
     comments = db.relationship("ArticleComment", backref="article", lazy=True)
 
-    def __init__(self, title, content, category_id):
+    def __init__(
+        self, title, category, content, thumbnail=None, status="draft", tags=None
+    ):
         self.id = generate()
         self.title = title
+        self.category = category
         self.content = content
-        self.category_id = category_id
+        self.thumbnail = thumbnail
+        self.tags = tags
+        self.status = status
+        self.created_at = datetime.now()
 
 
 class ArticleComment(db.Model):
@@ -130,23 +97,35 @@ class ArticleComment(db.Model):
         "ArticleComment", backref=db.backref("parent", remote_side=[id]), lazy="dynamic"
     )
 
-    def __init__(self, content, nickname, password, article_id, parent_id=None):
+    def __init__(
+        self, content, nickname, password, article_id, parent_id=None, status="public"
+    ):
         self.id = generate()
         self.content = content
         self.nickname = nickname
         self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
+        self.status = status
         self.article_id = article_id
         self.parent_id = parent_id
+        self.created_at = datetime.now()
 
 
 class SqlDocCategory(db.Model):
     id = db.Column(db.String(40), primary_key=True)
     category = db.Column(db.String(200), nullable=False)
-    sql_docs = db.relationship("SqlDoc", backref="category", lazy=True)
+    parent_id = db.Column(
+        db.String(40), db.ForeignKey("sql_doc_category.id"), nullable=True
+    )
+    order_num = db.Column(db.Integer, nullable=False, default=0)
+    children = db.relationship(
+        "SqlDocCategory", backref=db.backref("parent", remote_side=[id])
+    )
 
-    def __init__(self, category):
+    def __init__(self, category, parent_id=None, order_num=0):
         self.id = generate()
         self.category = category
+        self.parent_id = parent_id
+        self.order_num = order_num
 
 
 class SqlDoc(db.Model):
@@ -156,23 +135,18 @@ class SqlDoc(db.Model):
     status = db.Column(db.String(10), nullable=False, default="public")
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     updated_at = db.Column(db.DateTime, nullable=True)
+    order_num = db.Column(db.Integer, nullable=False, default=0)
     category_id = db.Column(
         db.String(40), db.ForeignKey("sql_doc_category.id"), nullable=False
     )
-    parent_id = db.Column(db.String(40), db.ForeignKey("sql_doc.id"), nullable=True)
-    children = db.relationship(
-        "SqlDoc", backref=db.backref("parent", remote_side=[id]), lazy="dynamic"
+    category = db.relationship(
+        "SqlDocCategory", backref=db.backref("sql_docs", lazy=True)
     )
 
-    def __init__(self, title, content, category_id, parent_id=None):
+    def __init__(self, title, content, order_num, category_id):
         self.id = generate()
         self.title = title
         self.content = content
         self.category_id = category_id
-        self.parent_id = parent_id
-
-    @property
-    def depth(self):
-        if self.parent is None:
-            return 0
-        return self.parent.depth + 1
+        self.order_num = order_num
+        self.created_at = datetime.now()
