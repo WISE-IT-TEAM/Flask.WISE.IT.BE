@@ -26,7 +26,11 @@ def allowed_file(filename):
 @article_bp.route("/", methods=["GET"])
 def admin_article_list():
     article_list = Article.query.order_by(Article.created_at.desc()).all()
-    comment_count = ArticleComment.query.filter_by(article_id=Article.id).count()
+    comment_count = {}
+    for article in article_list:
+        comment_count[article.id] = ArticleComment.query.filter_by(
+            article_id=article.id
+        ).count()
     return render_template(
         "admin/article/article_list.jinja2",
         title="Article List",
@@ -80,7 +84,11 @@ def admin_article_create():
 @article_bp.route("/<article_id>", methods=["GET", "POST"])
 def admin_article_modify(article_id):
     article = Article.query.get_or_404(article_id)
-    comments = ArticleComment.query.filter_by(article_id=article_id).all()
+    comments = (
+        ArticleComment.query.filter_by(article_id=article_id)
+        .order_by(ArticleComment.created_at)
+        .all()
+    )
 
     if request.method == "POST":
         title = request.form.get("title")

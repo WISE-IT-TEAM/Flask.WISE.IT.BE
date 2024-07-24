@@ -87,19 +87,22 @@
                 등록된 댓글이 없습니다.
             </li>
             {% else %}
-            {% for comment in article.comments %}
+            {% for comment in comments %}
             <li class="list-group-item">
                 <div class="row">
-                    <div class="col">{{ comment.content }}</div>
+                    {% if not comment.parent_id %}
+                    <div class="col">{{ comment.content }} - [{{ comment.id }}]</div>
                     <div class="col-auto">{{ comment.created_at }}</div>
+                    {% else %}
+                    <div class="col ms-4">{{ comment.content }} - [{{ comment.parent_id }}]</div>
+                    <div class="col-auto">{{ comment.created_at }}</div>
+                    {% endif %}
                 </div>
             </li>
             {% endfor %}
             {% endif %}
         </ul>
     </div>
-    <hr>
-
 </form>
 {% endblock content %}
 
