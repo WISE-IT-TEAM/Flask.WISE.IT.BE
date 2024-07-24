@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from app.models import db, Article, ArticleComment
 from sqlalchemy.sql import func
+
+# from flask_sqlalchemy import pagination
 from app import bcrypt
 
 article_api_bp = Blueprint("article_api", __name__)
@@ -11,8 +13,11 @@ def ping():
     return jsonify({"message": "Article API Test Success"})
 
 
-@article_api_bp.route("/list")
+@article_api_bp.route("/list", methods=["GET"])
 def get_article_list():
+    page = request.args.get("page", default=1, type=int)
+    perpage = request.args.get("perpage", default=10, type=int)
+
     # json에 담을 리스트 선언
     article_list = []
 
@@ -24,7 +29,8 @@ def get_article_list():
         .outerjoin(ArticleComment, Article.id == ArticleComment.article_id)
         .filter(Article.status == "공개")
         .group_by(Article.id)
-        .all()
+        .order_by(Article.created_at.desc())
+        .paginate(page=page, per_page=perpage, error_out=False)
     )
 
     for article, comment_count in articles:
