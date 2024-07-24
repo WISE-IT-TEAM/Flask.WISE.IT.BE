@@ -42,7 +42,17 @@ def execute_query_with_rollback(query):
         )
         db.commit()
 
-        return jsonify({"message": "쿼리가 정상적으로 실행되었습니다.", "result": result, "columns": columns, "status": "쿼리 실행 성공"}), 200
+        return (
+            jsonify(
+                {
+                    "message": "쿼리가 정상적으로 실행되었습니다.",
+                    "result": result,
+                    "columns": columns,
+                    "status": "쿼리 실행 성공",
+                }
+            ),
+            200,
+        )
     except sqlite3.Error as e:
         db.rollback()
         raise e
@@ -50,7 +60,7 @@ def execute_query_with_rollback(query):
         cursor.close()
 
 
-@sqooldb_api_bp.route("/", methods=["POST"])
+@sqooldb_api_bp.route("/init", methods=["POST"])
 def create_db():
     data = request.json
     dbname = data.get("dbname")
@@ -123,21 +133,40 @@ def execute_query():
     data = request.json
     query = data.get("query")
 
-    SQL_KEYWORD = ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP']
+    SQL_KEYWORD = ["SELECT", "INSERT", "UPDATE", "DELETE", "DROP"]
 
     print("excute_db에서 세션 값:", session)
 
     if not query or query.isspace():
-        return jsonify({"message": "쿼리를 입력해주세요.", "status": "쿼리값이 없음"}), 400
-    
+        return (
+            jsonify({"message": "쿼리를 입력해주세요.", "status": "쿼리값이 없음"}),
+            400,
+        )
+
     if query.split()[0].upper() not in SQL_KEYWORD:
-        return jsonify({"message": "입력값을 확인해주세요.", "status": "SQL_KEYWORD에 해당하지 않은 시작"}), 400
+        return (
+            jsonify(
+                {
+                    "message": "입력값을 확인해주세요.",
+                    "status": "SQL_KEYWORD에 해당하지 않은 시작",
+                }
+            ),
+            400,
+        )
 
     try:
         result = execute_query_with_rollback(query)
         return result
     except sqlite3.Error as e:
-        return jsonify({"message": "입력값을 확인해주세요.", "status": f"잘못된 요청: {str(e)}"}), 400
+        return (
+            jsonify(
+                {
+                    "message": "입력값을 확인해주세요.",
+                    "status": f"잘못된 요청: {str(e)}",
+                }
+            ),
+            400,
+        )
 
 
 # '/reset' 대신 '/'를 통해 무조건 db를 재생성
