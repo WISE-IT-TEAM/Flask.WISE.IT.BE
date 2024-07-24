@@ -15,19 +15,21 @@ def get_category():
     category_list = []
 
     # 최상위(main) 디렉토리 받아오기
-    main_cats = (
+    main_categories = (
         SqlDocCategory.query.filter_by(parent_id=None)
         .with_entities(SqlDocCategory.id, SqlDocCategory.category)
         .order_by(SqlDocCategory.order_num.asc())
         .all()
     )
 
-    for mcat in main_cats:
-        category_list.append({"Title": mcat.category, "Id": mcat.id, "Tree": "main"})
+    for maincat in main_categories:
+        category_list.append(
+            {"Title": maincat.category, "Id": maincat.id, "Tree": "main"}
+        )
 
         # main 카테고리에 글이 있는지 확인하고 있으면 리스트에 추가
         docs = (
-            SqlDoc.query.filter_by(category_id=mcat.id)
+            SqlDoc.query.filter_by(category_id=maincat.id, status="공개")
             .with_entities(SqlDoc.id, SqlDoc.title)
             .order_by(SqlDoc.order_num.asc())
             .all()
@@ -38,20 +40,20 @@ def get_category():
                 category_list.append({"Title": doc.title, "Id": doc.id, "Tree": "doc"})
 
         # main 카테고리에 sub 카테고리가 있는지 확인하고 있으면 리스트에 추가
-        sub_cats = (
-            SqlDocCategory.query.filter_by(parent_id=mcat.id)
+        sub_categories = (
+            SqlDocCategory.query.filter_by(parent_id=maincat.id)
             .with_entities(SqlDocCategory.id, SqlDocCategory.category)
             .order_by(SqlDocCategory.order_num.asc())
             .all()
         )
 
-        if len(sub_cats) > 0:
-            for scat in sub_cats:
+        if len(sub_categories) > 0:
+            for subcat in sub_categories:
                 category_list.append(
-                    {"Title": scat.category, "Id": scat.id, "Tree": "sub"}
+                    {"Title": subcat.category, "Id": subcat.id, "Tree": "sub"}
                 )
                 docs = (
-                    SqlDoc.query.filter_by(category_id=scat.id)
+                    SqlDoc.query.filter_by(category_id=subcat.id, status="공개")
                     .with_entities(SqlDoc.id, SqlDoc.title)
                     .order_by(SqlDoc.order_num.asc())
                     .all()
@@ -76,19 +78,18 @@ def get_category():
 @sqldoc_api_bp.route("/document/<string:doc_id>", methods=["GET"])
 def get_document(doc_id):
 
-    doc = (
-        SqlDoc.query.filter_by(id=doc_id)
-        .with_entities(SqlDoc.title, SqlDoc.content)
-        .all()
-    )
+    doc = SqlDoc.query.filter_by(id=doc_id).one_or_none()
 
-    if doc == []:
+    if doc is None:
         return (
             jsonify({"status": "해당 id를 가진 게시글이 존재하지 않음: " + doc_id}),
             400,
         )
 
-    document = {"title": doc[0].title, "content": doc[0].content}
+    if doc.status != "공개":
+        return jsonify({"status": "게시글이 공개 상태가 아님"}), 400
+
+    document = {"title": doc.title, "content": doc.content}
 
     return (
         jsonify({"status": "게시글 상세 내용 불러오기 성공", "document": document}),
