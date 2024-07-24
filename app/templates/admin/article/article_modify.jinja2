@@ -87,18 +87,22 @@
                 등록된 댓글이 없습니다.
             </li>
             {% else %}
+
             {% for comment in comments %}
+            {% if not comment.parent_id %}
             <li class="list-group-item">
                 <div class="row">
-                    {% if not comment.parent_id %}
-                    <div class="col">{{ comment.content }} - [{{ comment.id }}]</div>
+                    <div class="col">
+                        <span class="badge text-bg-dark">{{ comment.status }}</span> {{ comment.content }}
+                        {% for reply in comment.replies %}
+                        <div class="ms-2">└ <span class="badge text-bg-dark">{{ reply.status }}</span> {{ reply.content
+                            }} - {{ reply.created_at }}</div>
+                        {% endfor %}
+                    </div>
                     <div class="col-auto">{{ comment.created_at }}</div>
-                    {% else %}
-                    <div class="col ms-4">{{ comment.content }} - [{{ comment.parent_id }}]</div>
-                    <div class="col-auto">{{ comment.created_at }}</div>
-                    {% endif %}
                 </div>
             </li>
+            {% endif %}
             {% endfor %}
             {% endif %}
         </ul>

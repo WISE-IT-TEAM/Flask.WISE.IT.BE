@@ -26,11 +26,7 @@ def allowed_file(filename):
 @article_bp.route("/", methods=["GET"])
 def admin_article_list():
     article_list = Article.query.order_by(Article.created_at.desc()).all()
-    comment_count = {}
-    for article in article_list:
-        comment_count[article.id] = ArticleComment.query.filter_by(
-            article_id=article.id
-        ).count()
+    comment_count = ArticleComment.query.count()
     return render_template(
         "admin/article/article_list.jinja2",
         title="Article List",

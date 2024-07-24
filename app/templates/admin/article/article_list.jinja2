@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col">{{ article.category }}: <a
                         href="{{ url_for('article.admin_article_modify', article_id=article.id) }}">{{ article.title
-                        }}</a> [{{ comment_count }}]</div>
+                        }}</a> [{{ article.comments|length }}]</div>
                 <div class="col-auto">{{ article.created_at }}</div>
             </div>
         </li>
