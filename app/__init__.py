@@ -54,8 +54,8 @@ def create_app():
     app.register_blueprint(user_api_bp, url_prefix="/api/user")
     app.register_blueprint(common_api_bp, url_prefix="/api/common")
     app.register_blueprint(sqldoc_api_bp, url_prefix="/api/sqldoc")
-    app.register_blueprint(article_api_bp, url_prefix="/api/article")
-    app.register_blueprint(qaboard_api_bp, url_prefix="/api/qaboard")
+    app.register_blueprint(article_api_bp, url_prefix="/api/community/article")
+    app.register_blueprint(qaboard_api_bp, url_prefix="/api/community/qaboard")
     app.register_blueprint(sqooldb_api_bp, url_prefix="/api/sqool")
 
     # ! 페이지 접근 권한 설정
@@ -78,6 +78,8 @@ def create_app():
             "sqldoc_api.get_document",
             "article_api.ping",
             "article_api.get_article_list",
+            "article_api.get_article",
+            "article_api.get_comments",
             "qaboard_api.ping",
             "sqooldb_api.create_db",
             "sqooldb_api.get_schema",
