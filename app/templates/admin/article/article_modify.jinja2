@@ -19,25 +19,38 @@
 {% endblock style %}
 
 {% block content %}
-<h1>Article Create</h1>
+<h1>Article Modify</h1>
 <hr>
-<form method="POST" action="{{ url_for('article.admin_article_create') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ url_for('article.admin_article_modify', article_id=article.id) }}"
+    enctype="multipart/form-data">
     <div class="mb-3">
         <label for="title" class="form-label">제목</label>
-        <input type="text" class="form-control" id="title" name="title" required>
+        <input type="text" class="form-control" id="title" name="title" value="{{ article.title }}" required>
     </div>
     <div class="mb-3">
         <label for="category" class="form-label">카테고리</label>
         <select class="form-select" id="category" name="category" required>
-            <option value="" selected hidden>선택</option>
+            <option value="{{ article.category }}" selected hidden>{{ article.category }}</option>
             <option>공지사항</option>
             <option>최신이슈</option>
             <option>개발 팁</option>
         </select>
     </div>
     <div class="mb-3">
+        {% if article.thumbnail %}
+        <div class="card">
+            <img src="{{ article.thumbnail }}" class="card-img" alt="Thumbnail">
+        </div>
+        <hr>
+        <div class="d-grid">
+            <button type="button" class="btn btn-danger"
+                onclick="if(confirm('삭제하시겠습니까?')) { location.href = '{{ url_for('article.admin_article_thumbnail_delete', article_id = article.id) }}'; }">썸네일
+                삭제</button>
+        </div>
+        {% else %}
         <label for="thumbnail" class="form-label">썸네일</label>
         <input class="form-control" type="file" id="thumbnail" name="thumbnail">
+        {% endif %}
     </div>
     <div class="mb-3">
         <label for="content" class="form-label">내용</label>
@@ -45,11 +58,13 @@
     </div>
     <div class="mb-3">
         <label for="content" class="form-label">태그</label>
-        <input type="text" class="form-control" id="tags" name="tags" placeholder="쉼표(,)로 구분">
+        <input type="text" class="form-control" id="tags" name="tags" value="{{ article.tags }}"
+            placeholder="쉼표(,)로 구분">
     </div>
     <div class="mb-3">
         <label for="status" class="form-label">공개 여부</label>
         <select class="form-select" id="status" name="status" required>
+            <option value="{{ article.status }}" selected hidden>{{ article.status }}</option>
             <option>공개</option>
             <option>작성중</option>
             <option>비공개</option>
@@ -57,8 +72,34 @@
     </div>
     <hr>
     <div class="d-grid">
-        <button type="submit" class="btn btn-primary">등록</button>
+        <button type="submit" class="btn btn-primary">수정</button>
     </div>
+</form>
+<hr>
+<form>
+    <div class="card">
+        <div class="card-header">
+            댓글 목록
+        </div>
+        <ul class="list-group list-group-flush">
+            {% if not article.comments %}
+            <li class="list-group-item">
+                등록된 댓글이 없습니다.
+            </li>
+            {% else %}
+            {% for comment in article.comments %}
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col">{{ comment.content }}</div>
+                    <div class="col-auto">{{ comment.created_at }}</div>
+                </div>
+            </li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+    <hr>
+
 </form>
 {% endblock content %}
 
@@ -74,6 +115,7 @@
         previewStyle: 'vertical',
         usageStatistics: false,
         hideModeSwitch: false,
+        initialValue: `{{ article.content | safe }}`,
         hooks: {
             addImageBlobHook: function (blob, callback) {
                 const formData = new FormData();

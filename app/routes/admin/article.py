@@ -26,10 +26,12 @@ def allowed_file(filename):
 @article_bp.route("/", methods=["GET"])
 def admin_article_list():
     article_list = Article.query.order_by(Article.created_at.desc()).all()
+    comment_count = ArticleComment.query.filter_by(article_id=Article.id).count()
     return render_template(
         "admin/article/article_list.jinja2",
         title="Article List",
         article_list=article_list,
+        comment_count=comment_count,
     )
 
 
@@ -53,7 +55,7 @@ def admin_article_create():
             new_filename = "thumbnail_" + add_time + "_" + filename
             thumbnail_path = os.path.join(UPLOAD_FOLDER, new_filename)
             thumbnail.save(thumbnail_path)
-            thumbnail_path = os.path.join("Uploads", new_filename)
+            thumbnail_path = url_for("static", filename="Uploads/" + new_filename)
 
         new_article = Article(
             title=title,
@@ -77,15 +79,32 @@ def admin_article_create():
 @login_required
 @article_bp.route("/<article_id>", methods=["GET", "POST"])
 def admin_article_modify(article_id):
-    article = Article.query.get(article_id)
+    article = Article.query.get_or_404(article_id)
     comments = ArticleComment.query.filter_by(article_id=article_id).all()
 
     if request.method == "POST":
         title = request.form.get("title")
+        category = request.form.get("category")
+        thumbnail = request.files.get("thumbnail")
         content = request.form.get("content")
+        status = request.form.get("status")
+        tags = request.form.get("tags")
+
+        if thumbnail and allowed_file(thumbnail.filename):
+            filename = secure_filename(thumbnail.filename)
+            add_time = datetime.now().strftime("%Y%m%d%H%M%S")
+            new_filename = "thumbnail_" + add_time + "_" + filename
+            thumbnail_path = os.path.join(
+                current_app.config["UPLOAD_FOLDER"], new_filename
+            )
+            thumbnail.save(thumbnail_path)
+            article.thumbnail = url_for("static", filename="Uploads/" + new_filename)
 
         article.title = title
+        article.category = category
         article.content = content
+        article.status = status
+        article.tags = tags
 
         db.session.commit()
 
@@ -98,3 +117,14 @@ def admin_article_modify(article_id):
         article=article,
         comments=comments,
     )
+
+
+@login_required
+@article_bp.route("/<article_id>/thumbnail/delete", methods=["GET"])
+def admin_article_thumbnail_delete(article_id):
+    article = Article.query.get_or_404(article_id)
+    article.thumbnail = None
+    db.session.commit()
+
+    flash("썸네일이 삭제되었습니다.", "success")
+    return redirect(url_for("article.admin_article_modify", article_id=article_id))
