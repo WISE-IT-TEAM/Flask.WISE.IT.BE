@@ -80,6 +80,7 @@ def create_app():
             "article_api.get_article_list",
             "article_api.get_article",
             "article_api.get_comments",
+            "article_api.post_comments",
             "qaboard_api.ping",
             "sqooldb_api.create_db",
             "sqooldb_api.get_schema",

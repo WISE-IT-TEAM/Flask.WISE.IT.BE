@@ -131,3 +131,36 @@ def get_comments(art_id):
                 )
 
     return jsonify({"status": "댓글 받아오기 성공", "comments": comment_list}), 200
+
+
+@article_api_bp.route("/<string:art_id>/comments", methods=["POST"])
+def post_comments(art_id):
+    data = request.json
+    content = data.get("content")
+    nickname = data.get("nickname")
+    password = data.get("password")
+    main_comment_id = data.get("comment_id")
+
+    if main_comment_id:
+        new_comment = ArticleComment(
+            content=content,
+            nickname=nickname,
+            password=password,
+            status="공개",
+            article_id=art_id,
+            parent_id=main_comment_id,
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+    else:
+        new_comment = ArticleComment(
+            content=content,
+            nickname=nickname,
+            password=password,
+            status="공개",
+            article_id=art_id,
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+
+    return jsonify({"status": "댓글 작성 성공"}), 200
