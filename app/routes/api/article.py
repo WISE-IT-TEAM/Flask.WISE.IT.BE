@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.models import db, Article, ArticleComment
-from sqlalchemy.sql import func
+from sqlalchemy.sql import case, func
 
 # from flask_sqlalchemy import pagination
 from app import bcrypt
@@ -24,7 +24,10 @@ def get_article_list():
     # article 정보와 댓글 수 받아오기
     articles = (
         Article.query.with_entities(
-            Article, func.count(ArticleComment.id).label("comment_count")
+            Article,
+            func.count(
+                case((ArticleComment.status == "공개", ArticleComment.id))
+            ).label("comment_count"),
         )
         .outerjoin(ArticleComment, Article.id == ArticleComment.article_id)
         .filter(Article.status == "공개")
@@ -134,6 +137,7 @@ def get_comments(art_id):
                         "Nickname": subcom.nickname,
                         "Created_at": subcom.created_at,
                         "Tree": "sub",
+                        "Parent_Id": subcom.parent_id,
                     }
                 )
 
