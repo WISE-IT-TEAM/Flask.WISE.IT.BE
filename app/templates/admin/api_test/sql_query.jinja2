@@ -45,7 +45,7 @@
 {% block script %}
 <script>
     async function createArtistDB() {
-        const response = await fetch('/api/sqool', {
+        const response = await fetch('/api/sqool/init', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -60,7 +60,7 @@
     }
 
     async function resetArtistDB() {
-        const response = await fetch('/api/sqool', {
+        const response = await fetch('/api/sqool/init', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
