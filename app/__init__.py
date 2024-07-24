@@ -81,6 +81,8 @@ def create_app():
             "article_api.get_article",
             "article_api.get_comments",
             "article_api.post_comments",
+            "article_api.modify_comments",
+            "article_api.delete_comments",
             "qaboard_api.ping",
             "sqooldb_api.create_db",
             "sqooldb_api.get_schema",

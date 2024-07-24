@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models import db, Article, ArticleComment
 from sqlalchemy.sql import func
+from app import bcrypt
 
 article_api_bp = Blueprint("article_api", __name__)
 
@@ -164,3 +165,50 @@ def post_comments(art_id):
         db.session.commit()
 
     return jsonify({"status": "댓글 작성 성공"}), 200
+
+
+@article_api_bp.route("/comments/<string:com_id>", methods=["PUT"])
+def modify_comments(com_id):
+    data = request.json
+    content = data.get("content")
+    password = data.get("password")
+
+    comment = ArticleComment.query.filter_by(id=com_id).one_or_none()
+
+    if comment is None:
+        return (
+            jsonify({"status": "해당 id를 가진 댓글이 존재하지 않음: " + com_id}),
+            400,
+        )
+
+    if bcrypt.check_password_hash(comment.password, password):
+        comment.content = content
+
+        db.session.commit()
+
+        return jsonify({"status": "댓글 수정 성공"}), 200
+
+    return jsonify({"status": "비밀번호가 일치하지 않음", "content": content}), 400
+
+
+@article_api_bp.route("/comments/<string:com_id>", methods=["DELETE"])
+def delete_comments(com_id):
+    data = request.json
+    password = data.get("password")
+
+    comment = ArticleComment.query.filter_by(id=com_id).one_or_none()
+
+    if comment is None:
+        return (
+            jsonify({"status": "해당 id를 가진 댓글이 존재하지 않음: " + com_id}),
+            400,
+        )
+
+    if bcrypt.check_password_hash(comment.password, password):
+        comment.status = "비공개"
+
+        db.session.commit()
+
+        return jsonify({"status": "댓글 삭제 성공"}), 200
+
+    return jsonify({"status": "비밀번호가 일치하지 않음"}), 400
