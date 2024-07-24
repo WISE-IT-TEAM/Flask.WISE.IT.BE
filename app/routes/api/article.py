@@ -101,7 +101,7 @@ def get_comments(art_id):
 
     # 상위 댓글 받아오기
     main_comments = (
-        ArticleComment.query.filter_by(article_id=art_id, parent_id=None, status="공개")
+        ArticleComment.query.filter_by(article_id=art_id, parent_id=None)
         .order_by(ArticleComment.created_at.asc())
         .all()
     )
@@ -112,15 +112,16 @@ def get_comments(art_id):
 
     # 상위 댓글이 있으면 리스트에 추가하고 하위 댓글 있는지 확인해서 추가
     for maincom in main_comments:
-        comment_list.append(
-            {
-                "Id": maincom.id,
-                "Content": maincom.content,
-                "Nickname": maincom.nickname,
-                "Created_at": maincom.created_at,
-                "Tree": "main",
-            }
-        )
+        if maincom.status == "공개":
+            comment_list.append(
+                {
+                    "Id": maincom.id,
+                    "Content": maincom.content,
+                    "Nickname": maincom.nickname,
+                    "Created_at": maincom.created_at,
+                    "Tree": "main",
+                }
+            )
 
         sub_comments = (
             ArticleComment.query.filter_by(parent_id=maincom.id, status="공개")
@@ -129,6 +130,18 @@ def get_comments(art_id):
         )
 
         if len(sub_comments) > 0:
+            # 상위 댓글이 삭제되었는데 답댓이 있을 경우 상위 댓글 표시 - 답댓이 없는데 삭제된 경우 노출 x
+            if maincom.status == "비공개":
+                comment_list.append(
+                    {
+                        "Id": None,
+                        "Content": "삭제된 댓글입니다.",
+                        "Nickname": None,
+                        "Created_at": None,
+                        "Tree": "main",
+                    }
+                )
+
             for subcom in sub_comments:
                 comment_list.append(
                     {
