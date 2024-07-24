@@ -2,6 +2,9 @@ from flask import Blueprint, request, jsonify
 from app.models import db, Article, ArticleComment
 from sqlalchemy.sql import func
 
+# from flask_sqlalchemy import pagination
+from app import bcrypt
+
 article_api_bp = Blueprint("article_api", __name__)
 
 
@@ -10,8 +13,11 @@ def ping():
     return jsonify({"message": "Article API Test Success"})
 
 
-@article_api_bp.route("/list")
+@article_api_bp.route("/list", methods=["GET"])
 def get_article_list():
+    page = request.args.get("page", default=1, type=int)
+    perpage = request.args.get("perpage", default=10, type=int)
+
     # json에 담을 리스트 선언
     article_list = []
 
@@ -23,7 +29,8 @@ def get_article_list():
         .outerjoin(ArticleComment, Article.id == ArticleComment.article_id)
         .filter(Article.status == "공개")
         .group_by(Article.id)
-        .all()
+        .order_by(Article.created_at.desc())
+        .paginate(page=page, per_page=perpage, error_out=False)
     )
 
     for article, comment_count in articles:
@@ -131,3 +138,83 @@ def get_comments(art_id):
                 )
 
     return jsonify({"status": "댓글 받아오기 성공", "comments": comment_list}), 200
+
+
+@article_api_bp.route("/<string:art_id>/comments", methods=["POST"])
+def post_comments(art_id):
+    data = request.json
+    content = data.get("content")
+    nickname = data.get("nickname")
+    password = data.get("password")
+    main_comment_id = data.get("comment_id")
+
+    if main_comment_id:
+        new_comment = ArticleComment(
+            content=content,
+            nickname=nickname,
+            password=password,
+            status="공개",
+            article_id=art_id,
+            parent_id=main_comment_id,
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+    else:
+        new_comment = ArticleComment(
+            content=content,
+            nickname=nickname,
+            password=password,
+            status="공개",
+            article_id=art_id,
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+
+    return jsonify({"status": "댓글 작성 성공"}), 200
+
+
+@article_api_bp.route("/comments/<string:com_id>", methods=["PUT"])
+def modify_comments(com_id):
+    data = request.json
+    content = data.get("content")
+    password = data.get("password")
+
+    comment = ArticleComment.query.filter_by(id=com_id).one_or_none()
+
+    if comment is None:
+        return (
+            jsonify({"status": "해당 id를 가진 댓글이 존재하지 않음: " + com_id}),
+            400,
+        )
+
+    if bcrypt.check_password_hash(comment.password, password):
+        comment.content = content
+
+        db.session.commit()
+
+        return jsonify({"status": "댓글 수정 성공"}), 200
+
+    return jsonify({"status": "비밀번호가 일치하지 않음", "content": content}), 400
+
+
+@article_api_bp.route("/comments/<string:com_id>", methods=["DELETE"])
+def delete_comments(com_id):
+    data = request.json
+    password = data.get("password")
+
+    comment = ArticleComment.query.filter_by(id=com_id).one_or_none()
+
+    if comment is None:
+        return (
+            jsonify({"status": "해당 id를 가진 댓글이 존재하지 않음: " + com_id}),
+            400,
+        )
+
+    if bcrypt.check_password_hash(comment.password, password):
+        comment.status = "비공개"
+
+        db.session.commit()
+
+        return jsonify({"status": "댓글 삭제 성공"}), 200
+
+    return jsonify({"status": "비밀번호가 일치하지 않음"}), 400

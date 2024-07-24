@@ -31,6 +31,7 @@ class Question(db.Model):
     def __init__(self, password):
         self.id = generate()
         self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
+        self.created_at = datetime.now()
 
 
 class Answer(db.Model):
@@ -49,6 +50,7 @@ class Answer(db.Model):
     def __init__(self, password):
         self.id = generate()
         self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
+        self.created_at = datetime.now()
 
 
 class Article(db.Model):
@@ -75,6 +77,7 @@ class Article(db.Model):
         self.thumbnail = thumbnail
         self.tags = tags
         self.status = status
+        self.created_at = datetime.now()
 
 
 class ArticleComment(db.Model):
@@ -94,13 +97,17 @@ class ArticleComment(db.Model):
         "ArticleComment", backref=db.backref("parent", remote_side=[id]), lazy="dynamic"
     )
 
-    def __init__(self, content, nickname, password, article_id, parent_id=None):
+    def __init__(
+        self, content, nickname, password, article_id, parent_id=None, status="public"
+    ):
         self.id = generate()
         self.content = content
         self.nickname = nickname
         self.password = bcrypt.generate_password_hash(password).decode("UTF-8")
+        self.status = status
         self.article_id = article_id
         self.parent_id = parent_id
+        self.created_at = datetime.now()
 
 
 class SqlDocCategory(db.Model):
@@ -142,3 +149,4 @@ class SqlDoc(db.Model):
         self.content = content
         self.category_id = category_id
         self.order_num = order_num
+        self.created_at = datetime.now()
