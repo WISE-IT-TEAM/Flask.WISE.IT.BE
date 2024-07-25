@@ -59,6 +59,7 @@ class Article(db.Model):
     category = db.Column(db.String(30), nullable=False)
     thumbnail = db.Column(db.String(300), nullable=True)
     content = db.Column(db.Text, nullable=False)
+    description = db.Column(db.String(300), nullable=True)
     status = db.Column(db.String(10), nullable=False, default="draft")
     tags = db.Column(db.String(300), nullable=True)
     like_count = db.Column(db.Integer, nullable=False, default=0)
@@ -68,12 +69,20 @@ class Article(db.Model):
     comments = db.relationship("ArticleComment", backref="article", lazy=True)
 
     def __init__(
-        self, title, category, content, thumbnail=None, status="draft", tags=None
+        self,
+        title,
+        category,
+        content,
+        description,
+        thumbnail=None,
+        status="draft",
+        tags=None,
     ):
         self.id = generate()
         self.title = title
         self.category = category
         self.content = content
+        self.description = description
         self.thumbnail = thumbnail
         self.tags = tags
         self.status = status

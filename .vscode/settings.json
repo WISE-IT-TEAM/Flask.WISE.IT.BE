@@ -1,10 +1,14 @@
 {
     "cSpell.words": [
+        "articlelist",
         "backref",
         "executescript",
         "jsonify",
+        "maincom",
         "mcat",
         "onupdate",
+        "outerjoin",
+        "perpage",
         "psutil",
         "qaboard",
         "sqlalchemy",
@@ -12,6 +16,7 @@
         "sqldoc",
         "sqool",
         "sqooldb",
+        "subcom",
         "werkzeug"
     ]
 }
