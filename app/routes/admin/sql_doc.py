@@ -60,6 +60,7 @@ def admin_category_detail(category_id):
         category.category = request.form["category"]
         parent_id = request.form.get("parent_id") or None
         category.parent_id = parent_id if parent_id else None
+        category.order_num = request.form.get("order_num")
         db.session.commit()
         flash("카테고리가 수정되었습니다.", "success")
         return redirect(url_for("sql_doc.admin_category_list"))
