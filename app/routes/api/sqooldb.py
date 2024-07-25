@@ -23,10 +23,10 @@ def execute_query_with_rollback(query):
     sqldb_id = session.get("sqldb_id")
 
     if not sqldb_id:
-        return jsonify({"status": "현재 session에 sqldb_id가 없음"}), 400
+        return jsonify({"status": "session에서 sqldb_id를 받아오지 못 함"}), 400
 
     if sqldb_id not in db_connections.keys():
-        return jsonify({"status": "DB가 생성되지 않았음"}), 400
+        return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 400
 
     db = db_connections[sqldb_id]
 
@@ -81,7 +81,7 @@ def create_db():
     sqldb_id = str(generate())
     session["sqldb_id"] = sqldb_id
     session.modified = True
-    print("create_db에서 세션 값: ", session)
+    # print("create_db에서 세션 값: ", session)
 
     db = sqlite3.connect(":memory:", check_same_thread=False)
     for sql_file in SQL_FILES:
@@ -135,7 +135,7 @@ def execute_query():
 
     SQL_KEYWORD = ["SELECT", "INSERT", "UPDATE", "DELETE", "DROP"]
 
-    print("excute_db에서 세션 값:", session)
+    # print("excute_db에서 세션 값:", session)
 
     if not query or query.isspace():
         return (
@@ -147,11 +147,11 @@ def execute_query():
         return (
             jsonify(
                 {
-                    "message": "입력값을 확인해주세요.",
+                    "message": "쿼리를 다시 한번 확인해 보세요.",
                     "status": "SQL_KEYWORD에 해당하지 않은 시작",
                 }
             ),
-            400,
+            200,
         )
 
     try:
@@ -161,11 +161,11 @@ def execute_query():
         return (
             jsonify(
                 {
-                    "message": "입력값을 확인해주세요.",
+                    "message": "쿼리를 다시 한번 확인해 보세요.",
                     "status": f"잘못된 요청: {str(e)}",
                 }
             ),
-            400,
+            200,
         )
 
 
