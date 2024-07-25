@@ -112,16 +112,8 @@ def get_comments(art_id):
 
     # 상위 댓글이 있으면 리스트에 추가하고 하위 댓글 있는지 확인해서 추가
     for maincom in main_comments:
-        if maincom.status == "공개":
-            comment_list.append(
-                {
-                    "Id": maincom.id,
-                    "Content": maincom.content,
-                    "Nickname": maincom.nickname,
-                    "Created_at": maincom.created_at,
-                    "Tree": "main",
-                }
-            )
+        # sub comment 데이터를 담을 리스트 선언
+        sub_list = []
 
         sub_comments = (
             ArticleComment.query.filter_by(parent_id=maincom.id, status="공개")
@@ -130,27 +122,36 @@ def get_comments(art_id):
         )
 
         if len(sub_comments) > 0:
-            # 상위 댓글이 삭제되었는데 답댓이 있을 경우 상위 댓글 표시 - 답댓이 없는데 삭제된 경우 노출 x
-            if maincom.status == "비공개":
+            for subcom in sub_comments:
+                sub_list.append(
+                    {
+                        "Id": subcom.id,
+                        "Content": subcom.content,
+                        "Nickname": subcom.nickname,
+                        "Created_at": subcom.created_at,
+                        "Parent_Id": subcom.parent_id,
+                    }
+                )
+
+        if maincom.status == "공개":
+            comment_list.append(
+                {
+                    "Id": maincom.id,
+                    "Content": maincom.content,
+                    "Nickname": maincom.nickname,
+                    "Created_at": maincom.created_at,
+                    "Sub": sub_list,
+                }
+            )
+        else:
+            if len(sub_list) > 0:
                 comment_list.append(
                     {
                         "Id": None,
                         "Content": "삭제된 댓글입니다.",
                         "Nickname": None,
                         "Created_at": None,
-                        "Tree": "main",
-                    }
-                )
-
-            for subcom in sub_comments:
-                comment_list.append(
-                    {
-                        "Id": subcom.id,
-                        "Content": subcom.content,
-                        "Nickname": subcom.nickname,
-                        "Created_at": subcom.created_at,
-                        "Tree": "sub",
-                        "Parent_Id": subcom.parent_id,
+                        "Sub": sub_list,
                     }
                 )
 
