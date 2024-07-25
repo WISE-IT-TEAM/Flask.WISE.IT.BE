@@ -65,16 +65,17 @@
         {% for cat in all_category %}
         <li class="list-group-item">
             <form method="POST" action="{{ url_for('sql_doc.admin_category_delete', category_id = cat.id) }}">
-                [{{ cat.order_num }}] {{ cat.category }} {% if not cat.children %}<button type="submit"
-                    class="btn btn-link btn-sm text-danger" style="--bs-btn-padding-y: .0; --bs-btn-padding-x: 0;"><i
-                        class="bi bi-eraser"></i></button>{% endif %}
+                <span class="badge text-bg-light">{{ cat.order_num }}</span> {{ cat.category }} {% if not cat.children
+                %}<button type="submit" class="btn btn-link btn-sm text-danger"
+                    style="--bs-btn-padding-y: .0; --bs-btn-padding-x: 0;"><i class="bi bi-eraser"></i></button>{% endif
+                %}
             </form>
             {% if cat.children %}
             {% for child in cat.children %}
             <div class="ms-3">
                 <form method="POST" action="{{ url_for('sql_doc.admin_category_delete', category_id = child.id) }}">
-                    <i class="bi bi-arrow-return-right"></i> [{{ child.order_num }}] {{ child.category }} <button
-                        type="submit" class="btn btn-link btn-sm text-danger"
+                    <i class="bi bi-arrow-return-right"></i> <span class="badge text-bg-light">{{ child.order_num
+                        }}</span> {{ child.category }} <button type="submit" class="btn btn-link btn-sm text-danger"
                         style="--bs-btn-padding-y: .0; --bs-btn-padding-x: 0;"><i class="bi bi-eraser"></i></button>
                 </form>
             </div>

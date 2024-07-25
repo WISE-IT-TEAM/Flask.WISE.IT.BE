@@ -3,5 +3,180 @@
 {% block content %}
 <h1>Common API Route</h1>
 <hr>
+<div class="accordion" id="commonAPI">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThumbnailUpload">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseThumbnailUpload" aria-expanded="false" aria-controls="collapseThumbnailUpload">
+                <span class="btn btn-warning btn-sm me-3">POST</span>
+                <code>/api/common/upload_thumbnail</code>
+                <span class="ms-5">썸네일 업로드</span>
+            </button>
+        </h2>
+        <div id="collapseThumbnailUpload" class="accordion-collapse collapse" aria-labelledby="headingOne"
+            data-bs-parent="#commonAPI">
+            <div class="accordion-body">
+                <div class="card border-info mb-3">
+                    <div class="card-header">
+                        <strong>Params</strong>
+                    </div>
+                    <div class="card-body text-info">
+                        <ul>
+                            <li>This is some text within a card body.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card border-success mb-3">
+                    <div class="card-header">
+                        <strong>2xx</strong> Success
+                    </div>
+                    <div class="card-body text-success">
+                        This is some text within a card body.
+                    </div>
+                </div>
+                <div class="card border-danger">
+                    <div class="card-header">
+                        <strong>4xx</strong> Error
+                    </div>
+                    <div class="card-body text-danger">
+                        This is some text within a card body.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingImageUpload">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseImageUpload" aria-expanded="false" aria-controls="collapseImageUpload">
+                <span class="btn btn-warning btn-sm me-3">POST</span>
+                <code>/api/common/upload_image</code>
+                <span class="ms-5">이미지 업로드</span>
+            </button>
+        </h2>
+        <div id="collapseImageUpload" class="accordion-collapse collapse" aria-labelledby="headingOne"
+            data-bs-parent="#commonAPI">
+            <div class="accordion-body">
+                <div class="card border-info mb-3">
+                    <div class="card-header">
+                        <strong>Params</strong>
+                    </div>
+                    <div class="card-body text-info">
+                        <ul>
+                            <li>This is some text within a card body.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card border-success mb-3">
+                    <div class="card-header">
+                        <strong>200</strong> Success
+                    </div>
+                    <div class="card-body text-success">
+                        <ul>
+                            <li>This is some text within a card body.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card border-danger">
+                    <div class="card-header">
+                        <strong>400</strong> Error
+                    </div>
+                    <div class="card-body text-danger">
+                        <ul>
+                            <li>This is some text within a card body.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingFileUpload">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseFileUpload" aria-expanded="false" aria-controls="collapseFileUpload">
+                <span class="btn btn-warning btn-sm me-3">POST</span>
+                <code>/api/common/upload_file</code>
+                <span class="ms-5">파일 업로드</span>
+            </button>
+        </h2>
+        <div id="collapseFileUpload" class="accordion-collapse collapse" aria-labelledby="headingOne"
+            data-bs-parent="#commonAPI">
+            <div class="accordion-body">
+                <div class="card border-info mb-3">
+                    <div class="card-header">
+                        <strong>Params</strong>
+                    </div>
+                    <div class="card-body text-info">
+                        <ul>
+                            <li>This is some text within a card body.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card border-success mb-3">
+                    <div class="card-header">
+                        <strong>2xx</strong> Success
+                    </div>
+                    <div class="card-body text-success">
+                        This is some text within a card body.
+                    </div>
+                </div>
+                <div class="card border-danger">
+                    <div class="card-header">
+                        <strong>4xx</strong> Error
+                    </div>
+                    <div class="card-body text-danger">
+                        This is some text within a card body.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingFileDelete">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseFileDelete" aria-expanded="false" aria-controls="collapseFileDelete">
+                <span class="btn btn-danger btn-sm me-3">DELETE</span>
+                <code>/api/common/delete_file</code>
+                <span class="ms-5">파일 삭제</span>
+            </button>
+        </h2>
+        <div id="collapseFileDelete" class="accordion-collapse collapse" aria-labelledby="headingOne"
+            data-bs-parent="#commonAPI">
+            <div class="accordion-body">
+                <div class="card border-info mb-3">
+                    <div class="card-header">
+                        <strong>Params</strong>
+                    </div>
+                    <div class="card-body text-info">
+                        <ul>
+                            <li>This is some text within a card body.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card border-success mb-3">
+                    <div class="card-header">
+                        <strong>2xx</strong> Success
+                    </div>
+                    <div class="card-body text-success">
+                        This is some text within a card body.
+                    </div>
+                </div>
+                <div class="card border-danger">
+                    <div class="card-header">
+                        <strong>4xx</strong> Error
+                    </div>
+                    <div class="card-body text-danger">
+                        This is some text within a card body.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+{% block script %}
+{% endblock script %}

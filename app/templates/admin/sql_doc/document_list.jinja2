@@ -15,14 +15,16 @@
         {% for cat in categories %}
         <li class="list-group-item">
             <div>
-                {{ cat.category }}
+                <strong>{{ cat.category }}</strong>
             </div>
             {% if documents_by_category.get(cat.id) %}
             <ul class="list-unstyled ms-3 mt-2">
                 {% for doc in documents_by_category[cat.id] %}
                 <li>
-                    <i class="bi bi-file-text"></i> <a
-                        href="{{ url_for('sql_doc.admin_document_modify', doc_id = doc.id) }}">{{ doc.title }}</a>
+                    <span class="badge text-bg-light">{{ doc.order_num
+                        }}</span> <i class="bi bi-file-text"></i> <a
+                        href="{{ url_for('sql_doc.admin_document_modify', doc_id = doc.id) }}">{{
+                        doc.title }}</a>
                     <small class="text-muted ms-2">{{ doc.created_at.strftime('%Y년 %m월 %d일') }}</small>
                 </li>
                 {% endfor %}
@@ -31,13 +33,15 @@
             {% if cat.children %}
             {% for child in cat.children %}
             <div class="ms-3 mt-2">
-                <i class="bi bi-arrow-return-right"></i> {{ child.category }}
+                <i class="bi bi-arrow-return-right"></i> <strong>{{ child.category }}</strong>
                 {% if documents_by_category.get(child.id) %}
                 <ul class="list-unstyled ms-4 mt-1">
                     {% for doc in documents_by_category[child.id] %}
                     <li>
-                        <i class="bi bi-file-text"></i> <a
-                            href="{{ url_for('sql_doc.admin_document_modify', doc_id = doc.id) }}">{{ doc.title }}</a>
+                        <span class="badge text-bg-light">{{ doc.order_num
+                            }}</span> <i class="bi bi-file-text"></i> <a
+                            href="{{ url_for('sql_doc.admin_document_modify', doc_id = doc.id) }}">{{
+                            doc.title }}</a>
                         <small class="text-muted ms-2">{{ doc.created_at.strftime('%Y년 %m월 %d일') }}</small>
                     </li>
                     {% endfor %}
