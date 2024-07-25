@@ -25,7 +25,9 @@ def allowed_file(filename):
 @login_required
 @article_bp.route("/", methods=["GET"])
 def admin_article_list():
-    article_list = Article.query.order_by(Article.created_at.desc()).all()
+    page = request.args.get("page", default=1, type=int)
+    article_list = Article.query.order_by(Article.created_at.desc())
+    article_list = article_list.paginate(page=page, per_page=10)
     comment_count = ArticleComment.query.count()
     return render_template(
         "admin/article/article_list.jinja2",
