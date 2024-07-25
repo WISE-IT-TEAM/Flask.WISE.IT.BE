@@ -45,6 +45,7 @@ def admin_article_create():
         category = request.form.get("category")
         thumbnail = request.files.get("thumbnail")
         content = request.form.get("content")
+        description = request.form.get("description")
         status = request.form.get("status")
         tags = request.form.get("tags")
 
@@ -62,6 +63,7 @@ def admin_article_create():
             category=category,
             thumbnail=thumbnail_path,
             content=content,
+            description=description,
             status=status,
             tags=tags,
         )
@@ -91,6 +93,7 @@ def admin_article_modify(article_id):
         category = request.form.get("category")
         thumbnail = request.files.get("thumbnail")
         content = request.form.get("content")
+        description = request.form.get("description")
         status = request.form.get("status")
         tags = request.form.get("tags")
 
@@ -107,6 +110,7 @@ def admin_article_modify(article_id):
         article.title = title
         article.category = category
         article.content = content
+        article.description = description
         article.status = status
         article.tags = tags
 
