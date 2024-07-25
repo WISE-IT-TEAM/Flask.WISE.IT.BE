@@ -58,38 +58,4 @@ def create_app():
     app.register_blueprint(qaboard_api_bp, url_prefix="/api/community/qaboard")
     app.register_blueprint(sqooldb_api_bp, url_prefix="/api/sqool")
 
-    # ! 페이지 접근 권한 설정
-    @app.before_request
-    def require_login():
-        allowed_routes = [
-            "static",
-            "index",
-            "admin.admin_index",
-            "admin.admin_login",
-            "admin.admin_register",
-            "user_api.ping",
-            "common_api.ping",
-            "common_api.upload_image",
-            "common_api.upload_thumbnail",
-            "common_api.upload_file",
-            "common_api.delete_file",
-            "sqldoc_api.ping",
-            "sqldoc_api.get_category",
-            "sqldoc_api.get_document",
-            "article_api.ping",
-            "article_api.get_article_list",
-            "article_api.get_article",
-            "article_api.get_comments",
-            "article_api.post_comments",
-            "article_api.modify_comments",
-            "article_api.delete_comments",
-            "qaboard_api.ping",
-            "sqooldb_api.create_db",
-            "sqooldb_api.get_schema",
-            "sqooldb_api.start_query",
-            "sqooldb_api.execute_query",
-        ]
-        if "admin_user" not in session and request.endpoint not in allowed_routes:
-            return redirect(url_for("index"))
-
     return app
