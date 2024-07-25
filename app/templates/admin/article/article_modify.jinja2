@@ -37,18 +37,20 @@
         </select>
     </div>
     <div class="mb-3">
+        <label for="thumbnail" class="form-label">썸네일</label>
         {% if article.thumbnail %}
         <div class="card">
-            <img src="{{ article.thumbnail }}" class="card-img" alt="Thumbnail">
-        </div>
-        <hr>
-        <div class="d-grid">
-            <button type="button" class="btn btn-danger"
-                onclick="if(confirm('삭제하시겠습니까?')) { location.href = '{{ url_for('article.admin_article_thumbnail_delete', article_id = article.id) }}'; }">썸네일
-                삭제</button>
+            <div class="card-body">
+                현재 썸네일: <strong><a href="{{ article.thumbnail }}">{{ article.thumbnail }}</a></strong>
+                <hr>
+                <div class="d-grid">
+                    <button type="button" class="btn btn-danger"
+                        onclick="if(confirm('삭제하시겠습니까?')) { location.href = '{{ url_for('article.admin_article_thumbnail_delete', article_id = article.id) }}'; }">썸네일
+                        삭제</button>
+                </div>
+            </div>
         </div>
         {% else %}
-        <label for="thumbnail" class="form-label">썸네일</label>
         <input class="form-control" type="file" id="thumbnail" name="thumbnail">
         {% endif %}
     </div>
@@ -91,16 +93,25 @@
             {% for comment in comments %}
             {% if not comment.parent_id %}
             <li class="list-group-item">
-                <div class="row">
-                    <div class="col">
-                        <span class="badge text-bg-dark">{{ comment.status }}</span> {{ comment.content }}
-                        {% for reply in comment.replies %}
-                        <div class="ms-2">└ <span class="badge text-bg-dark">{{ reply.status }}</span> {{ reply.content
-                            }} - {{ reply.created_at }}</div>
-                        {% endfor %}
+                <div>
+                    <strong>{{ comment.nickname }}</strong> 님의 댓글:
+                    <div>
+                        {{ comment.content }} <br>
+                        <span name="commentStatus" class="badge text-bg-dark">{{ comment.status }}</span> <small
+                            class="text-muted">{{
+                            comment.created_at }}</small>
                     </div>
-                    <div class="col-auto">{{ comment.created_at }}</div>
                 </div>
+                {% for reply in comment.replies %}
+                <div class="ms-3 mt-3">
+                    └ <strong>{{ reply.nickname }}</strong> 님의 답글:
+                    <div class="ms-3">
+                        {{ reply.content }} <br>
+                        <span class="badge text-bg-dark">{{ reply.status }}</span> <small class="text-muted">{{
+                            reply.created_at }}</small>
+                    </div>
+                </div>
+                {% endfor %}
             </li>
             {% endif %}
             {% endfor %}
