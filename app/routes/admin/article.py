@@ -25,7 +25,9 @@ def allowed_file(filename):
 @login_required
 @article_bp.route("/", methods=["GET"])
 def admin_article_list():
-    article_list = Article.query.order_by(Article.created_at.desc()).all()
+    page = request.args.get("page", default=1, type=int)
+    article_list = Article.query.order_by(Article.created_at.desc())
+    article_list = article_list.paginate(page=page, per_page=10)
     comment_count = ArticleComment.query.count()
     return render_template(
         "admin/article/article_list.jinja2",
@@ -45,6 +47,7 @@ def admin_article_create():
         category = request.form.get("category")
         thumbnail = request.files.get("thumbnail")
         content = request.form.get("content")
+        description = request.form.get("description")
         status = request.form.get("status")
         tags = request.form.get("tags")
 
@@ -62,6 +65,7 @@ def admin_article_create():
             category=category,
             thumbnail=thumbnail_path,
             content=content,
+            description=description,
             status=status,
             tags=tags,
         )
@@ -91,6 +95,7 @@ def admin_article_modify(article_id):
         category = request.form.get("category")
         thumbnail = request.files.get("thumbnail")
         content = request.form.get("content")
+        description = request.form.get("description")
         status = request.form.get("status")
         tags = request.form.get("tags")
 
@@ -107,6 +112,7 @@ def admin_article_modify(article_id):
         article.title = title
         article.category = category
         article.content = content
+        article.description = description
         article.status = status
         article.tags = tags
 

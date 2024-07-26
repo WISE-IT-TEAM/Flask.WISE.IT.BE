@@ -40,10 +40,10 @@
     <div class="col">
         <div class="row align-items-center">
             <div class="col-auto">
-                <label for="category" class="col-form-label">카테고리 순서 변경</label>
+                <label for="order_num" class="col-form-label">카테고리 순서 변경</label>
             </div>
             <div class="col">
-                <input type="number" class="form-control" id="category" name="category" placeholder="카테고리 순서 입력"
+                <input type="number" class="form-control" id="order_num" name="order_num" placeholder="카테고리 순서 입력"
                     value="{{ category.order_num }}" required>
             </div>
         </div>
@@ -65,16 +65,17 @@
         {% for cat in all_category %}
         <li class="list-group-item">
             <form method="POST" action="{{ url_for('sql_doc.admin_category_delete', category_id = cat.id) }}">
-                [{{ cat.order_num }}] {{ cat.category }} {% if not cat.children %}<button type="submit"
-                    class="btn btn-link btn-sm text-danger" style="--bs-btn-padding-y: .0; --bs-btn-padding-x: 0;"><i
-                        class="bi bi-eraser"></i></button>{% endif %}
+                <span class="badge text-bg-light">{{ cat.order_num }}</span> {{ cat.category }} {% if not cat.children
+                %}<button type="submit" class="btn btn-link btn-sm text-danger"
+                    style="--bs-btn-padding-y: .0; --bs-btn-padding-x: 0;"><i class="bi bi-eraser"></i></button>{% endif
+                %}
             </form>
             {% if cat.children %}
             {% for child in cat.children %}
             <div class="ms-3">
                 <form method="POST" action="{{ url_for('sql_doc.admin_category_delete', category_id = child.id) }}">
-                    <i class="bi bi-arrow-return-right"></i> [{{ child.order_num }}] {{ child.category }} <button
-                        type="submit" class="btn btn-link btn-sm text-danger"
+                    <i class="bi bi-arrow-return-right"></i> <span class="badge text-bg-light">{{ child.order_num
+                        }}</span> {{ child.category }} <button type="submit" class="btn btn-link btn-sm text-danger"
                         style="--bs-btn-padding-y: .0; --bs-btn-padding-x: 0;"><i class="bi bi-eraser"></i></button>
                 </form>
             </div>

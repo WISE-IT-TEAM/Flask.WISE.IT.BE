@@ -18,7 +18,9 @@ qa_board_bp = Blueprint("qa_board", __name__)
 @login_required
 @qa_board_bp.route("/", methods=["GET"])
 def admin_qaboard_list():
-    board_list = Question.query.order_by(Question.created_at.desc()).all()
+    page = request.args.get("page", default=1, type=int)
+    board_list = Question.query.order_by(Question.created_at.desc())
+    board_list = board_list.paginate(page=page, per_page=10)
     return render_template(
         "admin/qaboard/qaboard_list.jinja2", title="QABoard List", board_list=board_list
     )

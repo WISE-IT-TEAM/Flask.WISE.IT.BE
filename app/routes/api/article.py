@@ -17,12 +17,13 @@ def ping():
 def get_article_list():
     page = request.args.get("page", default=1, type=int)
     perpage = request.args.get("perpage", default=10, type=int)
+    category = request.args.get("category")
 
     # json에 담을 리스트 선언
     article_list = []
 
     # article 정보와 댓글 수 받아오기
-    articles = (
+    query = (
         Article.query.with_entities(
             Article,
             func.count(
@@ -31,7 +32,14 @@ def get_article_list():
         )
         .outerjoin(ArticleComment, Article.id == ArticleComment.article_id)
         .filter(Article.status == "공개")
-        .group_by(Article.id)
+    )
+
+    if category:
+        category = category.strip('"')
+        query = query.filter(Article.category == category)
+
+    articles = (
+        query.group_by(Article.id)
         .order_by(Article.created_at.desc())
         .paginate(page=page, per_page=perpage, error_out=False)
     )
@@ -42,9 +50,8 @@ def get_article_list():
             "Title": article.title,
             "Category": article.category,
             "Thumbnail": article.thumbnail,
-            "Content": article.content,
+            "Description": article.description,
             "Tags": article.tags,
-            "Like_count": article.like_count,
             "View_count": article.view_count,
             "Created_at": article.created_at,
             "Comment_count": comment_count,
@@ -76,6 +83,9 @@ def get_article(art_id):
     if article.status != "공개":
         return jsonify({"status": "게시글이 공개 상태가 아님"}), 400
 
+    article.view_count += 1
+    db.session.commit()
+
     article_info = {
         "Id": article.id,
         "Title": article.title,
@@ -83,7 +93,6 @@ def get_article(art_id):
         "Thumbnail": article.thumbnail,
         "Content": article.content,
         "Tags": article.tags,
-        "Like_count": article.like_count,
         "View_count": article.view_count,
         "Created_at": article.created_at,
     }

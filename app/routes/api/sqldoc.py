@@ -89,7 +89,7 @@ def get_document(doc_id):
     if doc.status != "공개":
         return jsonify({"status": "게시글이 공개 상태가 아님"}), 400
 
-    document = {"title": doc.title, "content": doc.content}
+    document = {"Title": doc.title, "Content": doc.content}
 
     return (
         jsonify({"status": "게시글 상세 내용 불러오기 성공", "document": document}),

@@ -79,7 +79,7 @@ def upload_image():
             {"url": f"{url_for('static', filename='Uploads/' + new_filename )}"}
         )
 
-    return jsonify({"message": "허용되지 않는 파일 형식입니다."}), 400
+    return jsonify({"message": "파일 업로드에 실패했습니다."}), 400
 
 
 @common_api_bp.route("/upload_thumbnail", methods=["POST"])
@@ -118,7 +118,7 @@ def upload_thumbnail():
             {"url": f"{url_for('static', filename='Uploads/' + new_filename )}"}
         )
 
-    return jsonify({"message": "허용되지 않는 파일 형식입니다."}), 400
+    return jsonify({"message": "파일 업로드에 실패했습니다."}), 400
 
 
 @common_api_bp.route("/upload_file", methods=["POST"])

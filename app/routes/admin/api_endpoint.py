@@ -11,6 +11,14 @@ def api_endpoint_user():
 
 
 @login_required
+@api_endpoint_bp.route("/article", methods=["GET"])
+def api_endpoint_article():
+    return render_template(
+        "admin/api_endpoint/article.jinja2", title="API Endpoint: Article"
+    )
+
+
+@login_required
 @api_endpoint_bp.route("/qaboard", methods=["GET"])
 def api_endpoint_qaboard():
     return render_template(
