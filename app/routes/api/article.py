@@ -17,12 +17,13 @@ def ping():
 def get_article_list():
     page = request.args.get("page", default=1, type=int)
     perpage = request.args.get("perpage", default=10, type=int)
+    category = request.args.get("category")
 
     # json에 담을 리스트 선언
     article_list = []
 
     # article 정보와 댓글 수 받아오기
-    articles = (
+    query = (
         Article.query.with_entities(
             Article,
             func.count(
@@ -31,7 +32,14 @@ def get_article_list():
         )
         .outerjoin(ArticleComment, Article.id == ArticleComment.article_id)
         .filter(Article.status == "공개")
-        .group_by(Article.id)
+    )
+
+    if category:
+        category = category.strip('"')
+        query = query.filter(Article.category == category)
+
+    articles = (
+        query.group_by(Article.id)
         .order_by(Article.created_at.desc())
         .paginate(page=page, per_page=perpage, error_out=False)
     )
