@@ -152,10 +152,11 @@ class SqlDoc(db.Model):
         "SqlDocCategory", backref=db.backref("sql_docs", lazy=True)
     )
 
-    def __init__(self, title, content, order_num, category_id):
+    def __init__(self, title, content, status, order_num, category_id):
         self.id = generate()
         self.title = title
         self.content = content
+        self.status = status
         self.category_id = category_id
         self.order_num = order_num
         self.created_at = datetime.now()
