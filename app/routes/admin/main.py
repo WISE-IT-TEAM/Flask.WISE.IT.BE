@@ -92,21 +92,32 @@ def get_system_usage():
     memory_usage = memory_info.percent
     disk_info = psutil.disk_usage("/")
     disk_usage = disk_info.percent
-    return cpu_usage, memory_usage, disk_usage
+    network_info = psutil.net_io_counters()
+    network_sent = round(network_info.bytes_sent / 1024**2, 1)
+    network_recv = round(network_info.bytes_recv / 1024**2, 1)
+    return cpu_usage, memory_usage, disk_usage, network_sent, network_recv
 
 
 @login_required
 @admin_bp.route("/dashboard", methods=["GET"])
 def admin_dashboard():
-
-    return render_template("admin/dashboard.jinja2", title="Dashboard")
+    return render_template(
+        "admin/dashboard.jinja2",
+        title="Dashboard",
+    )
 
 
 @login_required
 @admin_bp.route("/usage", methods=["GET"])
 def usage():
-    cpu_usage, memory_usage, disk_usage = get_system_usage()
-    return jsonify(cpu=cpu_usage, memory=memory_usage, disk=disk_usage)
+    cpu_usage, memory_usage, disk_usage, network_sent, network_recv = get_system_usage()
+    return jsonify(
+        cpu=cpu_usage,
+        memory=memory_usage,
+        disk=disk_usage,
+        network_sent=network_sent,
+        network_recv=network_recv,
+    )
 
 
 @login_required
