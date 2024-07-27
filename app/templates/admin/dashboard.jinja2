@@ -1,10 +1,148 @@
 {% extends 'layout/base.jinja2' %}
 
+{% block style %}
+<style>
+    .password-toggle {
+        cursor: pointer;
+        user-select: none;
+    }
+</style>
+{% endblock style %}
+
 {% block content %}
 <h1>Admin Dashboard</h1>
-<p>Welcome to the admin dashboard.</p>
+<hr>
+<div class="row mb-5">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-body-secondary">CPU Usage</h5>
+                <span id="cpu-usage" class="display-6 text-primary">{{ cpu }}</span>%
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-body-secondary">Memory Usage</h5>
+                <span id="memory-usage" class="display-6 text-primary">{{ memory }}</span>%
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-body-secondary">Disk Usage</h5>
+                <span id="disk-usage" class="display-6 text-primary">{{ disk }}</span>%
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-body-secondary">Network Usage</h5>
+                <span id="network-sent" class="display-6 text-primary">{{ network_sent }}</span>
+                <span class="display-6"> / </span>
+                <span id="network-recv" class="display-6 text-primary">{{ network_recv }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">Location:</dt>
+            <dd class="col-sm-9">Seoul</dd>
+            <dt class="col-sm-3">IPv4:</dt>
+            <dd class="col-sm-9">158.247.244.222</dd>
+            <dt class="col-sm-3">IPv6:</dt>
+            <dd class="col-sm-9">2401:c080:1c02:12fb:5400:05ff:fe08:99d0</dd>
+            <dt class="col-sm-3">Username:</dt>
+            <dd class="col-sm-9">root</dd>
+            <dt class="col-sm-3">Password:</dt>
+            <dd class="col-sm-9">
+                <span id="password-display" class="password-toggle">•••••</span>
+                <span id="actual-password" style="display: none;">]e9Fbuj,cq]3hL_P</span>
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">vCPU/s:</dt>
+            <dd class="col-sm-9">1 vCPU</dd>
+            <dt class="col-sm-3">RAM:</dt>
+            <dd class="col-sm-9">2048.00 MB</dd>
+            <dt class="col-sm-3">Storage:</dt>
+            <dd class="col-sm-9">50 GB NVMe</dd>
+            <dt class="col-sm-3">Bandwidth:</dt>
+            <dd class="col-sm-9">3000 GB</dd>
+            <dt class="col-sm-3">OS:</dt>
+            <dd class="col-sm-9">Ubuntu 24.04 LTS x64</dd>
+        </dl>
+    </div>
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-3">Cloud:</dt>
+            <dd class="col-sm-9"><a href="https://vultr.com" target="_blank" class="text-decoration-none">Vultr</a></dd>
+            <dt class="col-sm-3">DDNS:</dt>
+            <dd class="col-sm-9"><a href="https://cloudflare.com" target="_blank"
+                    class="text-decoration-none">Cloudflare</a></dd>
+            <dt class="col-sm-3">FE GitHub:</dt>
+            <dd class="col-sm-9"><a href="https://github.com/Baristacus/Wise.SQooL.FE" target="_blank"
+                    class="text-decoration-none">Wise.SQooL.FE</a></dd>
+            <dt class="col-sm-3">BE GitHub:</dt>
+            <dd class="col-sm-9"><a href="https://github.com/Baristacus/Flask.WISE.IT.BE" target="_blank"
+                    class="text-decoration-none">Flask.WISE.IT.BE</a></dd>
+            <dt class="col-sm-3">Document:</dt>
+            <dd class="col-sm-9"><a href="https://baristacus.atlassian.net/wiki/spaces/WID/overview" target="_blank"
+                    class="text-decoration-none">Jira Confluence</a></dd>
+        </dl>
+    </div>
+</div>
 {% endblock %}
 
 {% block script %}
+<script>
+    function getSystemInfo() {
+        fetch("{{ url_for('admin.usage') }}")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("cpu-usage").textContent = data.cpu;
+                document.getElementById("memory-usage").textContent = data.memory;
+                document.getElementById("disk-usage").textContent = data.disk;
+                document.getElementById("network-sent").textContent = data.network_sent;
+                document.getElementById("network-recv").textContent = data.network_recv;
+            })
+            .catch(error => {
+                console.error("Error fetching system info:", error);
+            });
+    }
 
+    // 페이지 로드 시 시스템 정보 업데이트
+    getSystemInfo();
+    // 10초마다 시스템 정보 업데이트
+    setInterval(getSystemInfo, 10000);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordDisplay = document.getElementById('password-display');
+        const actualPassword = document.getElementById('actual-password');
+        let isPasswordVisible = false;
+
+        passwordDisplay.addEventListener('click', function () {
+            if (isPasswordVisible) {
+                passwordDisplay.textContent = '•••••';
+                isPasswordVisible = false;
+            } else {
+                passwordDisplay.textContent = actualPassword.textContent;
+                isPasswordVisible = true;
+            }
+        });
+    });
+</script>
 {% endblock script %}
