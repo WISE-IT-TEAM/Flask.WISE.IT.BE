@@ -8,6 +8,7 @@ DS_Store
 thumbs.db
 
 .env*
+!.env.example
 __pycache__/
 
 node_modules/
