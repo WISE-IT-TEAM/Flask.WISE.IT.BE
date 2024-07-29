@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, current_app
 import sqlite3
 import os
 from nanoid import generate
@@ -16,7 +16,11 @@ DB_CONFIGS = {
 
 
 # 세션별 데이터베이스 연결을 저장할 딕셔너리
-db_connections = {}
+# db_connections = {}
+def get_db_connections():
+    if "db_connections" not in current_app.config:
+        current_app.config["db_connections"] = {}
+    return current_app.config["db_connections"]
 
 
 def execute_query_with_rollback(query):
@@ -24,6 +28,8 @@ def execute_query_with_rollback(query):
 
     if not sqldb_id:
         return jsonify({"status": "session에서 sqldb_id를 받아오지 못 함"}), 412
+
+    db_connections = get_db_connections()
 
     if sqldb_id not in db_connections.keys():
         return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 412
@@ -70,10 +76,12 @@ def create_db():
     elif dbname not in DB_CONFIGS.keys():
         return jsonify({"status": "DB 이름이 올바르지 않음"}), 404
 
+    db_connections = get_db_connections()
+
     # 이미 DB가 있을 경우 해당 connection을 삭제 후 DB 생성 (RESET)
     sqldb_id = data.get("sqldb_id")
     if sqldb_id and sqldb_id in db_connections.keys():
-        del db_connections[sqldb_id]
+        del current_app.config["db_connections"][sqldb_id]
 
     SQL_FOLDER = DB_CONFIGS[dbname]["folder"]
     SQL_FILES = DB_CONFIGS[dbname]["files"]
@@ -92,7 +100,7 @@ def create_db():
         else:
             return jsonify({"status": "{sql_file} 파일이 존재하지 않음"}), 400
 
-    db_connections[sqldb_id] = db
+    current_app.config["db_connections"][sqldb_id] = db
 
     return jsonify({"status": "사용자 DB 정상적으로 생성"}), 200
 
@@ -100,6 +108,8 @@ def create_db():
 @sqooldb_api_bp.route("/schema", methods=["GET"])
 def get_schema():
     sqldb_id = session.get("sqldb_id")
+
+    db_connections = get_db_connections()
 
     if sqldb_id not in db_connections.keys():
         return jsonify({"status": "DB가 생성되지 않음"}), 412
