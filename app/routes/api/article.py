@@ -108,16 +108,21 @@ def get_comments(art_id):
     # json에 담을 리스트 선언
     comment_list = []
 
+    # 해당 id를 가진 게시글이 있는지 확인
+    check_art_id = Article.query.filter_by(id=art_id).one_or_none()
+
+    if check_art_id is None:
+        return (
+            jsonify({"status": "해당 id를 가진 게시글이 존재하지 않음: " + art_id}),
+            400,
+        )
+
     # 상위 댓글 받아오기
     main_comments = (
         ArticleComment.query.filter_by(article_id=art_id, parent_id=None)
         .order_by(ArticleComment.created_at.asc())
         .all()
     )
-
-    # 댓글이 없을 경우 빈 리스트 반환
-    if not main_comments:
-        return jsonify({"status": "댓글이 없음", "comments": comment_list}), 200
 
     # 상위 댓글이 있으면 리스트에 추가하고 하위 댓글 있는지 확인해서 추가
     for maincom in main_comments:
@@ -174,6 +179,15 @@ def post_comments(art_id):
     nickname = data.get("nickname")
     password = data.get("password")
     main_comment_id = data.get("comment_id")
+
+    # 해당 id를 가진 게시글이 있는지 확인
+    check_art_id = Article.query.filter_by(id=art_id).one_or_none()
+
+    if check_art_id is None:
+        return (
+            jsonify({"status": "해당 id를 가진 게시글이 존재하지 않음: " + art_id}),
+            400,
+        )
 
     if main_comment_id:
         new_comment = ArticleComment(
