@@ -77,11 +77,11 @@ def get_article(art_id):
     if article is None:
         return (
             jsonify({"status": "해당 id를 가진 게시글이 존재하지 않음: " + art_id}),
-            400,
+            404,
         )
 
     if article.status != "공개":
-        return jsonify({"status": "게시글이 공개 상태가 아님"}), 400
+        return jsonify({"status": "게시글이 공개 상태가 아님"}), 403
 
     article.view_count += 1
     db.session.commit()
@@ -108,16 +108,21 @@ def get_comments(art_id):
     # json에 담을 리스트 선언
     comment_list = []
 
+    # 해당 id를 가진 게시글이 있는지 확인
+    check_art_id = Article.query.filter_by(id=art_id).one_or_none()
+
+    if check_art_id is None:
+        return (
+            jsonify({"status": "해당 id를 가진 게시글이 존재하지 않음: " + art_id}),
+            404,
+        )
+
     # 상위 댓글 받아오기
     main_comments = (
         ArticleComment.query.filter_by(article_id=art_id, parent_id=None)
         .order_by(ArticleComment.created_at.asc())
         .all()
     )
-
-    # 댓글이 없을 경우 빈 리스트 반환
-    if not main_comments:
-        return jsonify({"status": "댓글이 없음", "comments": comment_list}), 200
 
     # 상위 댓글이 있으면 리스트에 추가하고 하위 댓글 있는지 확인해서 추가
     for maincom in main_comments:
@@ -175,6 +180,15 @@ def post_comments(art_id):
     password = data.get("password")
     main_comment_id = data.get("comment_id")
 
+    # 해당 id를 가진 게시글이 있는지 확인
+    check_art_id = Article.query.filter_by(id=art_id).one_or_none()
+
+    if check_art_id is None:
+        return (
+            jsonify({"status": "해당 id를 가진 게시글이 존재하지 않음: " + art_id}),
+            404,
+        )
+
     if main_comment_id:
         new_comment = ArticleComment(
             content=content,
@@ -211,7 +225,7 @@ def modify_comments(com_id):
     if comment is None:
         return (
             jsonify({"status": "해당 id를 가진 댓글이 존재하지 않음: " + com_id}),
-            400,
+            404,
         )
 
     if bcrypt.check_password_hash(comment.password, password):
@@ -221,7 +235,7 @@ def modify_comments(com_id):
 
         return jsonify({"status": "댓글 수정 성공"}), 200
 
-    return jsonify({"status": "비밀번호가 일치하지 않음", "content": content}), 400
+    return jsonify({"status": "비밀번호가 일치하지 않음", "content": content}), 401
 
 
 @article_api_bp.route("/comments/<string:com_id>", methods=["DELETE"])
@@ -234,7 +248,7 @@ def delete_comments(com_id):
     if comment is None:
         return (
             jsonify({"status": "해당 id를 가진 댓글이 존재하지 않음: " + com_id}),
-            400,
+            404,
         )
 
     if bcrypt.check_password_hash(comment.password, password):
@@ -244,4 +258,4 @@ def delete_comments(com_id):
 
         return jsonify({"status": "댓글 삭제 성공"}), 200
 
-    return jsonify({"status": "비밀번호가 일치하지 않음"}), 400
+    return jsonify({"status": "비밀번호가 일치하지 않음"}), 401

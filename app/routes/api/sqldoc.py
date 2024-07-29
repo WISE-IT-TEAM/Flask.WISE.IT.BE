@@ -83,11 +83,11 @@ def get_document(doc_id):
     if doc is None:
         return (
             jsonify({"status": "해당 id를 가진 게시글이 존재하지 않음: " + doc_id}),
-            400,
+            404,
         )
 
     if doc.status != "공개":
-        return jsonify({"status": "게시글이 공개 상태가 아님"}), 400
+        return jsonify({"status": "게시글이 공개 상태가 아님"}), 403
 
     document = {"Title": doc.title, "Content": doc.content}
 
