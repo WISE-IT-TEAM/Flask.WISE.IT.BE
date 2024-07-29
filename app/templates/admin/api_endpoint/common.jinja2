@@ -16,36 +16,83 @@
         <div id="collapseThumbnailUpload" class="accordion-collapse collapse" aria-labelledby="headingOne"
             data-bs-parent="#commonAPI">
             <div class="accordion-body">
-                <div class="card border-info mb-3">
-                    <div class="card-header">
-                        <strong>Params</strong>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
-                <div class="card border-success mb-3">
-                    <div class="card-header">
-                        <strong>2xx</strong> Success
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
-                <div class="card border-danger">
-                    <div class="card-header">
-                        <strong>4xx</strong> Error
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
+                <h5 class="text-info"># Request</h5>
+                <table class="table">
+                    <thead class="table-info">
+                        <tr>
+                            <th>메소드</th>
+                            <th>엔드포인트</th>
+                            <th>데이터타잎</th>
+                            <th>파라미터</th>
+                            <th>필수여부</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>POST</td>
+                            <td><code>/api/common/upload_thumbnail</code></td>
+                            <td><code>BODY: form-data [file_path]</code></td>
+                            <td>file_name</td>
+                            <td>필수</td>
+                            <td>썸네일 파일을 업로드함.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 class="text-success"># Response Success</h5>
+                <table class="table">
+                    <thead class="table-success">
+                        <tr>
+                            <th>응답코드</th>
+                            <th>응답값</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-success">200</th>
+                            <td><code>{ url: “Uploads/{file_name}” }</code></td>
+                            <td>성공적으로 업로드되었을 경우, 파일명 반환.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 class="text-danger"># Response Error</h5>
+                <table class="table">
+                    <thead class="table-danger">
+                        <tr>
+                            <th>응답코드</th>
+                            <th>응답값</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-danger">412</th>
+                            <td><code>{ message: “FormData Key값을 확인해 주세요” }</code></td>
+                            <td>FormData에서 키 값을 찾을 수 없는 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">412</th>
+                            <td><code>{ message: "선택된 파일이 없습니다." }</code></td>
+                            <td>업로드된 파일이 없을 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">415</th>
+                            <td><code>{ message: "파일만 업로드 가능합니다." }</code></td>
+                            <td>파일이 지원하지 않는 형식일 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">413</th>
+                            <td><code>{ message: "파일 사이즈가 10MB를 초과했습니다." }</code></td>
+                            <td>파일의 용량이 10MB보다 클 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">400</th>
+                            <td><code>{ message: "파일 업로드에 실패했습니다." }</code></td>
+                            <td>파일 업로드 실패 시 오류 발생.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -62,36 +109,83 @@
         <div id="collapseImageUpload" class="accordion-collapse collapse" aria-labelledby="headingOne"
             data-bs-parent="#commonAPI">
             <div class="accordion-body">
-                <div class="card border-info mb-3">
-                    <div class="card-header">
-                        <strong>Params</strong>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
-                <div class="card border-success mb-3">
-                    <div class="card-header">
-                        <strong>200</strong> Success
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
-                <div class="card border-danger">
-                    <div class="card-header">
-                        <strong>400</strong> Error
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
+                <h5 class="text-info"># Request</h5>
+                <table class="table">
+                    <thead class="table-info">
+                        <tr>
+                            <th>메소드</th>
+                            <th>엔드포인트</th>
+                            <th>데이터타잎</th>
+                            <th>파라미터</th>
+                            <th>필수여부</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>POST</td>
+                            <td><code>/api/common/upload_image</code></td>
+                            <td><code>BODY: form-data [file_path]</code></td>
+                            <td>file_name</td>
+                            <td>필수</td>
+                            <td>이미지 파일을 업로드함.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 class="text-success"># Response Success</h5>
+                <table class="table">
+                    <thead class="table-success">
+                        <tr>
+                            <th>응답코드</th>
+                            <th>응답값</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-success">200</th>
+                            <td><code>{ url: “Uploads/{file_name}” }</code></td>
+                            <td>성공적으로 업로드되었을 경우, 파일명 반환.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 class="text-danger"># Response Error</h5>
+                <table class="table">
+                    <thead class="table-danger">
+                        <tr>
+                            <th>응답코드</th>
+                            <th>응답값</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-danger">412</th>
+                            <td><code>{ message: “FormData Key값을 확인해 주세요” }</code></td>
+                            <td>FormData에서 키 값을 찾을 수 없는 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">412</th>
+                            <td><code>{ message: "선택된 파일이 없습니다." }</code></td>
+                            <td>업로드된 파일이 없을 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">415</th>
+                            <td><code>{ message: "파일만 업로드 가능합니다." }</code></td>
+                            <td>파일이 지원하지 않는 형식일 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">413</th>
+                            <td><code>{ message: "파일 사이즈가 10MB를 초과했습니다." }</code></td>
+                            <td>파일의 용량이 10MB보다 클 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">400</th>
+                            <td><code>{ message: "파일 업로드에 실패했습니다." }</code></td>
+                            <td>파일 업로드 실패 시 오류 발생.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -108,36 +202,83 @@
         <div id="collapseFileUpload" class="accordion-collapse collapse" aria-labelledby="headingOne"
             data-bs-parent="#commonAPI">
             <div class="accordion-body">
-                <div class="card border-info mb-3">
-                    <div class="card-header">
-                        <strong>Params</strong>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
-                <div class="card border-success mb-3">
-                    <div class="card-header">
-                        <strong>2xx</strong> Success
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
-                <div class="card border-danger">
-                    <div class="card-header">
-                        <strong>4xx</strong> Error
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
+                <h5 class="text-info"># Request</h5>
+                <table class="table">
+                    <thead class="table-info">
+                        <tr>
+                            <th>메소드</th>
+                            <th>엔드포인트</th>
+                            <th>데이터타잎</th>
+                            <th>파라미터</th>
+                            <th>필수여부</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>POST</td>
+                            <td><code>/api/common/upload_file</code></td>
+                            <td><code>BODY: form-data [file_path]</code></td>
+                            <td>file_name</td>
+                            <td>필수</td>
+                            <td>이미지 파일을 업로드함.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 class="text-success"># Response Success</h5>
+                <table class="table">
+                    <thead class="table-success">
+                        <tr>
+                            <th>응답코드</th>
+                            <th>응답값</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-success">200</th>
+                            <td><code>{ url: “Uploads/{file_name}” }</code></td>
+                            <td>성공적으로 업로드되었을 경우, 파일명 반환.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 class="text-danger"># Response Error</h5>
+                <table class="table">
+                    <thead class="table-danger">
+                        <tr>
+                            <th>응답코드</th>
+                            <th>응답값</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-danger">412</th>
+                            <td><code>{ message: “FormData Key값을 확인해 주세요” }</code></td>
+                            <td>FormData에서 키 값을 찾을 수 없는 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">412</th>
+                            <td><code>{ message: "선택된 파일이 없습니다." }</code></td>
+                            <td>업로드된 파일이 없을 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">415</th>
+                            <td><code>{ message: "파일만 업로드 가능합니다." }</code></td>
+                            <td>파일이 지원하지 않는 형식일 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">413</th>
+                            <td><code>{ message: "파일 사이즈가 10MB를 초과했습니다." }</code></td>
+                            <td>파일의 용량이 10MB보다 클 경우 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">400</th>
+                            <td><code>{ message: "파일 업로드에 실패했습니다." }</code></td>
+                            <td>파일 업로드 실패 시 오류 발생.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -154,36 +295,68 @@
         <div id="collapseFileDelete" class="accordion-collapse collapse" aria-labelledby="headingOne"
             data-bs-parent="#commonAPI">
             <div class="accordion-body">
-                <div class="card border-info mb-3">
-                    <div class="card-header">
-                        <strong>Params</strong>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
-                <div class="card border-success mb-3">
-                    <div class="card-header">
-                        <strong>2xx</strong> Success
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
-                <div class="card border-danger">
-                    <div class="card-header">
-                        <strong>4xx</strong> Error
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                    </ul>
-                </div>
+                <h5 class="text-info"># Request</h5>
+                <table class="table">
+                    <thead class="table-info">
+                        <tr>
+                            <th>메소드</th>
+                            <th>엔드포인트</th>
+                            <th>데이터타잎</th>
+                            <th>파라미터</th>
+                            <th>필수여부</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>DELETE</td>
+                            <td><code>/api/common/delete_file</code></td>
+                            <td><code>BODY: JSON [file_name]</code></td>
+                            <td>file_name</td>
+                            <td>필수</td>
+                            <td>파일 또는 이미지를 삭제함.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 class="text-success"># Response Success</h5>
+                <table class="table">
+                    <thead class="table-success">
+                        <tr>
+                            <th>응답코드</th>
+                            <th>응답값</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-success">200</th>
+                            <td><code>{ message: “파일이 삭제 되었습니다.” }</code></td>
+                            <td>성공적으로 삭제되었을 경우</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 class="text-danger"># Response Error</h5>
+                <table class="table">
+                    <thead class="table-danger">
+                        <tr>
+                            <th>응답코드</th>
+                            <th>응답값</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="text-danger">400</th>
+                            <td><code>{ message: “파일 이름이 없습니다.” }</code></td>
+                            <td>{file_name}에 빈값으로 전달 할 경우, 오류 발생.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-danger">400</th>
+                            <td><code>{ message: “파일이 존재하지 않습니다.” }</code></td>
+                            <td>{file_nmae}에 없는 파일을 요청 할 경우, 오류 발생.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
