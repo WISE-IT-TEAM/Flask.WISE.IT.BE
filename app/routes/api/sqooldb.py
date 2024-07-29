@@ -23,10 +23,10 @@ def execute_query_with_rollback(query):
     sqldb_id = session.get("sqldb_id")
 
     if not sqldb_id:
-        return jsonify({"status": "session에서 sqldb_id를 받아오지 못 함"}), 400
+        return jsonify({"status": "session에서 sqldb_id를 받아오지 못 함"}), 412
 
     if sqldb_id not in db_connections.keys():
-        return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 400
+        return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 412
 
     db = db_connections[sqldb_id]
 
@@ -66,9 +66,9 @@ def create_db():
     dbname = data.get("dbname")
 
     if not dbname:
-        return jsonify({"status": "DB 정보가 오지 않음"}), 400
+        return jsonify({"status": "DB 정보가 오지 않음"}), 403
     elif dbname not in DB_CONFIGS.keys():
-        return jsonify({"status": "DB 이름이 올바르지 않음"}), 400
+        return jsonify({"status": "DB 이름이 올바르지 않음"}), 404
 
     # 이미 DB가 있을 경우 해당 connection을 삭제 후 DB 생성 (RESET)
     sqldb_id = data.get("sqldb_id")
@@ -102,7 +102,7 @@ def get_schema():
     sqldb_id = session.get("sqldb_id")
 
     if sqldb_id not in db_connections.keys():
-        return jsonify({"status": "DB가 생성되지 않음"}), 400
+        return jsonify({"status": "DB가 생성되지 않음"}), 412
 
     db = db_connections[sqldb_id]
     cursor = db.cursor()
@@ -140,7 +140,7 @@ def execute_query():
     if not query or query.isspace():
         return (
             jsonify({"message": "쿼리를 입력해주세요.", "status": "쿼리값이 없음"}),
-            400,
+            412,
         )
 
     if query.split()[0].upper() not in SQL_KEYWORD:
@@ -151,7 +151,7 @@ def execute_query():
                     "status": "SQL_KEYWORD에 해당하지 않은 시작",
                 }
             ),
-            200,
+            202,
         )
 
     try:
@@ -165,7 +165,7 @@ def execute_query():
                     "status": f"잘못된 요청: {str(e)}",
                 }
             ),
-            200,
+            202,
         )
 
 
