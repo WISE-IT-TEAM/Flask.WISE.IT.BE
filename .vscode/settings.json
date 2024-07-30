@@ -2,6 +2,7 @@
     "cSpell.words": [
         "articlelist",
         "backref",
+        "excute",
         "executescript",
         "jsonify",
         "maincom",
@@ -12,6 +13,8 @@
         "perpage",
         "psutil",
         "qaboard",
+        "setex",
+        "spldb",
         "sqlalchemy",
         "sqldb",
         "sqldoc",

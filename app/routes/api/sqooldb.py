@@ -219,7 +219,7 @@ def execute_query():
 
 
 @sqooldb_api_bp.before_request
-def before_requse():
+def before_request():
     sqldb_id = session.get("sqldb_id")
     if sqldb_id:
         update_last_activity(sqldb_id)
