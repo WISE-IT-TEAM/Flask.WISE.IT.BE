@@ -2,6 +2,9 @@ from flask import Blueprint, request, jsonify, session, current_app
 import sqlite3
 import os
 from nanoid import generate
+import redis
+import pickle
+import time
 
 sqooldb_api_bp = Blueprint("sqooldb_api", __name__)
 
@@ -14,13 +17,35 @@ DB_CONFIGS = {
     # 다른 데이터베이스 설정을 여기에 추가할 수 있습니다.
 }
 
+# Redis 클라이언트 설정
+REDIS_URI = os.environ.get("REDIS_URI")
+REDIS_PORT = os.environ.get("REDIS_PORT")
+REDIS_KEY = os.environ.get("REDIS_KEY")
+redis_client = redis.Redis(host=REDIS_URI, port=REDIS_PORT, password=REDIS_KEY)
+
+# 만료 시간 설정 (7,200초 = 2시간)
+EXPIRY_TIME = 60
+
 
 # 세션별 데이터베이스 연결을 저장할 딕셔너리
-db_connections = {}
-# def get_db_connections():
-#     if "db_connections" not in current_app.config:
-#         current_app.config["db_connections"] = {}
-#     return current_app.config["db_connections"]
+# db_connections = {}
+
+
+def get_db_connection(sqldb_id):
+    db_conn = redis_client.get(f"db_conn:{sqldb_id}")
+    if db_conn:
+        # 연결 정보가 있으면 만료 시간 갱신
+        redis_client.expire(f"db_conn:{sqldb_id}", EXPIRY_TIME)
+        return pickle.loads(db_conn)
+    return None
+
+
+def set_db_connection(sqldb_id, db):
+    redis_client.setex(f"db_conn:{sqldb_id}", EXPIRY_TIME, pickle.dumps(db))
+
+
+def update_last_activity(sqldb_id):
+    redis_client.expire(f"db_conn:{sqldb_id}", EXPIRY_TIME)
 
 
 def execute_query_with_rollback(query):
@@ -29,13 +54,18 @@ def execute_query_with_rollback(query):
     if not sqldb_id:
         return jsonify({"status": "session에서 sqldb_id를 받아오지 못 함"}), 412
 
-    # db_connections = get_db_connections()
-    print("db_connections의 값: ", db_connections)
+    # if sqldb_id not in db_connections.keys():
+    #     return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 412
 
-    if sqldb_id not in db_connections.keys():
+    # db = db_connections[sqldb_id]
+
+    db = get_db_connection(sqldb_id)
+    print("db_connections의 값: ", db)
+
+    if not db:
         return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 412
 
-    db = db_connections[sqldb_id]
+    update_last_activity(sqldb_id)
 
     cursor = db.cursor()
     try:
@@ -77,13 +107,16 @@ def create_db():
     elif dbname not in DB_CONFIGS.keys():
         return jsonify({"status": "DB 이름이 올바르지 않음"}), 404
 
-    # db_connections = get_db_connections()
-
     # 이미 DB가 있을 경우 해당 connection을 삭제 후 DB 생성 (RESET)
     sqldb_id = data.get("sqldb_id")
-    if sqldb_id and sqldb_id in db_connections.keys():
-        del db_connections[sqldb_id]
-        # del current_app.config["db_connections"][sqldb_id]
+    # if sqldb_id and sqldb_id in db_connections.keys():
+    #     del db_connections[sqldb_id]
+
+    if sqldb_id:
+        old_db = get_db_connection(sqldb_id)
+        if old_db:
+            old_db.close()
+            redis_client.delete(f"db_conn:{sqldb_id}")
 
     SQL_FOLDER = DB_CONFIGS[dbname]["folder"]
     SQL_FILES = DB_CONFIGS[dbname]["files"]
@@ -102,8 +135,8 @@ def create_db():
         else:
             return jsonify({"status": "{sql_file} 파일이 존재하지 않음"}), 400
 
-    db_connections[sqldb_id] = db
-    # current_app.config["db_connections"][sqldb_id] = db
+    # db_connections[sqldb_id] = db
+    set_db_connection(sqldb_id, db)
 
     return jsonify({"status": "사용자 DB 정상적으로 생성"}), 200
 
@@ -112,12 +145,15 @@ def create_db():
 def get_schema():
     sqldb_id = session.get("sqldb_id")
 
-    # db_connections = get_db_connections()
+    # if sqldb_id not in db_connections.keys():
+    #     return jsonify({"status": "DB가 생성되지 않음"}), 412
 
-    if sqldb_id not in db_connections.keys():
+    # db = db_connections[sqldb_id]
+
+    db = get_db_connection(sqldb_id)
+    if not db:
         return jsonify({"status": "DB가 생성되지 않음"}), 412
 
-    db = db_connections[sqldb_id]
     cursor = db.cursor()
 
     # 모든 테이블 가져오기
@@ -180,6 +216,13 @@ def execute_query():
             ),
             202,
         )
+
+
+@sqooldb_api_bp.before_request
+def before_request():
+    sqldb_id = session.get("sqldb_id")
+    if sqldb_id:
+        update_last_activity(sqldb_id)
 
 
 # '/reset' 대신 '/'를 통해 무조건 db를 재생성
