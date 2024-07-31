@@ -1,11 +1,14 @@
-from flask import Blueprint, request, jsonify, session, current_app
+from flask import Blueprint, request, jsonify, session
+from nanoid import generate
 import sqlite3
 import os
-from nanoid import generate
+from datetime import datetime, timedelta
+import threading
+import time
 
 sqooldb_api_bp = Blueprint("sqooldb_api", __name__)
 
-# * DB 폴더 경로 및 SQL 파일 리스트
+# DB 폴더 경로 및 SQL 파일 리스트
 DB_CONFIGS = {
     "Artist": {
         "folder": os.path.join(os.path.dirname(__file__), "../../static/ArtistDB"),
@@ -14,28 +17,57 @@ DB_CONFIGS = {
     # 다른 데이터베이스 설정을 여기에 추가할 수 있습니다.
 }
 
-
-# 세션별 데이터베이스 연결을 저장할 딕셔너리
+# 세션별 데이터베이스 연결과 마지막 사용 시간을 저장할 딕셔너리
 db_connections = {}
-# def get_db_connections():
-#     if "db_connections" not in current_app.config:
-#         current_app.config["db_connections"] = {}
-#     return current_app.config["db_connections"]
+
+# 연결 타임아웃 시간 (2시간)
+CONNECTION_TIMEOUT = timedelta(hours=2)
+
+# 스레드 안전성을 위한 락
+connection_lock = threading.Lock()
+
+
+def clean_old_connections():
+    """
+    주기적으로 오래된 DB 연결을 정리하는 함수
+    """
+    while True:
+        current_time = datetime.now()
+        to_remove = []
+        with connection_lock:
+            for sqldb_id, connection_info in db_connections.items():
+                if current_time - connection_info["last_used"] > CONNECTION_TIMEOUT:
+                    connection_info["connection"].close()
+                    to_remove.append(sqldb_id)
+
+            for sqldb_id in to_remove:
+                del db_connections[sqldb_id]
+
+        time.sleep(300)  # 5분마다 체크
+
+
+# 백그라운드에서 오래된 연결 정리
+cleaning_thread = threading.Thread(target=clean_old_connections, daemon=True)
+cleaning_thread.start()
 
 
 def execute_query_with_rollback(query):
+    """
+    주어진 쿼리를 실행하고 결과를 반환하는 함수
+    오류 발생 시 롤백을 수행합니다.
+    """
     sqldb_id = session.get("sqldb_id")
 
     if not sqldb_id:
         return jsonify({"status": "session에서 sqldb_id를 받아오지 못 함"}), 412
 
-    # db_connections = get_db_connections()
-    # print("db_connections의 값: ", db_connections)
+    with connection_lock:
+        if sqldb_id not in db_connections:
+            return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 412
 
-    if sqldb_id not in db_connections.keys():
-        return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 412
-
-    db = db_connections[sqldb_id]
+        connection_info = db_connections[sqldb_id]
+        db = connection_info["connection"]
+        connection_info["last_used"] = datetime.now()
 
     cursor = db.cursor()
     try:
@@ -69,21 +101,25 @@ def execute_query_with_rollback(query):
 
 @sqooldb_api_bp.route("/init", methods=["POST"])
 def create_db():
+    """
+    새로운 DB 연결을 생성하는 API 엔드포인트
+    """
     data = request.json
     dbname = data.get("dbname")
 
     if not dbname:
         return jsonify({"status": "DB 정보가 오지 않음"}), 403
-    elif dbname not in DB_CONFIGS.keys():
+    elif dbname not in DB_CONFIGS:
         return jsonify({"status": "DB 이름이 올바르지 않음"}), 404
 
-    # db_connections = get_db_connections()
-
     # 이미 DB가 있을 경우 해당 connection을 삭제 후 DB 생성 (RESET)
-    sqldb_id = data.get("sqldb_id")
-    if sqldb_id and sqldb_id in db_connections.keys():
-        del db_connections[sqldb_id]
-        # del current_app.config["db_connections"][sqldb_id]
+    sqldb_id = session.get("sqldb_id")
+    if sqldb_id:
+        with connection_lock:
+            if sqldb_id in db_connections:
+                db_connections[sqldb_id]["connection"].close()
+                del db_connections[sqldb_id]
+        session.pop("sqldb_id", None)
 
     SQL_FOLDER = DB_CONFIGS[dbname]["folder"]
     SQL_FILES = DB_CONFIGS[dbname]["files"]
@@ -91,7 +127,6 @@ def create_db():
     sqldb_id = str(generate())
     session["sqldb_id"] = sqldb_id
     session.modified = True
-    # print("create_db에서 세션 값: ", session)
 
     db = sqlite3.connect(":memory:", check_same_thread=False)
     for sql_file in SQL_FILES:
@@ -100,24 +135,32 @@ def create_db():
             with open(sql_path, "r", encoding="UTF-8") as file:
                 db.executescript(file.read())
         else:
-            return jsonify({"status": "{sql_file} 파일이 존재하지 않음"}), 400
+            return jsonify({"status": f"{sql_file} 파일이 존재하지 않음"}), 400
 
-    db_connections[sqldb_id] = db
-    # current_app.config["db_connections"][sqldb_id] = db
+    with connection_lock:
+        db_connections[sqldb_id] = {"connection": db, "last_used": datetime.now()}
 
     return jsonify({"status": "사용자 DB 정상적으로 생성"}), 200
 
 
 @sqooldb_api_bp.route("/schema", methods=["GET"])
 def get_schema():
+    """
+    현재 DB의 스키마 정보를 반환하는 API 엔드포인트
+    """
     sqldb_id = session.get("sqldb_id")
 
-    # db_connections = get_db_connections()
+    if not sqldb_id:
+        return jsonify({"status": "session에서 sqldb_id를 받아오지 못 함"}), 412
 
-    if sqldb_id not in db_connections.keys():
-        return jsonify({"status": "DB가 생성되지 않음"}), 412
+    with connection_lock:
+        if sqldb_id not in db_connections:
+            return jsonify({"status": "DB가 생성되지 않음"}), 412
 
-    db = db_connections[sqldb_id]
+        connection_info = db_connections[sqldb_id]
+        db = connection_info["connection"]
+        connection_info["last_used"] = datetime.now()
+
     cursor = db.cursor()
 
     # 모든 테이블 가져오기
@@ -143,12 +186,13 @@ def get_schema():
 
 @sqooldb_api_bp.route("/query", methods=["POST"])
 def execute_query():
+    """
+    사용자가 입력한 쿼리를 실행하는 API 엔드포인트
+    """
     data = request.json
     query = data.get("query")
 
     SQL_KEYWORD = ["SELECT", "INSERT", "UPDATE", "DELETE", "DROP"]
-
-    # print("excute_db에서 세션 값:", session)
 
     if not query or query.isspace():
         return (
@@ -182,15 +226,18 @@ def execute_query():
         )
 
 
-# '/reset' 대신 '/'를 통해 무조건 db를 재생성
-# @sqooldb_api_bp.route("/reset", methods=["POST"])
-# def reset_database():
-#     sqldb_id = session.get('sqldb_id')
-
-#     if sqldb_id in db_connections:
-#         del db_connections[sqldb_id]
-
-#     # check = create_db()
-#     # print(check)
-
-#     return jsonify({"status": "데이터베이스가 초기화 되었습니다."}), 200
+@sqooldb_api_bp.route("/close", methods=["POST"])
+def close_connection():
+    """
+    현재 세션의 DB 연결을 닫고 정리하는 API 엔드포인트
+    """
+    sqldb_id = session.get("sqldb_id")
+    if sqldb_id:
+        with connection_lock:
+            if sqldb_id in db_connections:
+                db_connections[sqldb_id]["connection"].close()
+                del db_connections[sqldb_id]
+        session.pop("sqldb_id", None)
+        return jsonify({"status": "DB 연결이 성공적으로 닫혔습니다."}), 200
+    else:
+        return jsonify({"status": "활성화된 DB 연결이 없습니다."}), 200
