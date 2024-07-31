@@ -30,7 +30,7 @@ def execute_query_with_rollback(query):
         return jsonify({"status": "session에서 sqldb_id를 받아오지 못 함"}), 412
 
     # db_connections = get_db_connections()
-    print("db_connections의 값: ", db_connections)
+    # print("db_connections의 값: ", db_connections)
 
     if sqldb_id not in db_connections.keys():
         return jsonify({"status": "해당 spldb_id로 생성된 DB가 없음"}), 412
