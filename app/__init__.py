@@ -24,9 +24,6 @@ def create_app():
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
-    # SQooL DB 커넥션 타임아웃 설정
-    app.config.setdefault("DB_CONNECTION_TIMEOUT", 3600)  # 기본 타임아웃 1시간
-
     db.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
@@ -46,7 +43,7 @@ def create_app():
     from .routes.api.sqldoc import sqldoc_api_bp
     from .routes.api.article import article_api_bp
     from .routes.api.qaboard import qaboard_api_bp
-    from .routes.api.sqooldb import sqooldb_api_bp, setup_periodic_cleanup
+    from .routes.api.sqooldb import sqooldb_api_bp
 
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(api_endpoint_bp, url_prefix="/admin/api_endpoint")
@@ -60,7 +57,5 @@ def create_app():
     app.register_blueprint(article_api_bp, url_prefix="/api/community/article")
     app.register_blueprint(qaboard_api_bp, url_prefix="/api/community/qaboard")
     app.register_blueprint(sqooldb_api_bp, url_prefix="/api/sqool")
-
-    setup_periodic_cleanup(app)
 
     return app
