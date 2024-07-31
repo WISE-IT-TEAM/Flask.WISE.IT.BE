@@ -59,7 +59,11 @@ def upload_image():
     file = request.files["image"]
 
     # 파일 사이즈 체크
-    if len(file.read()) > MAX_UPLOAD_FILE_SIZE:
+    file.seek(0, os.SEEK_END)
+    file_size = file.tell()
+    file.seek(0)
+
+    if file_size > MAX_UPLOAD_FILE_SIZE:
         return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 400
 
     # 파일이 없을 경우
@@ -98,7 +102,11 @@ def upload_thumbnail():
     file = request.files["thumbnail"]
 
     # 파일 사이즈 체크
-    if len(file.read()) > MAX_UPLOAD_FILE_SIZE:
+    file.seek(0, os.SEEK_END)
+    file_size = file.tell()
+    file.seek(0)
+
+    if file_size > MAX_UPLOAD_FILE_SIZE:
         return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 400
 
     # 파일이 없을 경우
@@ -137,7 +145,11 @@ def upload_file():
     file = request.files["file_path"]
 
     # 파일 사이즈 체크
-    if len(file.read()) > MAX_UPLOAD_FILE_SIZE:
+    file.seek(0, os.SEEK_END)
+    file_size = file.tell()
+    file.seek(0)
+
+    if file_size > MAX_UPLOAD_FILE_SIZE:
         return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 400
 
     # 파일이 없을 경우
