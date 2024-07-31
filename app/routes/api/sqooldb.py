@@ -50,7 +50,8 @@ def get_db():
                 db.close()
                 del db_connections[sqldb_id]
 
-        db = sqlite3.connect(f":memory:{sqldb_id}", check_same_thread=False)
+        # db = sqlite3.connect(f":memory:{sqldb_id}", check_same_thread=False)
+        db = sqlite3.connect(":memory:", check_same_thread=False)
         db.row_factory = sqlite3.Row
         db_connections[sqldb_id] = (db, current_time)
         return db
