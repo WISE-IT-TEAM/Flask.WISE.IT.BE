@@ -21,7 +21,7 @@ DB_CONFIGS = {
 db_connections = {}
 
 # 연결 타임아웃 시간 (2시간)
-CONNECTION_TIMEOUT = timedelta(hours=2)
+CONNECTION_TIMEOUT = timedelta(minutes=2)
 
 # 스레드 안전성을 위한 락
 connection_lock = threading.Lock()
