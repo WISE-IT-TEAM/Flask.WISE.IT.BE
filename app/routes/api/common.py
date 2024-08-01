@@ -62,7 +62,7 @@ def upload_image():
 
     # FormData에서 형식이 맞지 않을 경우
     if "image" not in request.files:
-        return jsonify({"message": "FormData Key값을 확인해 주세요."}), 400
+        return jsonify({"message": "FormData Key값을 확인해 주세요."}), 412
 
     # 파일 가져오기
     file = request.files["image"]
@@ -73,14 +73,14 @@ def upload_image():
     file.seek(0)
 
     if file_size > MAX_UPLOAD_FILE_SIZE:
-        return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 400
+        return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 413
 
     # 파일이 없을 경우
     if file.filename == "":
-        return jsonify({"message": "선택된 파일이 없습니다."}), 400
+        return jsonify({"message": "선택된 파일이 없습니다."}), 412
 
     if not allowed_image(file.filename):
-        return jsonify({"message": "이미지 파일만 업로드 가능합니다."}), 400
+        return jsonify({"message": "이미지 파일만 업로드 가능합니다."}), 415
 
     if file and allowed_image(file.filename):
         filename = check_filename(file.filename)
@@ -105,7 +105,7 @@ def upload_thumbnail():
 
     # FormData에서 형식이 맞지 않을 경우
     if "thumbnail" not in request.files:
-        return jsonify({"message": "FormData Key값을 확인해 주세요."}), 400
+        return jsonify({"message": "FormData Key값을 확인해 주세요."}), 412
 
     # 파일 가져오기
     file = request.files["thumbnail"]
@@ -116,14 +116,14 @@ def upload_thumbnail():
     file.seek(0)
 
     if file_size > MAX_UPLOAD_FILE_SIZE:
-        return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 400
+        return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 413
 
     # 파일이 없을 경우
     if file.filename == "":
-        return jsonify({"message": "선택된 파일이 없습니다."}), 400
+        return jsonify({"message": "선택된 파일이 없습니다."}), 412
 
     if not allowed_image(file.filename):
-        return jsonify({"message": "이미지 파일만 업로드 가능합니다."}), 400
+        return jsonify({"message": "이미지 파일만 업로드 가능합니다."}), 415
 
     if file and allowed_image(file.filename):
         filename = check_filename(file.filename)
@@ -148,7 +148,7 @@ def upload_file():
 
     # FormData에서 형식이 맞지 않을 경우
     if "file_path" not in request.files:
-        return jsonify({"message": "FormData Key값을 확인해 주세요."}), 400
+        return jsonify({"message": "FormData Key값을 확인해 주세요."}), 412
 
     # 파일 가져오기
     file = request.files["file_path"]
@@ -159,14 +159,14 @@ def upload_file():
     file.seek(0)
 
     if file_size > MAX_UPLOAD_FILE_SIZE:
-        return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 400
+        return jsonify({"message": "파일 사이즈가 10MB를 초과했습니다."}), 413
 
     # 파일이 없을 경우
     if file.filename == "":
-        return jsonify({"message": "선택된 파일이 없습니다."}), 400
+        return jsonify({"message": "선택된 파일이 없습니다."}), 412
 
     if not allowed_file(file.filename):
-        return jsonify({"message": "허용되지 않는 파일 형식입니다."}), 400
+        return jsonify({"message": "허용되지 않는 파일 형식입니다."}), 415
 
     if file and allowed_file(file.filename):
         filename = check_filename(file.filename)
@@ -196,4 +196,4 @@ def delete_file():
         os.remove(file_path)
         return jsonify({"message": "파일이 삭제되었습니다."}), 200
     else:
-        return jsonify({"message": "파일이 존재하지 않습니다."}), 404
+        return jsonify({"message": "파일이 존재하지 않습니다."}), 400
