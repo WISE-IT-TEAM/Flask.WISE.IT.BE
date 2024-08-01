@@ -79,6 +79,7 @@
         previewStyle: 'vertical',
         usageStatistics: false,
         hideModeSwitch: false,
+        autofocus: false,
         initialValue: `{{ doc.content }}`,
         hooks: {
             addImageBlobHook: function (blob, callback) {
@@ -90,7 +91,7 @@
                     body: formData
                 }).then(response => response.json())
                     .then(data => {
-                        callback(data.url, 'alt text');
+                        callback(data.url, '');
                     })
                     .catch(error => {
                         console.error("오류: ", error);
