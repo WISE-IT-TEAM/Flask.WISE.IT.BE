@@ -1,6 +1,6 @@
 import os
+import re
 from flask import Blueprint, request, jsonify, url_for, current_app
-from werkzeug.utils import secure_filename
 from datetime import datetime
 
 common_api_bp = Blueprint("common_api", __name__)
@@ -22,6 +22,15 @@ ALLOWED_FILE_EXTENSIONS = {
     "gz",
     "7z",
 }
+
+
+def check_filename(filename):
+    reg = re.compile(r"[^A-Za-z0-9_.가-힣-]")
+    for s in os.path.sep, os.path.altsep:
+        if s:
+            filename = filename.replace(s, " ")
+            filename = str(reg.sub("", "_".join(filename.split()))).strip("._")
+    return filename
 
 
 def allowed_image(filename):
@@ -74,7 +83,7 @@ def upload_image():
         return jsonify({"message": "이미지 파일만 업로드 가능합니다."}), 400
 
     if file and allowed_image(file.filename):
-        filename = secure_filename(file.filename)
+        filename = check_filename(file.filename)
         add_time = datetime.now().strftime("%Y%m%d%H%M%S")
         new_filename = "image_" + add_time + "_" + filename
         file_path = os.path.join(UPLOAD_FOLDER, new_filename)
@@ -117,7 +126,7 @@ def upload_thumbnail():
         return jsonify({"message": "이미지 파일만 업로드 가능합니다."}), 400
 
     if file and allowed_image(file.filename):
-        filename = secure_filename(file.filename)
+        filename = check_filename(file.filename)
         add_time = datetime.now().strftime("%Y%m%d%H%M%S")
         new_filename = "thumbnail_" + add_time + "_" + filename
         file_path = os.path.join(UPLOAD_FOLDER, new_filename)
@@ -160,7 +169,7 @@ def upload_file():
         return jsonify({"message": "허용되지 않는 파일 형식입니다."}), 400
 
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
+        filename = check_filename(file.filename)
         add_time = datetime.now().strftime("%Y%m%d%H%M%S")
         new_filename = "file_" + add_time + "_" + filename
         file_path = os.path.join(UPLOAD_FOLDER, new_filename)
