@@ -16,34 +16,34 @@
     <div class="col">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-body-secondary">CPU Usage</h5>
-                <span id="cpu-usage" class="display-6 text-primary">{{ cpu }}</span>%
+                <h5 class="card-title text-body-secondary"><i class="bi bi-cpu"></i> CPU Usage</h5>
+                <span id="cpu-usage" class="h2 fw-light text-primary">{{ cpu }}</span>%
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-body-secondary">Memory Usage</h5>
-                <span id="memory-usage" class="display-6 text-primary">{{ memory }}</span>%
+                <h5 class="card-title text-body-secondary"><i class="bi bi-memory"></i> Memory Usage</h5>
+                <span id="memory-usage" class="h2 fw-light text-primary">{{ memory }}</span>%
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-body-secondary">Disk Usage</h5>
-                <span id="disk-usage" class="display-6 text-primary">{{ disk }}</span>%
+                <h5 class="card-title text-body-secondary"><i class="bi bi-nvme"></i> Disk Usage</h5>
+                <span id="disk-usage" class="h2 fw-light text-primary">{{ disk }}</span>%
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-body-secondary">Network Usage</h5>
-                <span id="network-sent" class="display-6 text-primary">{{ network_sent }}</span>
-                <span class="display-6"> / </span>
-                <span id="network-recv" class="display-6 text-primary">{{ network_recv }}</span>
+                <h5 class="card-title text-body-secondary"><i class="bi bi-hdd-network"></i> Network Usage</h5>
+                <span id="network-sent" class="h2 fw-light text-primary">{{ network_sent }}</span>↑
+                <span class="h2 fw-light"> / </span>
+                <span id="network-recv" class="h2 fw-light text-primary">{{ network_recv }}</span>↓
             </div>
         </div>
     </div>
