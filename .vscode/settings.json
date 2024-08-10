@@ -23,5 +23,6 @@
         "sqooldb",
         "subcom",
         "werkzeug"
-    ]
+    ],
+    "commentTranslate.hover.enabled": false
 }
