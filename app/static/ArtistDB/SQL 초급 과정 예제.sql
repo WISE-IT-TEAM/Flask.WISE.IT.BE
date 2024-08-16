@@ -43,23 +43,23 @@ SELECT * FROM Album WHERE sales_volume >= 500000;
 SELECT * FROM Member WHERE gender = '남' AND country = '한국';
 
 -- 2022년에 발매된 정규앨범을 조회합니다.
-SELECT * FROM Album WHERE album_type = '정규 앨범' AND YEAR(release_date) = 2022;
+SELECT * FROM Album WHERE album_type = '정규' AND YEAR(release_date) = 2022;
 
 
 -- ? OR
--- SM 엔터테인먼트나 JYP 엔터테인먼트 소속 아티스트를 조회합니다.
-SELECT * FROM Artist WHERE agency = 'SM 엔터테인먼트' OR agency = 'JYP 엔터테인먼트';
+-- 'SM'이나 'JYP' 소속 아티스트를 조회합니다.
+SELECT * FROM Artist WHERE agency = 'SM' OR agency = '';
 
--- 보컬리스트나 래퍼 포지션의 멤버를 조회합니다.
+-- '메인보컬'이나 '메인래퍼' 포지션의 멤버를 조회합니다.
 SELECT * FROM Member WHERE position = '메인보컬' OR position = '메인래퍼';
 
 
 -- ? IN
--- 정규, 미니, 싱글 중 하나인 앨범 타입을 조회합니다.
-SELECT * FROM Album WHERE album_type IN ('정규', '미니', '싱글');
+-- 앨범 타입이 '정규', '미니' 중 하나인 앨범을 조회합니다.
+SELECT * FROM Album WHERE album_type IN ('정규', '미니');
 
--- 한국, 일본, 중국 출신 멤버를 조회합니다.
-SELECT * FROM Member WHERE country IN ('한국', '미국', '중국');
+-- 일본, 중국 출신 멤버를 조회합니다.
+SELECT * FROM Member WHERE country IN ('일본', '중국');
 
 
 -- ? DISTINCT
@@ -95,11 +95,11 @@ SELECT COUNT(*) FROM Album;
 
 
 -- ? COUNT(*) ... WHERE
--- 정규앨범의 개수를 조회합니다.
-SELECT COUNT(*) FROM Album WHERE album_type = 'Full';
+-- 정규 앨범의 개수를 조회합니다.
+SELECT COUNT(*) FROM Album WHERE album_type = '정규';
 
 -- 여성 멤버의 수를 조회합니다.
-SELECT COUNT(*) FROM Member WHERE gender = 'Female';
+SELECT COUNT(*) FROM Member WHERE gender = '여';
 
 
 -- ? SUM
@@ -114,8 +114,8 @@ SELECT SUM(sales_volume) FROM Album WHERE artist_id = 1;
 -- 전체 앨범의 평균 판매량을 조회합니다.
 SELECT AVG(sales_volume) FROM Album;
 
--- 정규앨범의 평균 판매량을 조회합니다.
-SELECT AVG(sales_volume) FROM Album WHERE album_type = 'Full';
+-- 정규 앨범의 평균 판매량을 조회합니다.
+SELECT AVG(sales_volume) FROM Album WHERE album_type = '정규';
 
 
 -- ? MAX and MIN
@@ -127,10 +127,10 @@ SELECT MAX(birthday), MIN(birthday) FROM Member;
 
 
 -- ? GROUP BY
--- 아티스트별 앨범 수를 조회합니다.
+-- 아티스트 별 앨범 수를 조회합니다.
 SELECT artist_id, COUNT(*) FROM Album GROUP BY artist_id;
 
--- 국가별 멤버 수를 조회합니다.
+-- 국가 별 멤버 수를 조회합니다.
 SELECT country, COUNT(*) FROM Member GROUP BY country;
 
 
@@ -280,7 +280,7 @@ SELECT
     CASE 
         WHEN strftime('%Y', birthday) >= '2013' THEN 'Alpha세대'
         WHEN strftime('%Y', birthday) >= '1997' AND strftime('%Y', birthday) <= '2012' THEN 'Z세대'
-        WHEN strftime('%Y', birthday) >= '1965' AND strftime('%Y', birthday) <= '1996' THEN 'M세대'
+        WHEN strftime('%Y', birthday) >= '1981' AND strftime('%Y', birthday) <= '1996' THEN 'M세대'
         ELSE '기타'
     END AS generation
 FROM Member;
